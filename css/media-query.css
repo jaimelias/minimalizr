@@ -1,0 +1,311 @@
+/**	< 767 SM **/
+@media (min-width: 1px) and (max-width: 767px)
+{
+	.minimal-header > .pure-g > .left.pure-u-sm-1-2, .minimal-header > .pure-g > .right.pure-u-sm-1-2
+	{
+		width: 50%;
+	}	
+}
+@media (min-width: 1px)
+{
+	.show-lg
+	{
+		display: none;
+	}
+	.entry-content p, .entry-content ul, .entry-content ol, .entry-content blockquote 
+	{
+		font-size: 1.2em;
+	}
+	.minimal-header
+	{
+		padding: 0 10px;
+	}
+	#content.layoutfixed #primary, #secondary
+	{
+		padding: 0 10px;
+	}
+	.picker__day
+	{
+		line-height: 100%;
+	}
+	.picker__day
+	{
+		line-height: 150%;
+	}
+	.pure-g.gutters{
+	  margin-left: -10px;
+	  margin-right: -10px;
+	}
+	.pure-g.gutters > [class *=pure-u]{
+	  box-sizing: border-box;
+	  padding-left: 10px;
+	  padding-right: 10px;
+	}
+	.responsive > .minimal-menu-bar
+	{
+		display: block;
+	}
+	.minimal > .minimal-menu-bar
+	{
+		display: block;
+	}
+	body.toggled #wrapper .responsive .top_navigator {
+		right: 0;
+	}
+	.admin-bar .responsive .top_navigator
+	{
+		top: 32px;
+	}	
+	.responsive .top_navigator
+	{
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		z-index: 9999;
+		right: -290px;
+		width: 290px;
+		overflow-y: auto;
+		overflow-x: hidden;
+	}
+	.responsive ul.top_menu {
+		width: 290px;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.responsive ul.top_menu li a {
+		display: block;
+		padding: 15px 30px 15px 30px;
+	}
+	.responsive ul.top_menu >.sidebar-brand
+	{
+		display: inline-block;
+	}	
+	.responsive ul.top_menu >.sidebar-brand a {
+		font-weight: 900;
+		display: block;
+		font-size: 20px;
+		line-height: 20px;
+		margin: 0;
+		height: 20px;
+	}
+	.responsive ul.top_menu li:not(:first-child)
+	{
+		border-top: 1px solid rgba(125,125,125,0.1);
+	}
+	.responsive  ul.top_menu > li.dropdown > ul.dropdown-menu
+	 {
+		position: relative;
+		width: 100%;
+		padding: 0;
+		margin: 0;
+		border-radius: 0;
+		border: none;
+		display: none;
+	}
+	img.alignleft, img.alignright,  img.aligncenter, img.alignnone 
+	{
+		max-width: 100%;
+		height: auto;
+	}			
+	img.alignleft {
+		display: block;
+		float: none;
+	}
+
+	img.alignright {
+		display: block;
+		float: none;
+	}
+	img.aligncenter {
+		clear: both;
+		display: block;
+	}
+	.layoutfixed article.type-post
+	{
+		padding: 10px;
+	}
+}
+
+
+/**	> 768px MD **/
+@media (min-width: 768px)
+{
+	.entry-content p, .entry-content ul, .entry-content ol, .entry-content blockquote 
+	{
+		font-size: 1em;
+	}
+	.minimal-header, #content.layoutfixed #primary, #secondary
+	{
+		padding: 0 20px;
+	}
+	.picker__day
+	{
+		line-height: 150%;
+	}
+
+	img.alignleft, img.alignright,  img.aligncenter, img.alignnone 
+	{
+		max-width: 200px;
+	}	
+	img.alignleft {
+		display: inline;
+		float: left;
+		margin-right: 1em;
+	}
+
+	img.alignright {
+		display: inline;
+		float: right;
+		margin-left: 1em;
+	}
+
+	img.aligncenter {
+		clear: both;
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+		margin-bottom: 1em;
+	}
+	.layoutfixed article.type-post
+	{
+		padding: 30px;
+	}	
+}
+/**	> 1024px LG **/
+@media (min-width: 1024px)
+{
+	.show-lg
+	{
+		display: block;
+	}
+	.picker__day
+	{
+		line-height: 200%;
+	}
+	.responsive > .minimal-menu-bar
+	{
+		display: none;
+	}
+	.minimal > .minimal-menu-bar
+	{
+		display: block;
+	}
+
+
+	.admin-bar .responsive .top_navigator
+	{
+		top: 0;
+	}	
+	.responsive  .top_navigator
+	{
+		position: relative;
+		text-align: right;
+		top: 0;
+		bottom: 0;
+		right: 0;
+		width: auto;
+		overflow-y: visible;
+		overflow-x: visible;
+	}
+	.responsive  ul.top_menu
+	{
+		padding: 0;
+		margin: 0;
+		height: 16px;
+		line-height: 16px;
+		width: auto;
+	}
+	.responsive  ul.top_menu > li 
+	{
+		display: inline-block;
+		margin: 0;
+		height: 16px;
+		line-height: 16px;
+		position: relative;
+	}
+	.responsive  ul.top_menu > li:not(:last-child)
+	{
+		padding: 0 16px 0 0;
+	}
+	.responsive  ul.top_menu > li:last-child
+	{
+		padding: 0;
+	}
+	.responsive ul.top_menu >.sidebar-brand
+	{
+		display: none;
+	}		
+	.responsive  ul.top_menu > li > a, .responsive ul.top_menu >.sidebar-brand a
+	{
+		text-decoration: none;
+		font-weight: 900;
+		font-size: 16px;
+		height: 16px;
+		line-height: 16px;
+		padding: 0;
+	}
+	.responsive  ul.top_menu > li.dropdown > ul.dropdown-menu
+	{
+		position: absolute;
+		top: 16px;
+		right: 0;
+		margin: 0;
+		padding: 5px 0 0 0;
+		list-style: none;
+		min-width: 210px;
+		font-size: 85%;
+		display: none;
+		width: 250px;
+		display: none;	
+	}
+	.responsive  ul.top_menu > li.dropdown > ul.dropdown-menu > li
+	{
+			display: block;
+	}
+	.responsive  ul.top_menu > li.dropdown > ul.dropdown-menu > li > a
+	{
+		display: block;
+		text-decoration: none;
+	}
+	img.alignleft, img.alignright,  img.aligncenter, img.alignnone 
+	{
+		max-width: 100%;
+	}
+	img.alignleft {
+		display: inline;
+		float: left;
+		margin-right: 1.5em;
+	}
+
+	img.alignright {
+		display: inline;
+		float: right;
+		margin-left: 1.5em;
+	}
+
+	img.aligncenter {
+		clear: both;
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+		margin-bottom: 1.5em;
+	}
+	.layoutfixed article.type-post
+	{
+		padding: 30px;
+	}
+}
+/**	> 1280px LX **/
+@media  (min-width: 1280px)
+{
+	.pure-g.gutters{
+	  margin-left: -20px;
+	  margin-right: -20px;
+	}
+	.pure-g.gutters > [class *=pure-u]{
+	  box-sizing: border-box;
+	  padding-left: 20px;
+	  padding-right: 20px;
+	}
+}

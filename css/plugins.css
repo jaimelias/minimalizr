@@ -1,0 +1,89 @@
+/*-------------------------------*/
+/*           Yoast SEO           */
+/*-------------------------------*/
+#breadcrumbs
+{
+	font-size: 80%;
+	padding: 0 0 40px 0;
+	border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+/*-------------------------------*/
+/*     Beaver Builder Plugin     */
+/*-------------------------------*/
+
+html.fl-builder-edit .minimal-header, html.fl-builder-edit .minimal .top_navigator
+{
+	top: 42px !important;
+}
+.fl-builder-content
+{
+	min-height: 200px;
+}
+.fl-row-content-wrap .scroll-down
+{
+	display: inline-block;
+	text-align: center;
+	font-size: 40px;
+	cursor: pointer;
+	position: absolute;
+	left: 50%;
+	margin-left: -20px;
+	bottom: 0;
+	vertical-align: middle;
+	color: #fff;
+	z-index: 1;
+}
+html:not(.fl-builder-edit) .fl-row-bg-photo.fl-row-full-height > .fl-row-content-wrap::before
+{
+	content: " ";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: linear-gradient(to bottom, rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.3) 100%);
+}
+html:not(.fl-builder-edit) .fl-row-bg-photo.fl-row-full-height > .fl-row-content-wrap > .fl-row-content
+{
+	z-index: 1;
+}
+/*-------------------------------*/
+/*          Min - Grids         */
+/*-------------------------------*/
+.min_grid a
+{
+		text-decoration: none;
+}
+.min_thumbnail
+{
+	position: relative;
+}
+.min_title h3
+{
+	margin: 0 0 10px 0 !important;
+}
+.min_brief
+{
+	padding: 5px;
+	background-color: rgba(0,0,0,0.3);
+}
+.min_product
+{
+	background-color: rgba(0,0,0,0.3);
+}
+
+/*-------------------------------*/
+/*          Min - Grids         */
+/*-------------------------------*/
+
+img.attachment-thumbnail
+{
+	max-width: 100%;
+	height: auto;
+}
+figure.gallery-item
+{
+	box-sizing: border-box;
+	margin: 0;
+}
