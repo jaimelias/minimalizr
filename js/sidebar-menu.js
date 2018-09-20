@@ -37,13 +37,6 @@ $(document).ready(function() {
 	//scroll
 	beaver_scroll_down();
 	
-	//datepicker
-	responsive_datepicker();
-	
-	//timepicker
-	responsive_timepicker();
-
-	
 });
 
 
@@ -131,37 +124,4 @@ function change_topBG()
 		});		
 	}
 
-}
-
-
-function responsive_datepicker()
-{
-	$('input.datepicker').each(function()
-	{	
-		var args = {};
-		args.format = 'yyyy-mm-dd';
-		args.container = '#datepicker-container';
-		
-		if($(this).attr('type') == 'text')
-		{
-			$(this).pickadate(args);
-		}
-		else if($(this).attr('type') == 'date')
-		{
-			$(this).attr({'type': 'text'});
-			$(this).pickadate(args);
-		}
-	});		
-}
-
-
-function responsive_timepicker()
-{
-	var args = {};
-	args.container = '#timepicker-container';
-	
-	$('input.timepicker').each(function()
-	{
-		$(this).pickatime(args);
-	});		
 }

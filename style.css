@@ -569,6 +569,10 @@ body.toggled #wrapper .minimal .top_navigator {
 {
 	text-decoration: none;
 }
+.dropdown-toggle > i
+{
+	margin-left: 3px;
+}
 .minimal-menu-bar {
   width: 30px;
   border: none;
