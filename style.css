@@ -569,9 +569,9 @@ body.toggled #wrapper .minimal .top_navigator {
 {
 	text-decoration: none;
 }
-.dropdown-toggle > i
+a.dropdown-toggle > svg
 {
-	margin-left: 3px;
+	margin-left: 4px;
 }
 .minimal-menu-bar {
   width: 30px;
@@ -773,6 +773,7 @@ ul.top_menu .dropdown-menu > li > a:focus
     background-color: rgba(0,0,0,0.05);
 	padding: 15px 30px 15px 30px;
 	border-top: 1px solid rgba(125,125,125,0.1);	
+	font-weight: normal;
 }
 ul.top_menu > li.dropdown > ul.dropdown-menu.toggled
 {

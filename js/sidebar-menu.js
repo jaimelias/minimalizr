@@ -9,8 +9,24 @@ $(document).ready(function() {
 		is_overlay_visible();
     });
 
-    $(".top_menu > li.dropdown").click(function(e) {
+	$(".top_menu > li.dropdown > a").click(function(e){
+		e.preventDefault();
+	});
+	$('.top_menu > li.dropdown').click(function(e){
+		$('.top_menu > li.dropdown').not(this).removeClass('toggled');
 		$(this).find('.dropdown-menu').toggleClass('toggled');
+	}).mouseover(function(){
+		if($(window).width() >= 1024)
+		{
+			$('.top_menu > li.dropdown').not(this).removeClass('toggled');
+			$(this).find('.dropdown-menu').addClass('toggled');
+		}
+	}).mouseleave(function(e) {
+		if($(window).width() >= 1024)
+		{
+			$('.top_menu > li.dropdown').not(this).removeClass('toggled');
+			$(this).find('.dropdown-menu').removeClass('toggled');
+		}
     });
 	
 	var overflow_x = $('<div></div>').addClass('overflow_x');

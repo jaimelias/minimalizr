@@ -192,9 +192,9 @@ function minimalizr_scripts() {
 	//pure css
 	wp_enqueue_style( 'pureCSS', '//cdn.jsdelivr.net/pure/0.6.2/pure-min.css');
 	wp_enqueue_style( 'pureGRIDS', '//cdn.jsdelivr.net/pure/0.6.2/grids-responsive-min.css', array('pureCSS'));	
-	wp_enqueue_style( 'minimalizr-style', get_stylesheet_uri(), array('pureCSS', 'pureGRIDS'));	
+	wp_enqueue_style( 'minimalizr-style', get_stylesheet_uri(), array('pureCSS', 'pureGRIDS'), time());	
 	wp_enqueue_style( 'minimalizr-plugins', $theme_url.'/css/plugins.css', array('pureCSS', 'pureGRIDS', 'minimalizr-style'));
-    wp_enqueue_style( 'minimalizr-mediaQuery', $theme_url.'/css/media-query.css', array('pureCSS', 'pureGRIDS', 'minimalizr-style'));
+    wp_enqueue_style( 'minimalizr-mediaQuery', $theme_url.'/css/media-query.css', array('pureCSS', 'pureGRIDS', 'minimalizr-style'), time());
 	wp_enqueue_style( 'minimalizr-widgets', $theme_url.'/css/widgets.css', array('pureCSS', 'pureGRIDS', 'minimalizr-style'));
 	
 	wp_deregister_script('jquery');
