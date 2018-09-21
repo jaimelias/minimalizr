@@ -13,18 +13,18 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 	$('.top_menu > li.dropdown').click(function(e){
-		$('.top_menu > li.dropdown').not(this).removeClass('toggled');
+		$('.top_menu > li.dropdown').not(this).find('.dropdown-menu').removeClass('toggled');
 		$(this).find('.dropdown-menu').toggleClass('toggled');
 	}).mouseover(function(){
 		if($(window).width() >= 1024)
 		{
-			$('.top_menu > li.dropdown').not(this).removeClass('toggled');
+			$('.top_menu > li.dropdown').not(this).find('.dropdown-menu').removeClass('toggled');
 			$(this).find('.dropdown-menu').addClass('toggled');
 		}
 	}).mouseleave(function(e) {
 		if($(window).width() >= 1024)
 		{
-			$('.top_menu > li.dropdown').not(this).removeClass('toggled');
+			$('.top_menu > li.dropdown').not(this).find('.dropdown-menu').removeClass('toggled');
 			$(this).find('.dropdown-menu').removeClass('toggled');
 		}
     });
