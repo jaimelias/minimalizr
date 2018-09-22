@@ -187,8 +187,8 @@ function minimalizr_scripts() {
 	global $post;
 	$theme_url = get_template_directory_uri();
 	
-	
-	
+	wp_dequeue_style( 'contact-form-7' );
+
 	//pure css
 	wp_enqueue_style( 'pureCSS', '//cdn.jsdelivr.net/pure/0.6.2/pure-min.css');
 	wp_enqueue_style( 'pureGRIDS', '//cdn.jsdelivr.net/pure/0.6.2/grids-responsive-min.css', array('pureCSS'));	
@@ -692,6 +692,21 @@ function async_script($tag, $handle, $src)
 	return $tag;
 }
 add_filter( 'script_loader_tag', 'async_script', 10, 3 );
+
+
+//Contact Form 7 Output
+function modal_response( $output, $class, $content, $instance)
+	{
+		return '<div class="modal-container hidden large strong uppercase"><div class="modal-content"><div class="modal-header text-right"><span class="modal-close pointer"><i class="fas fa-times"></i></span></div>'.$output.'</div></div>';
+	}
+add_filter('wpcf7_form_response_output', 'modal_response', 10, 4);
+
+function remove_ajax_loader()
+{
+	remove_filter( 'wpcf7_ajax_loader', 'filter_wpcf7_ajax_loader', 10, 1 );
+}
+add_filter('wpcf7_ajax_loader', 'remove_ajax_loader', 10, 1);
+
 
 
 

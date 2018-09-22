@@ -2,6 +2,7 @@ $(document).ready(function() {
 
 	"use strict";
 	change_topBG();
+	minimal_submit();
 	
     $('[data-toggle="offcanvas"]').click(function() {
  
@@ -140,4 +141,15 @@ function change_topBG()
 		});		
 	}
 
+}
+
+function minimal_submit()
+{
+	$(".wpcf7-form").submit(function() {
+		$(this).find(".modal-container").removeClass('hidden');
+	});
+	
+	$(".wpcf7-form").find(".modal-close").click(function(){
+		$(".modal-container").addClass('hidden');
+	});		
 }
