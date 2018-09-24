@@ -87,6 +87,20 @@ figure.gallery-item
 	box-sizing: border-box;
 	margin: 0;
 }
+/*-------------------------------*/
+/*             GDPR              */
+/*-------------------------------*/
+
+#gdpr
+{
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	box-sizing: border-box;
+	background-color: yellow;
+	color: #000;
+}
 
 /*-------------------------------*/
 /*         Contact Form 7        */

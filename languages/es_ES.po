@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Minimalizr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-27 00:04+0000\n"
-"PO-Revision-Date: 2018-07-12 21:48+0000\n"
+"POT-Creation-Date: 2018-09-24 06:07+0000\n"
+"PO-Revision-Date: 2018-09-24 06:08+0000\n"
 "Last-Translator: Jaimelías <jaime@panamajethub.com>\n"
 "Language-Team: Spanish (Spain)\n"
 "Language: es_ES\n"
@@ -61,49 +61,34 @@ msgstr ""
 msgid "Blog"
 msgstr ""
 
-#: functions.php:291
+#: functions.php:263
 msgid "Warning"
 msgstr ""
 
-#: functions.php:291
+#: functions.php:263
 msgid "The following plugins are required by the current theme:"
 msgstr ""
 
-#: functions.php:609
+#: functions.php:625
 msgid "Facebook Messenger"
 msgstr ""
 
-#: functions.php:613
+#: functions.php:629
 msgid "Facebook page name is not set yet."
 msgstr ""
 
-#: functions.php:628
+#: functions.php:644
 msgid "Chat"
 msgstr ""
 
-#: comments.php:29
-#, php-format
-msgctxt "comments title"
-msgid "One thought on &ldquo;%2$s&rdquo;"
-msgid_plural "%1$s thoughts on &ldquo;%2$s&rdquo;"
-msgstr[0] "Un comentario en &ldquo;%2$s&rdquo;"
-msgstr[1] "%1$s comentarios en &ldquo;%2$s&rdquo;"
-
-#: comments.php:38 comments.php:59
-msgid "Comment navigation"
-msgstr "Navegar comentarios"
-
-#: comments.php:41 comments.php:62
-msgid "Older Comments"
-msgstr "Viejos comentarios"
-
-#: comments.php:42 comments.php:63
-msgid "Newer Comments"
-msgstr "Nuevos comentarios"
-
-#: comments.php:75
-msgid "Comments are closed."
-msgstr "Comentarios cerrados."
+#: footer.php:58
+msgid ""
+"We use cookies to ensure that we give you the best experience on our website."
+" If you continue to use this site we will assume that you are happy with it."
+msgstr ""
+"Usamos cookies para garantizar brindarle la mejor experiencia en nuestro "
+"sitio web. Si continúa utilizando este sitio, asumiremos que está satisfecho "
+"con esto."
 
 #: search.php:16
 #, php-format
@@ -140,14 +125,6 @@ msgstr ""
 msgid "Continue Reading"
 msgstr "Leer más"
 
-#: template-parts/content.php:38
-msgid "comments"
-msgstr "comentarios"
-
-#: template-parts/content.php:38
-msgid "comment"
-msgstr "comentario"
-
 #: inc/extras.php:82
 #, php-format
 msgid "Page %s"
@@ -177,63 +154,63 @@ msgstr ""
 msgid "responsive"
 msgstr ""
 
-#: inc/customizer.php:120
+#: inc/customizer.php:96
 msgid "Content Font"
 msgstr ""
 
-#: inc/customizer.php:121
+#: inc/customizer.php:97
 msgid "Links"
 msgstr ""
 
-#: inc/customizer.php:122
+#: inc/customizer.php:98
 msgid "Top Background"
 msgstr ""
 
-#: inc/customizer.php:123
+#: inc/customizer.php:99
 msgid "Top Font"
 msgstr ""
 
-#: inc/customizer.php:124
+#: inc/customizer.php:100
 msgid "Sub-Menu/Sidebar Background"
 msgstr ""
 
-#: inc/customizer.php:125
+#: inc/customizer.php:101
 msgid "Sub-Menu/Sidebar Font"
 msgstr ""
 
-#: inc/customizer.php:126
+#: inc/customizer.php:102
 msgid "Footer Background"
 msgstr ""
 
-#: inc/customizer.php:127
+#: inc/customizer.php:103
 msgid "Footer Font"
 msgstr ""
 
-#: inc/customizer.php:128
+#: inc/customizer.php:104
 msgid "Footer Link"
 msgstr ""
 
-#: inc/customizer.php:129
+#: inc/customizer.php:105
 msgid "Forms Background"
 msgstr ""
 
-#: inc/customizer.php:130
+#: inc/customizer.php:106
 msgid "Forms Font"
 msgstr ""
 
-#: inc/customizer.php:131
+#: inc/customizer.php:107
 msgid "Input Background"
 msgstr ""
 
-#: inc/customizer.php:132
+#: inc/customizer.php:108
 msgid "Input Font"
 msgstr ""
 
-#: inc/customizer.php:133
+#: inc/customizer.php:109
 msgid "Input Border"
 msgstr ""
 
-#: inc/customizer.php:161
+#: inc/customizer.php:137
 msgid "Google Settings"
 msgstr ""
 
@@ -276,108 +253,108 @@ msgstr "Publicado en %1$s"
 msgid "Tags %1$s"
 msgstr ""
 
-#: inc/template-tags.php:63
+#: inc/template-tags.php:57
 #, php-format
 msgid "Category: %s"
 msgstr ""
 
-#: inc/template-tags.php:65
+#: inc/template-tags.php:59
 #, php-format
 msgid "Tag: %s"
 msgstr ""
 
-#: inc/template-tags.php:67
+#: inc/template-tags.php:61
 #, php-format
 msgid "Author: %s"
 msgstr ""
 
-#: inc/template-tags.php:69
+#: inc/template-tags.php:63
 #, php-format
 msgid "Year: %s"
 msgstr ""
 
-#: inc/template-tags.php:69
+#: inc/template-tags.php:63
 msgctxt "yearly archives date format"
 msgid "Y"
 msgstr ""
 
-#: inc/template-tags.php:71
+#: inc/template-tags.php:65
 #, php-format
 msgid "Month: %s"
 msgstr ""
 
-#: inc/template-tags.php:71
+#: inc/template-tags.php:65
 msgctxt "monthly archives date format"
 msgid "F Y"
 msgstr ""
 
-#: inc/template-tags.php:73
+#: inc/template-tags.php:67
 #, php-format
 msgid "Day: %s"
 msgstr ""
 
-#: inc/template-tags.php:73
+#: inc/template-tags.php:67
 msgctxt "daily archives date format"
 msgid "F j, Y"
 msgstr ""
 
-#: inc/template-tags.php:76
+#: inc/template-tags.php:70
 msgctxt "post format archive title"
 msgid "Asides"
 msgstr ""
 
-#: inc/template-tags.php:78
+#: inc/template-tags.php:72
 msgctxt "post format archive title"
 msgid "Galleries"
 msgstr ""
 
-#: inc/template-tags.php:80
+#: inc/template-tags.php:74
 msgctxt "post format archive title"
 msgid "Images"
 msgstr ""
 
-#: inc/template-tags.php:82
+#: inc/template-tags.php:76
 msgctxt "post format archive title"
 msgid "Videos"
 msgstr ""
 
-#: inc/template-tags.php:84
+#: inc/template-tags.php:78
 msgctxt "post format archive title"
 msgid "Quotes"
 msgstr ""
 
-#: inc/template-tags.php:86
+#: inc/template-tags.php:80
 msgctxt "post format archive title"
 msgid "Links"
 msgstr ""
 
-#: inc/template-tags.php:88
+#: inc/template-tags.php:82
 msgctxt "post format archive title"
 msgid "Statuses"
 msgstr ""
 
-#: inc/template-tags.php:90
+#: inc/template-tags.php:84
 msgctxt "post format archive title"
 msgid "Audio"
 msgstr ""
 
-#: inc/template-tags.php:92
+#: inc/template-tags.php:86
 msgctxt "post format archive title"
 msgid "Chats"
 msgstr ""
 
-#: inc/template-tags.php:95
+#: inc/template-tags.php:89
 #, php-format
 msgid "Archives: %s"
 msgstr ""
 
 #. 1: Taxonomy singular name, 2: Current taxonomy term
-#: inc/template-tags.php:99
+#: inc/template-tags.php:93
 #, php-format
 msgid "%1$s: %2$s"
 msgstr ""
 
-#: inc/template-tags.php:101
+#: inc/template-tags.php:95
 msgid "Archives"
 msgstr ""
 

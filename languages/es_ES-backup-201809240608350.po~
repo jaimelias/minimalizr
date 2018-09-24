@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Minimalizr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-06-27 00:04+0000\n"
-"PO-Revision-Date: 2018-06-27 00:07+0000\n"
+"PO-Revision-Date: 2018-07-12 21:48+0000\n"
 "Last-Translator: Jaimelías <jaime@panamajethub.com>\n"
 "Language-Team: Spanish (Spain)\n"
 "Language: es_ES\n"
@@ -269,7 +269,7 @@ msgstr ""
 #: inc/template-tags.php:32
 #, php-format
 msgid "Posted in %1$s"
-msgstr ""
+msgstr "Publicado en %1$s"
 
 #: inc/template-tags.php:38
 #, php-format

@@ -152,9 +152,7 @@
 	<!-- End Google Tag Manager (noscript) -->
 <?php endif; ?>
 
-<div id="wrapper" class="clearfix">
-
-		
+<div id="wrapper" class="clearfix">	
 	
 <div class="minimal-header clearfix block visible-menu">
 	<div class="pure-g">
