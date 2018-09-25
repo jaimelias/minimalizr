@@ -8,17 +8,7 @@
  */
 ?>
 
-
-
-
-	
-	
-
 	</div><!-- #content -->	
-
-	
-
-	
 
 		<footer id="footer" class="clearfix">
 		

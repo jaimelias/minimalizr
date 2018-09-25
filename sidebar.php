@@ -24,7 +24,7 @@ $gridQuotient = 0;
 	<div class="pure-g gutters">
 		<?php for($i = 0; $i < count($sidebar); $i++) :?>
 			<?php if ( is_active_sidebar( $sidebar[$i] ) ) : ?>
-				<div class="pure-u-1 pure-u-sm-1-<?php echo $gridQuotient; ?> pure-u-md-1-<?php echo $gridQuotient; ?> pure-u-lg-1-<?php echo $gridQuotient; ?>"><?php dynamic_sidebar($sidebar[$i]); ?></div>
+				<div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-<?php echo $gridQuotient; ?>"><?php dynamic_sidebar($sidebar[$i]); ?></div>
 			<?php endif; ?>
 		<?php endfor; ?>
 	</div><!-- .pure-g -->
