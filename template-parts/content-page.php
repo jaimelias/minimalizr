@@ -30,11 +30,11 @@
 			{
 				if(is_singular() && strlen(get_the_excerpt()) > 0)
 				{
-					echo '<p itemprop="description" class="text-muted large strong">'.get_the_excerpt().'</p><hr/>';
+					echo '<p itemprop="description" class="large strong">'.get_the_excerpt().'</p><hr/>';
 				}
 				if(is_tax() && strlen(term_description()) > 0)
 				{
-					echo '<h3 itemprop="description" class="text-muted">'.esc_html(get_term(get_queried_object()->term_id)->description).'</h3><hr />';
+					echo '<h3 itemprop="description">'.esc_html(get_term(get_queried_object()->term_id)->description).'</h3><hr />';
 				}
 			}			
 		}	
