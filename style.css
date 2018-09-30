@@ -102,6 +102,30 @@ body, .normal
 {
 	cursor: pointer;
 }
+.margin-0, ul.list-style-none, ol.list-style-none
+{
+	margin: 0;
+}
+.padding-0, ul.list-style-none, ol.list-style-none
+{
+	padding: 0;
+}
+ul.list-style-none, ol.list-style-none
+{
+	list-style: none;
+}
+.inline
+{
+	display: inline;
+}
+.inline-block
+{
+	display: inline-block;
+}
+.bottom-5
+{
+	margin-bottom: 5px;
+}
 .bottom-10
 {
 	margin-bottom: 10px;
@@ -321,7 +345,7 @@ hr
     clear: both;
     display: table;
 }
-.entry-content ul:not(.picker__list), .entry-content ol
+.entry-content ul:not(.picker__list), .entry-content ul:not(.list-style-none),  .entry-content ol, 
 {
 	margin: 0 0 0 40px;
 	padding: 0 0 20px 0;
