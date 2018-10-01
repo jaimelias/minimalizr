@@ -345,7 +345,7 @@ hr
     clear: both;
     display: table;
 }
-.entry-content ul:not(.picker__list), .entry-content ul:not(.list-style-none),  .entry-content ol, 
+.entry-content ul:not(.picker__list):not(.list-style-none), .entry-content ol 
 {
 	margin: 0 0 0 40px;
 	padding: 0 0 20px 0;
