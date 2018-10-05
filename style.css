@@ -601,7 +601,7 @@ body.toggled #wrapper .minimal .top_navigator {
 {
 	text-decoration: none;
 }
-a.dropdown-toggle > svg
+a.dropdown-toggle > .caret
 {
 	margin-left: 4px;
 }

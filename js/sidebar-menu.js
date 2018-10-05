@@ -11,7 +11,7 @@ $(document).ready(function() {
 		is_overlay_visible();
     });
 
-	$(".top_menu > li.dropdown > a").click(function(e){
+	$(".top_menu > li.dropdown > a > .caret").click(function(e){
 		e.preventDefault();
 	});
 	$('.top_menu > li.dropdown').click(function(e){

@@ -203,7 +203,7 @@ function minimalizr_scripts() {
 	wp_enqueue_script( 'jquery' );
 	
 	
-	wp_enqueue_script( 'minimalizr-sidebar-menuJS', $theme_url . '/js/sidebar-menu.js', array('jquery'), '', true );	
+	wp_enqueue_script( 'minimalizr-sidebar-menuJS', $theme_url . '/js/sidebar-menu.js', array('jquery'), time(), true );	
 
 	wp_enqueue_script( 'landing-cookies', $theme_url . '/js/cookies.js', array('jquery'), '', true);
 	
