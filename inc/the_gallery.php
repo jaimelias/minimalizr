@@ -52,7 +52,7 @@
 		
 		if($count > 0)
 		{	
-			$slideshow = '<div style="max-width: 100%; max-height: auto; width: '.esc_html($width).'px; height: '.esc_html($height).'px;" class="slideshow '.esc_html($size).' '.esc_html($autoplay).' bottom-20 relative overflow-hidden block">';
+			$slideshow = '<div class="slideshow '.esc_html($size).' '.esc_html($autoplay).' bottom-20 relative block border-box">';
 			
 			for($x = 0; $x < count($ids); $x++)
 			{
@@ -64,7 +64,7 @@
 				}
 				
 				$image = wp_get_attachment_image_src($ids[$x], $size);
-				$slide = '<img class="'.esc_html($hidden).' slide absolute block width-100 img-responsive" src="'.esc_url($image[0]).'" />';	
+				$slide = '<img class="'.esc_html($hidden).' slide block width-100 img-responsive" width="'.esc_html($image[1]).'" height="'.esc_html($image[2]).'" src="'.esc_url($image[0]).'" />';	
 				$slideshow .= ($slide);
 			}
 			
