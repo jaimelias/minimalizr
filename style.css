@@ -901,12 +901,21 @@ ul.top_menu > li.dropdown > ul.dropdown-menu.toggled
 }
 .slideshow .controller
 {
+	width: 50px;
+}
+.slideshow .controller, .slideshow .alt
+{
 	top: 50%;
 	margin-top: -25px;
-	width: 50px;
 	height: 50px;
 	line-height: 50px;
 	background-color: rgba(255, 255, 255, 0.5);
 	color: #000;
 	font-size: 25px;
+}
+.slideshow .alt
+{
+	padding: 0 20px;
+	left: 15%;
+	right: 15%;
 }

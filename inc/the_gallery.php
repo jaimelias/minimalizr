@@ -10,6 +10,7 @@
 		$width = get_option($size.'_size_w');
 		$height = get_option($size.'_size_h');
 		$autoplay = '';
+		$alt = '';
 		
 		if(is_array($attr))
 		{
@@ -39,6 +40,13 @@
 				{
 					$autoplay = 'autoplay';
 				}
+			}
+			if(array_key_exists('alt', $attr))
+			{
+				if($attr['alt'] != '')
+				{
+					$alt = $attr['alt'];
+				}
 			}			
 		}	
 		
@@ -58,6 +66,11 @@
 				$image = wp_get_attachment_image_src($ids[$x], $size);
 				$slide = '<img class="'.esc_html($hidden).' slide absolute block width-100 img-responsive" src="'.esc_url($image[0]).'" />';	
 				$slideshow .= ($slide);
+			}
+			
+			if($alt != '')
+			{
+				$slideshow .= '<span class="alt text-center inline-block strong absolute uppercase">'.esc_html($alt).'</span>';
 			}
 			
 			$slideshow .= '<span class="previous controller pointer inline-block absolute text-center"><i class="fas fa-angle-left"></i></span>';
