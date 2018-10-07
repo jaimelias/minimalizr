@@ -784,3 +784,5 @@ require get_template_directory() . '/inc/bootstrap-nav-walker.php';
 require get_template_directory() . '/inc/metaboxes.php';
 
 require get_template_directory() . '/inc/minimal.php';
+
+require get_template_directory() . '/inc/the_gallery.php';

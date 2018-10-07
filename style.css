@@ -122,6 +122,16 @@ ul.list-style-none, ol.list-style-none
 {
 	display: inline-block;
 }
+.relative{
+	position: relative;
+}
+.absolute{
+	position: absolute;
+}
+.overflow-hidden
+{
+	overflow: hidden;
+}
 .bottom-5
 {
 	margin-bottom: 5px;
@@ -880,4 +890,15 @@ ul.top_menu > li.dropdown > ul.dropdown-menu.toggled
 .sharethis-inline-share-buttons
 {
 	height: 32px;
+}
+.slideshow .next
+{
+	top: 0;
+	right: 0;
+	width: 40px;
+	height: 40px;
+	line-height: 40px;
+	background-color: rgba(255, 255, 255, 0.5);
+	color: #000;
+	font-size: 25px;
 }
