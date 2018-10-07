@@ -60,7 +60,8 @@
 				$slideshow .= ($slide);
 			}
 			
-			$slideshow .= '<span class="next pointer inline-block absolute text-center"><i class="fas fa-angle-right"></i></span>';
+			$slideshow .= '<span class="previous controller pointer inline-block absolute text-center"><i class="fas fa-angle-left"></i></span>';
+			$slideshow .= '<span class="next controller pointer inline-block absolute text-center"><i class="fas fa-angle-right"></i></span>';
 			
 			$slideshow .= '</div>';
 		}

@@ -187,10 +187,14 @@ function slideshow()
 				interval_slideshow(slideshow);
 			}
 
+			$(slideshow).find('.previous').click(function(){
+				play_slideshow(slideshow, 'previous');
+				interval_slideshow(slideshow);
+			});	
 			$(slideshow).find('.next').click(function(){
 				play_slideshow(slideshow);
 				interval_slideshow(slideshow);
-			});			
+			});				
 		}		
 	});
 }
@@ -223,20 +227,20 @@ function interval_slideshow(slideshow)
 				}
 				else
 				{
-					if((restarted - leaved_at) > 1500)
+					if((restarted - leaved_at) > 2000)
 					{
 						play_slideshow(slideshow);
 					}					
 				}
 			}
-		}, 3000);
+		}, 4000);
 		
 	$(slideshow).find('.next').click(function(){
 		clearInterval(interval);
 	});	
 }
 
-function play_slideshow(slideshow)
+function play_slideshow(slideshow, previous)
 {
 	var slide = $(slideshow).find('img.slide');
 	var count = 0;
@@ -245,16 +249,26 @@ function play_slideshow(slideshow)
 		
 		if(!$(this).hasClass('hidden') && count == 0)
 		{
+						
+			var move = index+1;
+			var last = 0;
+			
+			if(typeof previous !== 'undefined')
+			{
+				move = index - 1 ;
+				last = slide.length - 1;
+			}
+			
 			$(this).addClass('hidden');
 			
-			if(typeof slide[index+1] !== 'undefined')
+			if(typeof slide[move] !== 'undefined')
 			{
 				
-				$(slide[index+1]).removeClass('hidden');
+				$(slide[move]).removeClass('hidden');
 			}
 			else
 			{
-				$(slide[0]).removeClass('hidden');
+				$(slide[last]).removeClass('hidden');
 			}
 			count++;
 		}		
