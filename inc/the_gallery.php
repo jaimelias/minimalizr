@@ -44,7 +44,7 @@
 		
 		if($count > 0)
 		{	
-			$slideshow = '<div style="max-width: 100%; max-height: auto; width: '.esc_html($width).'px; height: '.esc_html($height).'px;" class="slideshow '.esc_html($autoplay).' bottom-20 relative overflow-hidden block">';
+			$slideshow = '<div style="max-width: 100%; max-height: auto; width: '.esc_html($width).'px; height: '.esc_html($height).'px;" class="slideshow '.esc_html($size).' '.esc_html($autoplay).' bottom-20 relative overflow-hidden block">';
 			
 			for($x = 0; $x < count($ids); $x++)
 			{
