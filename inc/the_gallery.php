@@ -11,6 +11,7 @@
 		$height = get_option($size.'_size_h');
 		$autoplay = '';
 		$alt = '';
+		$bottom = 'bottom-20';
 		
 		if(is_array($attr))
 		{
@@ -31,6 +32,7 @@
 						$size = $attr['size'];
 						$width = get_option($size.'_size_w');
 						$height = get_option($size.'_size_h');
+						$bottom = '';
 					}
 				}
 			}
@@ -52,7 +54,7 @@
 		
 		if($count > 0)
 		{	
-			$slideshow = '<div class="slideshow '.esc_html($size).' '.esc_html($autoplay).' bottom-20 relative block border-box">';
+			$slideshow = '<div class="slideshow '.esc_html($size).' '.esc_html($autoplay).' relative block '.esc_html($bottom).' border-box">';
 			
 			for($x = 0; $x < count($ids); $x++)
 			{
