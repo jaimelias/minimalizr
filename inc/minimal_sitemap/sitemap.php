@@ -2,6 +2,14 @@
 
 class minimal_sitemap{
 	
+	
+	public static function headers()
+	{
+		if(isset($_GET['sitemap']))
+		{
+			header('Content-type: application/xml');
+		}
+	}
 	public static function run($template)
 	{
 		if(isset($_GET['sitemap']))
@@ -70,8 +78,6 @@ class minimal_sitemap{
 				$output = $content;
 			}
 			wp_reset_query();
-			
-			header('Content-type: application/xml');
 			exit(ent2ncr(minimal_sitemap::sanitize_output($output)));	
 		}
 		else
