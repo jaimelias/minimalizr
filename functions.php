@@ -790,4 +790,4 @@ require get_template_directory() . '/inc/the_gallery.php';
 //sitemap
 require_once get_template_directory() . '/inc/minimal_sitemap/sitemap.php';
 add_filter('template_include', array('minimal_sitemap', 'run'), 11);
-add_action('wp_headers', array('minimal_sitemap', 'headers'), 1);
+add_action('send_headers', array('minimal_sitemap', 'headers'), 1);
