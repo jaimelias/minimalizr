@@ -227,13 +227,13 @@ function interval_slideshow(slideshow)
 				}
 				else
 				{
-					if((restarted - leaved_at) > 2000)
+					if((restarted - leaved_at) > 3000)
 					{
 						play_slideshow(slideshow);
 					}					
 				}
 			}
-		}, 4000);
+		}, 6000);
 		
 	$(slideshow).find('.next').click(function(){
 		clearInterval(interval);
