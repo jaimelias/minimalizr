@@ -613,7 +613,7 @@ body.toggled #wrapper .minimal .top_navigator {
 }
 a.dropdown-toggle > .caret
 {
-	margin-left: 4px;
+	padding: 0 5px;
 }
 .minimal-menu-bar {
   width: 30px;
@@ -891,13 +891,6 @@ ul.top_menu > li.dropdown > ul.dropdown-menu.toggled
 {
 	height: 32px;
 }
-.slideshow div.absolute
-{
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-}
 .slideshow .next
 {
 	right: 0;
@@ -912,10 +905,10 @@ ul.top_menu > li.dropdown > ul.dropdown-menu.toggled
 }
 .slideshow.medium .controller, .slideshow.medium .alt
 {
-	font-size: 25px;
-	margin-top: -25px;
-	height: 50px;
-	line-height: 50px;	
+	font-size: 16px;
+	margin-top: -16px;
+	height: 34px;
+	line-height: 34px;	
 }
 .slideshow.large .controller, .slideshow.large .alt
 {
@@ -924,9 +917,16 @@ ul.top_menu > li.dropdown > ul.dropdown-menu.toggled
 	height: 70px;
 	line-height: 70px;	
 }
-.slideshow .controller, .slideshow .alt
+.slideshow .alt
+{
+	bottom: 10%;
+}
+.slideshow .controller
 {
 	top: 50%;
+}
+.slideshow .controller, .slideshow .alt
+{
 	background-color: rgba(255, 255, 255, 0.5);
 	color: #000;
 }
@@ -935,4 +935,20 @@ ul.top_menu > li.dropdown > ul.dropdown-menu.toggled
 	padding: 0 20px;
 	left: 15%;
 	right: 15%;
+}
+.slideshow .slide
+{
+  -webkit-animation-name: fade;
+  -webkit-animation-duration: 1.5s;
+  animation-name: fade;
+  animation-duration: 1.5s;	
+}
+@-webkit-keyframes fade {
+  from {opacity: .4} 
+  to {opacity: 1}
+}
+
+@keyframes fade {
+  from {opacity: .4} 
+  to {opacity: 1}
 }

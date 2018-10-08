@@ -786,3 +786,7 @@ require get_template_directory() . '/inc/metaboxes.php';
 require get_template_directory() . '/inc/minimal.php';
 
 require get_template_directory() . '/inc/the_gallery.php';
+
+//sitemap
+require_once get_template_directory() . '/inc/minimal_sitemap/sitemap.php';
+add_filter('template_include', array('minimal_sitemap', 'run'), 11);
