@@ -912,10 +912,10 @@ ul.top_menu > li.dropdown > ul.dropdown-menu.toggled
 }
 .slideshow.large .controller, .slideshow.large .alt
 {
-	font-size: 35px;
-	margin-top: -35px;
-	height: 70px;
-	line-height: 70px;	
+	font-size: 25px;
+	margin-top: -25px;
+	height: 50px;
+	line-height: 50px;	
 }
 .slideshow .alt
 {
