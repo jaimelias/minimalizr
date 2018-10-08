@@ -3,12 +3,13 @@
 class minimal_sitemap{
 	
 	
-	public static function headers()
+	public static function headers($headers)
 	{
-		if(isset($_GET['sitemap']))
+		if(!is_admin() && isset($_GET['sitemap']))
 		{
-			header('Content-type: application/xml');
+			$headers['Content-type'] = 'application/xml';
 		}
+		return $headers;
 	}
 	public static function run($template)
 	{
