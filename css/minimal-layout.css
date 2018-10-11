@@ -142,3 +142,15 @@ strong, .strong
 	from {opacity: .4} 
 	to {opacity: 1}
 }
+.minimal_alert
+{
+	background-color: #c45252;
+	color: #fff;
+	padding: 10px;
+}
+.minimal_success
+{
+	background-color: #53bc53;
+	color: #fff;
+	padding: 10px;	
+}

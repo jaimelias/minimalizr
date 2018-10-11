@@ -192,7 +192,7 @@ function minimalizr_scripts() {
 	wp_enqueue_style( 'pureCSS', '//cdn.jsdelivr.net/pure/0.6.2/pure-min.css');
 	wp_enqueue_style( 'pureGRIDS', '//cdn.jsdelivr.net/pure/0.6.2/grids-responsive-min.css', array('pureCSS'));
 	wp_enqueue_style( 'minimalLayout', esc_url($theme_url.'/css/minimal-layout.css'), array());	
-	wp_enqueue_style( 'minimalizr-style', esc_url(get_stylesheet_uri()), array('pureCSS', 'pureGRIDS', 'minimalLayout'), time());	
+	wp_enqueue_style( 'minimalizr-style', esc_url(get_stylesheet_uri()), array('pureCSS', 'pureGRIDS', 'minimalLayout'));	
 	wp_enqueue_style( 'minimalizr-plugins', esc_url($theme_url.'/css/plugins.css'), array('pureCSS', 'pureGRIDS', 'minimalizr-style'));
     wp_enqueue_style( 'minimalizr-mediaQuery', esc_url($theme_url.'/css/media-query.css'), array('pureCSS', 'pureGRIDS', 'minimalizr-style'));
 	wp_enqueue_style( 'minimalizr-widgets', esc_url($theme_url.'/css/widgets.css'), array('pureCSS', 'pureGRIDS', 'minimalizr-style'));
@@ -202,7 +202,7 @@ function minimalizr_scripts() {
 	wp_enqueue_script( 'jquery' );
 	
 	
-	wp_enqueue_script( 'minimalizr-sidebar-menuJS', esc_url($theme_url . '/js/sidebar-menu.js'), array('jquery'), time(), true );	
+	wp_enqueue_script( 'minimalizr-sidebar-menuJS', esc_url($theme_url . '/js/sidebar-menu.js'), array('jquery'), '', true );	
 
 	wp_enqueue_script( 'landing-cookies', esc_url($theme_url . '/js/cookies.js'), array('jquery'), '', true);
 	
