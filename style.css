@@ -84,79 +84,19 @@ body:not(a)
 {
 	font-family: Open Sans, sans-serif;	
 }
-body, .normal
+body
 {
 	font-weight: 600;
 }
-.hidden
-{
-	display: none;
-}
-.pull-right{
-	float: right;
-}
-.pull-left{
-	float: left;
-}
-.pointer
-{
-	cursor: pointer;
-}
-.margin-0, ul.list-style-none, ol.list-style-none
-{
-	margin: 0;
-}
-.padding-0, ul.list-style-none, ol.list-style-none
-{
-	padding: 0;
-}
-ul.list-style-none, ol.list-style-none
-{
-	list-style: none;
-}
-.inline
-{
-	display: inline;
-}
-.inline-block
-{
-	display: inline-block;
-}
-.relative{
-	position: relative;
-}
-.absolute{
-	position: absolute;
-}
-.overflow-hidden
-{
-	overflow: hidden;
-}
-.bottom-5
-{
-	margin-bottom: 5px;
-}
-.bottom-10
-{
-	margin-bottom: 10px;
-}
-.bottom-20, #wrapper form fieldset, .entry-footer > div:not(:last-child), .wp-caption, .entry-content table
+#wrapper form fieldset, .entry-footer > div:not(:last-child), .wp-caption, .entry-content table
 {
 	margin-bottom: 20px;
 }
-.bottom-40, .entry-footer > div:not(:last-child)
+.entry-footer > div:not(:last-child)
 {
 	margin-bottom: 40px;
 }
-.padding-5
-{
-	padding: 5px;
-}
-.padding-10
-{
-	padding: 10px;
-}
-.padding-20, #wrapper form, .min-comments
+#wrapper form, .min-comments
 {
 	padding: 20px;
 }
@@ -184,56 +124,15 @@ ul.list-style-none, ol.list-style-none
 .pure-button.button-secondary {
 	background: rgb(66, 184, 221);
 }
-.large
-{
-	font-size: 120%;
-}
 
-.light
-{
-	font-weight: 300;
-}
-.small, small
-{
-	font-size: 85%;
-}
 .pure-button.large, .pure-button.strong
 {
 	font-weight: 800;
 	letter-spacing: 1px;
 }
-
-strong, .strong
-{
-	font-weight: 800;
-	letter-spacing: 1px;
-}
-.uppercase
-{
-	text-transform: uppercase;
-}
 .text-shadow
 {
 	text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.7);
-}
-
-
-/*--------------------------------------------------------------
-# Alignments and classes
---------------------------------------------------------------*/
-
-.text-center{
-	text-align: center;
-}
-.text-right{
-	text-align: right;
-}
-.text-left{
-	text-align: left;
-}
-.text-muted
-{
-	opacity: 0.7;
 }
 
 /*--------------------------------------------------------------
@@ -354,7 +253,7 @@ hr
 {
 	margin: 0 0 20px 0;
 }
-.clearfix::after, .entry-content p:after {
+.entry-content p:after {
     content: "";
     clear: both;
     display: table;
@@ -498,11 +397,6 @@ body:not(.blog) #index
 /*--------------------------------------------------------------
 # Media
 --------------------------------------------------------------*/
-.img-responsive, .pure-img
-{
-	max-width: 100% !important;
-	height: auto !important;
-}
 .page-content .wp-smiley,
 .entry-content .wp-smiley,
 .comment-content .wp-smiley {
@@ -692,7 +586,7 @@ a.dropdown-toggle > .caret
 	padding: 12px 20px;
 	display: inline-block;
 }
-#mntwitter, #mnfacebook, #mngoogleplus, #mnpinterest, #mnlinkedin, #mnyoutube, #mnvimeo, #mntumblr, #mninstagram, #mnflickr, #mndribbble, #mnquora, #mnfoursquare, #mnforrst, #mnvk, #mnwordpress, #mnstumbleupon, #mnyahoo, #mnblogger, #mnsoundcloud, #mngoogle-plus
+#mntwitter, #mnfacebook, #mngoogleplus, #mnpinterest, #mnlinkedin, #mnyoutube, #mnvimeo, #mntumblr, #mninstagram, #mnflickr, #mndribbble, #mnquora, #mnfoursquare, #mnforrst, #mnvk, #mnwordpress, #mnstumbleupon, #mnyahoo, #mnblogger, #mnsoundcloud, #mngoogle
 {
 	color: #fff !important;
 	background-color: rgba(0,0,0,0.2);
@@ -711,7 +605,7 @@ a.dropdown-toggle > .caret
 }
 #mntwitter:hover{ background-color: #00aced;}
 #mnfacebook:hover{ background-color: #3b5998;}
-#mngoogleplus:hover{ background-color: #dd4b39;}
+#mngoogle:hover{ background-color: #0057e7;}
 #mnpinterest:hover{ background-color: #cb2027;}
 #mnlinkedin:hover{ background-color: #007bb6;}
 #mnyoutube:hover{ background-color: #bb0000;}
@@ -878,14 +772,6 @@ ul.top_menu > li.dropdown > ul.dropdown-menu.toggled
 #datepicker-container, #timepicker-container
 {
 	z-index: 9999;
-}
-.width-100
-{
-	width: 100%;
-}
-.block
-{
-	display: block;
 }
 .sharethis-inline-share-buttons
 {

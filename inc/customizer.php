@@ -69,8 +69,8 @@ class MyTheme_Customize {
 		
 
 		// social media links
-		$settingId = array("disqus", "sales_phone", "sales_email","web_chat", "min_address", "min_sharethis", "min_tel", "facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google-plus");
-		$settingLabel = array("Disqus", "Sales Phone", "Sales Email", "Web Chat URL", "Company Address", "Sharethis ID", "Telephone Number", "Facebook URL", "Twitter URL", "LinkedIn URL", "Youtube URL", "Instagram URL", "Pinterest URL", "Google Plus");
+		$settingId = array("disqus", "sales_phone", "sales_email","web_chat", "min_address", "min_sharethis", "min_tel", "facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google");
+		$settingLabel = array("Disqus", "Sales Phone", "Sales Email", "Web Chat URL", "Company Address", "Sharethis ID", "Telephone Number", "Facebook URL", "Twitter URL", "LinkedIn URL", "Youtube URL", "Instagram URL", "Pinterest URL", "Google My Business");
 		$settingDefault = array("", "", "", "https://", "", "", "+(1)", "https://", "https://", "https://", "https://", "https://", "https://", "https://");
 		$settingSanitize = array("esc_html", "esc_html", "sanitize_email", "esc_url", "esc_html", "esc_html", "esc_html", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url");
 		

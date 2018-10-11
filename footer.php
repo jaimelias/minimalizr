@@ -17,7 +17,7 @@
 		
 			<div class="smcontainer large">
 		<?php 
-				$media = array("facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google-plus");
+				$media = array("facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google");
 				
 				for($x = 0; $x < count($media); $x++)
 				{

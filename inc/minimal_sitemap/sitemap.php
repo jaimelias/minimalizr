@@ -54,7 +54,7 @@ if (!class_exists('minimal_sitemap'))
 						global $post;
 						?>
 						<url>
-						<loc><?php echo esc_url(get_permalink()); ?></loc>
+						<loc><?php the_permalink(); ?></loc>
 						
 						<?php if(has_post_thumbnail()): ?>
 							<image:image>
@@ -63,6 +63,7 @@ if (!class_exists('minimal_sitemap'))
 						<?php endif; ?>
 						
 						<changefreq><?php echo esc_html(minimal_sitemap::changefreq($post)); ?></changefreq>
+						<lastmod><?php the_modified_date('Y-m-d'); ?></lastmod>
 						<mobile:mobile/>
 						</url>
 						<?php
