@@ -1,4 +1,3 @@
-/**	< 767 SM **/
 @media (min-width: 1px) and (max-width: 767px)
 {
 	.minimal-header > .pure-g > .left.pure-u-sm-1-2, .minimal-header > .pure-g > .right.pure-u-sm-1-2
@@ -176,7 +175,6 @@
 		padding: 30px;
 	}	
 }
-/**	> 1024px LG **/
 @media (min-width: 1024px)
 {
 	.responsive ul.top_menu li:not(:first-child)
@@ -304,7 +302,6 @@
 		padding: 30px;
 	}
 }
-/**	> 1280px LX **/
 @media  (min-width: 1280px)
 {
 	.pure-g.gutters{

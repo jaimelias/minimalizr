@@ -1,6 +1,5 @@
-.hidden
-{
-	display: none;
+.hidden,[hidden]{
+    display:none!important
 }
 .pull-right{
 	float: right;

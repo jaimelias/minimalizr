@@ -7,46 +7,20 @@
  
 
 if ( ! function_exists( 'minimalizr_setup' ) ) :
-/**
- * Sets up theme defaults and registers support for various WordPress features.
- *
- * Note that this function is hooked into the after_setup_theme hook, which
- * runs before the init hook. The init hook is too late for some features, such
- * as indicating support for post thumbnails.
- */
+
 function minimalizr_setup() {
 
-	/*
-	 * Make theme available for translation.
-	 * Translations can be filed in the /languages/ directory.
-	 * If you're building a theme based on minimalizr, use a find and replace
-	 * to change 'minimalizr' to the name of your theme in all the template files
-	 */
+
 	load_theme_textdomain( 'minimalizr', get_template_directory() . '/languages' );
 
-	// Add default posts and comments RSS feed links to head.
 	add_theme_support( 'automatic-feed-links' );
 
-	/*
-	 * Let WordPress manage the document title.
-	 * By adding theme support, we declare that this theme does not use a
-	 * hard-coded <title> tag in the document head, and expect WordPress to
-	 * provide it for us.
-	 */
 	add_theme_support( 'title-tag' );
 
-	/*
-	 * Enable support for Post Thumbnails on posts and pages.
-	 *
-	 * @link http://codex.wordpress.org/Function_Reference/add_theme_support#Post_Thumbnails
-	 */
-
-	// This theme uses wp_nav_menu() in one location.
 	register_nav_menus( array(
 		'primary' => esc_html__( 'Primary Menu', 'minimalizr' ),
 	) );
-	
-	
+		
 	$customheader = array(
 	'width'                  => 100,
 	'height'                 => 40,
@@ -64,33 +38,20 @@ function minimalizr_setup() {
 	
 	add_theme_support( 'post-thumbnails');
 	
-	/*
-	 * Switch default core markup for search form, comment form, and comments
-	 * to output valid HTML5.
-	 */
 	add_theme_support( 'html5', array(
 		'search-form', 'comment-form', 'comment-list', 'gallery', 'caption',
 	) );
 
-	/*
-	 * Enable support for Post Formats.
-	 * See http://codex.wordpress.org/Post_Formats
-	 */
 	add_theme_support( 'post-formats', array(
 		'aside', 'image', 'video', 'quote', 'link',
 	) );
 
-	// Set up the WordPress core custom background feature.
 	add_theme_support( 'custom-background', apply_filters( 'minimalizr_custom_background_args', array(
 		'default-color' => 'ffffff',
 		'default-image' => '',
 	) ) );
 
-
-	add_post_type_support( 'page', 'excerpt' );
-
-	
-	
+	add_post_type_support( 'page', 'excerpt' );	
 }
 endif; // minimalizr_setup
 add_action( 'after_setup_theme', 'minimalizr_setup' );
@@ -188,16 +149,15 @@ function minimalizr_scripts() {
 	$theme_url = get_template_directory_uri();
 	wp_dequeue_style( 'contact-form-7' );
 
-	//pure css
-	wp_enqueue_style( 'pureCSS', '//cdn.jsdelivr.net/pure/0.6.2/pure-min.css');
-	wp_enqueue_style( 'pureGRIDS', '//cdn.jsdelivr.net/pure/0.6.2/grids-responsive-min.css', array('pureCSS'));
-	wp_enqueue_style( 'minimalLayout', esc_url($theme_url.'/css/minimal-layout.css'), array());	
-	wp_enqueue_style( 'minimalizr-style', esc_url(get_stylesheet_uri()), array('pureCSS', 'pureGRIDS', 'minimalLayout'));	
-	wp_enqueue_style( 'minimalizr-plugins', esc_url($theme_url.'/css/plugins.css'), array('pureCSS', 'pureGRIDS', 'minimalizr-style'));
-    wp_enqueue_style( 'minimalizr-mediaQuery', esc_url($theme_url.'/css/media-query.css'), array('pureCSS', 'pureGRIDS', 'minimalizr-style'));
-	wp_enqueue_style( 'minimalizr-widgets', esc_url($theme_url.'/css/widgets.css'), array('pureCSS', 'pureGRIDS', 'minimalizr-style'));
-	wp_deregister_script('jquery');
+	//css
+	wp_enqueue_style( 'minimalLayout', esc_url($theme_url.'/css/minimal-layout.css'), array());
+	wp_enqueue_style( 'minimalizr-style', esc_url(get_stylesheet_uri()), array( 'minimalLayout'), time());		
+    wp_add_inline_style( 'minimalizr-style', get_inline_css('media-query'));
+	wp_add_inline_style( 'minimalizr-style', get_inline_css('grids'));
+
 	
+	//jquery
+	wp_deregister_script('jquery');
 	wp_register_script('jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js', array(), '', true);
 	wp_enqueue_script( 'jquery' );
 	
@@ -207,7 +167,7 @@ function minimalizr_scripts() {
 	wp_enqueue_script( 'landing-cookies', esc_url($theme_url . '/js/cookies.js'), array('jquery'), '', true);
 	
 	
-	wp_register_script('min_sharethis', esc_url('https://platform-api.sharethis.com/js/sharethis.js#property='.esc_html(get_theme_mod('min_sharethis')).'&product=inline-share-buttons'), array('jquery'), 'async', true);	
+	wp_register_script('min_sharethis', esc_url('https://platform-api.sharethis.com/js/sharethis.js#property='.esc_html(get_theme_mod('min_sharethis')).'&product=inline-share-buttons'), array('jquery'), 'async_defer', true);	
 	
 	if(get_theme_mod('min_sharethis') != null && !is_front_page())
 	{
@@ -226,7 +186,7 @@ function minimalizr_scripts() {
 		else if(is_home())
 		{
 			$count_link = 'https://'.get_theme_mod('disqus').'.disqus.com/count.js';
-			wp_enqueue_script( 'dsq-count-scr', esc_url($count_link), '', 'async', true);			
+			wp_enqueue_script( 'dsq-count-scr', esc_url($count_link), '', 'async_defer', true);			
 		}
 	}	
 	
@@ -431,7 +391,7 @@ function add_analytics_tracking_code()
 	}
 }
 
-add_action( 'wp_head', 'add_analytics_tracking_code', 1);
+add_action( 'wp_head', 'add_analytics_tracking_code', 50);
 
 
 function add_favicon()
@@ -729,13 +689,20 @@ if ( ! function_exists('write_log')) {
 
 function async_defer_JS($tag, $handle, $src)
 {
-	if(preg_match("/async/i", $src))
+	if(preg_match("/async/i", $src) || preg_match("/defer/i", $src))
 	{
-		$tag = '<script id="'.esc_html($handle).'" type="text/javascript" async src="'.esc_url($src).'"></script>';
-	}
-	else if(preg_match("/defer/i", $src))
-	{
-		$tag = '<script id="'.esc_html($handle).'" type="text/javascript" defer src="'.esc_url($src).'"></script>';
+		$method = '';
+		
+		if(preg_match("/async/i", $src))
+		{
+			$method .= ' async ';
+		}
+		if(preg_match("/defer/i", $src))
+		{
+			$method .= ' defer ';
+		}
+		
+		$tag = '<script id="'.esc_html($handle).'" type="text/javascript" '.esc_html($method).' src="'.esc_url($src).'"></script>';
 	}
 	return $tag;
 }
@@ -790,3 +757,12 @@ require get_template_directory() . '/inc/the_gallery.php';
 require_once get_template_directory() . '/inc/minimal_sitemap/sitemap.php';
 add_filter('template_include', array('minimal_sitemap', 'run'), 11);
 add_filter('wp_headers', array('minimal_sitemap', 'headers'), 1);
+
+function get_inline_css($sheet)
+{
+	ob_start();
+	require_once(get_template_directory() . '/css/'.$sheet.'.css');
+	$output = ob_get_contents();
+	ob_end_clean();
+	return $output;	
+}
