@@ -150,10 +150,10 @@ function minimalizr_scripts() {
 	wp_dequeue_style( 'contact-form-7' );
 
 	//css
-	wp_enqueue_style( 'minimalLayout', esc_url($theme_url.'/css/minimal-layout.css'), array());
+	wp_enqueue_style( 'minimalLayout', esc_url($theme_url.'/css/minimal-layout.css'), array(), time());
+	
 	wp_enqueue_style( 'minimalizr-style', esc_url(get_stylesheet_uri()), array( 'minimalLayout'), time());		
     wp_add_inline_style( 'minimalizr-style', get_inline_css('media-query'));
-	wp_add_inline_style( 'minimalizr-style', get_inline_css('grids'));
 
 	
 	//jquery
