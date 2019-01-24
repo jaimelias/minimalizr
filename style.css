@@ -380,6 +380,14 @@ hr
 	margin: 0 0 20px 0;
 	padding: 0;
 }
+#content h1.small
+{
+	font-size: 150%;
+}
+#content h2.small
+{
+	font-size: 120%;
+}
 #content h1:not(.small)
 {
 	font-size: 300%;
