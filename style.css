@@ -818,7 +818,6 @@ ul.top_menu .dropdown-menu > li > a:focus
     background-color: rgba(0,0,0,0.05);
 	padding: 15px 30px 15px 30px;
 	border-top: 1px solid rgba(125,125,125,0.1);	
-	font-weight: 400;
 }
 ul.top_menu > li.dropdown > ul.dropdown-menu.toggled
 {
