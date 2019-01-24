@@ -667,7 +667,7 @@ a.dropdown-toggle > .caret
 	background-color: #f7f7f7;
 	padding: 40px 0 0 0;
 	text-transform: uppercase;
-	font-weight: 800;
+	font-weight: 300;
 	font-size: 85%;
 }
 .site-info
@@ -850,7 +850,7 @@ ul.top_menu > li.dropdown > ul.dropdown-menu.toggled
 	padding: 15px 30px 15px 30px;
 }
 .minimal ul.top_menu >.sidebar-brand a {
-	font-weight: 800;
+	font-weight: 300;
 	display: block;
 	font-size: 20px;
 	line-height: 20px;

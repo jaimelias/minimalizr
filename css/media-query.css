@@ -85,7 +85,7 @@
 		display: inline-block;
 	}	
 	.responsive ul.top_menu >.sidebar-brand a {
-		font-weight: 900;
+		font-weight: 300;
 		display: block;
 		font-size: 20px;
 		line-height: 20px;
@@ -245,7 +245,7 @@
 	.responsive  ul.top_menu > li > a, .responsive ul.top_menu >.sidebar-brand a
 	{
 		text-decoration: none;
-		font-weight: 900;
+		font-weight: 300;
 		font-size: 16px;
 		height: 16px;
 		line-height: 16px;
