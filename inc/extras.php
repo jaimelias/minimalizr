@@ -28,10 +28,6 @@ function minimalizr_body_classes( $classes ) {
 	if ( is_multi_author() ) {
 		$classes[] = 'group-blog';
 	}
-	if (wp_is_mobile())
-	{
-		$classes[] = 'is-mobile';
-	}
 	if(is_front_page())
 	{
 		$classes[] = 'front-page';

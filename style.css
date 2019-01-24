@@ -49,6 +49,7 @@ Underscores is distributed under the terms of the GNU GPL v2 or later.
 
 @font-face {
   font-family: 'Open Sans';
+  font-display: swap;
   font-style: normal;
   font-weight: 300;
   src: local('Open Sans Light'), local('OpenSans-Light'), url(fonts/mem5YaGs126MiZpBA-UN_r8OUuhp.woff2) format('woff2');
@@ -58,6 +59,15 @@ Underscores is distributed under the terms of the GNU GPL v2 or later.
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans Regular'), local('OpenSans-Regular'), url(fonts/mem8YaGs126MiZpBA-UFVZ0b.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  font-display: swap;
+  font-style: normal;
   font-weight: 600;
   src: local('Open Sans SemiBold'), local('OpenSans-SemiBold'), url(fonts/mem5YaGs126MiZpBA-UNirkOUuhp.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
@@ -65,6 +75,7 @@ Underscores is distributed under the terms of the GNU GPL v2 or later.
 
 @font-face {
   font-family: 'Open Sans';
+  font-display: swap;
   font-style: normal;
   font-weight: 800;
   src: local('Open Sans ExtraBold'), local('OpenSans-ExtraBold'), url(fonts/mem5YaGs126MiZpBA-UN8rsOUuhp.woff2) format('woff2');
@@ -91,7 +102,7 @@ body:not(a)
 }
 body
 {
-	font-weight: 600;
+	font-weight: 400;
 }
 article,aside,footer,header,main,menu,nav,section{
     display:block
@@ -254,12 +265,13 @@ input[type=text],input[type=password],input[type=email],input[type=url],input[ty
 	outline: none;
 	max-width: 100%;
 	box-sizing: border-box;
-	font-weight: normal;
+	font-weight: 300;
 	line-height: 1;
+	height: 34px;
 }
 select > option
 {
-	font-weight: normal;
+	font-weight: 300;
 }
 textarea
 {
@@ -281,6 +293,10 @@ input:focus, select:focus, textarea:focus
 /*--------------------------------------------------------------
 # Widgets
 --------------------------------------------------------------*/
+#sidebar
+{
+	margin-top: 20px;
+}
 .rightsidebar
 {
 	margin: 0 0 0 40px;
@@ -799,7 +815,7 @@ ul.top_menu .dropdown-menu > li > a:focus
     background-color: rgba(0,0,0,0.05);
 	padding: 15px 30px 15px 30px;
 	border-top: 1px solid rgba(125,125,125,0.1);	
-	font-weight: normal;
+	font-weight: 400;
 }
 ul.top_menu > li.dropdown > ul.dropdown-menu.toggled
 {

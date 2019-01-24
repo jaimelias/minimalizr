@@ -6,26 +6,27 @@
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 	<header class="entry-header">
-		<?php the_title( sprintf( '<h2 class="entry-title"><a href="%s">', esc_url( get_permalink() ) ), '</a></h2>' ); ?>
-
-		<?php if ( 'post' == get_post_type() ) : ?>
-		<div class="entry-meta  small light bottom-20">
-			<?php minimalizr_posted_on(); ?>
-		</div><!-- .entry-meta -->
-		
-			<?php if ( has_post_thumbnail() ) : ?>
-				<p><a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>">
-				<?php the_post_thumbnail('medium', array('class' => 'img-responsive')); ?>
-				</a></p>
-			<?php endif; ?>
-			
-		<?php endif; ?>
+	
+		<div class="pure-g gutters">
+			<div class="pure-u-1-2">
+				<?php if ( has_post_thumbnail() ) : ?>
+					<p><a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>">
+					<?php the_post_thumbnail('medium', array('class' => 'img-responsive')); ?>
+					</a></p>
+				<?php endif; ?>
+				<div class="entry-meta text-muted small light bottom-10">
+					<?php minimalizr_posted_on(); ?>
+				</div><!-- .entry-meta -->					
+			</div>		
+			<div class="pure-u-1-2">		
+				<?php the_title( sprintf( '<h2 class="entry-title"><a class="small normal" href="%s">', esc_url( get_permalink() ) ), '</a></h2>' ); ?>
+				<div class="entry-content light">
+					<?php the_excerpt();?>
+				</div><!-- .entry-content -->
+			</div>
+		</div>
 	</header><!-- .entry-header -->
 
-	<div class="entry-content">
-		<?php the_excerpt();?>
-		<p><a class="pure-button button-warning strong" title="<?php the_title(); ?>" href="<?php the_permalink(); ?>"><?php _e('Continue Reading', 'minimalizr'); ?></a></p>
-	</div><!-- .entry-content -->
 
 	<hr />
 		

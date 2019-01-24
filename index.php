@@ -23,9 +23,9 @@
 				}
 				?>	
 	
-<div class="pure-g">	
+<div class="pure-g gutters">	
 
-	<div class="pure-u-1 pure-u-md-3-4">
+	<div class="pure-u-1 pure-u-md-2-3">
 		<div id="primary" class="content-area">
 			<main id="main" class="site-main">
 			
@@ -51,7 +51,7 @@
 			</main><!-- #main -->
 		</div><!-- #primary -->
 	</div><!-- .pure-u-1 -->
-	<div class="pure-u-1 pure-u-md-1-4">
+	<div class="pure-u-1 pure-u-md-1-3">
 		<?php if ( is_active_sidebar( 'sidebar-6' ) ) : ?>
 			<aside id="sidebar">
 				<?php dynamic_sidebar( 'sidebar-6' ); ?>

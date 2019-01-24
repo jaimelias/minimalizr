@@ -23,7 +23,7 @@
 	{
 		padding: 0 10px;
 	}
-	#content.layoutfixed #primary, #secondary
+	body:not(.blog) #content.layoutfixed #primary, #secondary
 	{
 		padding: 0 10px;
 	}
@@ -138,7 +138,7 @@
 	{
 		font-size: 1em;
 	}
-	.minimal-header, #content.layoutfixed #primary, #secondary
+	.minimal-header, body:not(.blog) #content.layoutfixed #primary, #secondary
 	{
 		padding: 0 20px;
 	}

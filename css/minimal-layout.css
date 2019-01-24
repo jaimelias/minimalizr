@@ -129,7 +129,7 @@
     box-shadow:0 0 0 1px rgba(0,0,0,.15) inset,0 0 6px rgba(0,0,0,.2) inset;
     border-color:#000\9
 }
-.pure-button[disabled]{
+.pure-button[disabled], .pure-button.disabled{
     border:none;
     background-image:none;
     filter:alpha(opacity=40);
@@ -262,9 +262,13 @@ ul.list-style-none, ol.list-style-none
 {
 	font-size: 85%;
 }
-.normal
+.semibold
 {
 	font-weight: 600;
+}
+.normal
+{
+	font-weight: 400;
 }
 .light
 {
@@ -301,6 +305,10 @@ strong, .strong
     content: "";
     clear: both;
     display: table;
+}
+.borderbox
+{
+	box-sizing:border-box;
 }
 .animate-fade
 {

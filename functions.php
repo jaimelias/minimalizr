@@ -150,9 +150,9 @@ function minimalizr_scripts() {
 	wp_dequeue_style( 'contact-form-7' );
 
 	//css
-	wp_enqueue_style( 'minimalLayout', esc_url($theme_url.'/css/minimal-layout.css'), array(), time());
+	wp_enqueue_style( 'minimalLayout', esc_url($theme_url.'/css/minimal-layout.css'), array());
 	
-	wp_enqueue_style( 'minimalizr-style', esc_url(get_stylesheet_uri()), array( 'minimalLayout'), time());		
+	wp_enqueue_style( 'minimalizr-style', esc_url(get_stylesheet_uri()), array( 'minimalLayout'));		
     wp_add_inline_style( 'minimalizr-style', get_inline_css('media-query'));
 
 	
@@ -766,3 +766,19 @@ function get_inline_css($sheet)
 	ob_end_clean();
 	return $output;	
 }
+
+function hide_admin_bar(){
+	if(!is_user_logged_in())
+	{
+		if(!isset($_GET['fl_builder']))
+		{
+			return false;
+		}
+	}
+}
+//add_filter( 'show_admin_bar' , 'hide_admin_bar');
+
+remove_action('wp_footer', 'FLBuilder::include_jquery');
+
+add_filter( 'widget_text', 'do_shortcode' );
+

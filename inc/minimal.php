@@ -12,20 +12,13 @@ class Minimal_Classes
 	
 	public static function add_class()
 	{
-		if(wp_is_mobile())
+		if(get_theme_mod('minimalizr_menu') == '' || get_theme_mod('minimalizr_menu') == 'minimal')
 		{
 			$class = 'minimal';
 		}
 		else
 		{
-			if(get_theme_mod('minimalizr_menu') == '' || get_theme_mod('minimalizr_menu') == 'minimal')
-			{
-				$class = 'minimal';
-			}
-			else
-			{
-				$class = 'responsive';	
-			}			
+			$class = 'responsive';	
 		}
 		echo $class;			
 	}

@@ -10,12 +10,12 @@
 		<header class="entry-header">
 			<?php the_title( '<h1 class="entry-title">', '</h1>' ); ?>
 			
-			<div class="entry-meta small light bottom-20">
+			<div class="entry-meta small text-muted light bottom-20">
 				<?php minimalizr_posted_on(); ?>
 			</div><!-- .entry-meta -->	
 			
 			<?php if(get_the_excerpt()) : ?>
-				<p class="large strong">
+				<p class="large">
 					<?php echo get_the_excerpt(); ?>
 				</p>
 			<?php endif; ?>
