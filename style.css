@@ -371,11 +371,14 @@ hr
 	line-height: 200%;
 	display: block;
 }
+#content h1:not(.light):not(.normal):not(.semibold), #content h2:not(.light):not(.normal):not(.semibold), #content h3:not(.light):not(.normal):not(.semibold), #content h4:not(.light):not(.normal):not(.semibold), #content h5:not(.light):not(.normal):not(.semibold), #content h6:not(.light):not(.normal):not(.semibold)
+{
+	font-weight: 800;
+}
 #content h1, #content h2, #content h3, #content h4, #content h5, #content h6
 {
 	margin: 0 0 20px 0;
 	padding: 0;
-	font-weight: 800;
 }
 #content h1
 {
