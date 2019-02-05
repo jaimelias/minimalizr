@@ -8,16 +8,16 @@
 
 	<?php if(minimalizr_get_meta( "minimalizr_width" ) != 'full'): ?>
 		<header class="entry-header">
-			<?php the_title( '<h1 class="entry-title">', '</h1>' ); ?>
+			<?php the_title( '<h1 class="entry-title semibold">', '</h1>' ); ?>
 			
 			<div class="entry-meta small text-muted light bottom-20">
 				<?php minimalizr_posted_on(); ?>
 			</div><!-- .entry-meta -->	
 			
 			<?php if(get_the_excerpt()) : ?>
-				<p class="large">
+				<h2 class="uppercase light">
 					<?php echo get_the_excerpt(); ?>
-				</p>
+				</h2>
 			<?php endif; ?>
 		
 			

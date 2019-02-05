@@ -754,9 +754,17 @@ require get_template_directory() . '/inc/minimal.php';
 require get_template_directory() . '/inc/the_gallery.php';
 
 //sitemap
-require_once get_template_directory() . '/inc/minimal_sitemap/sitemap.php';
-add_filter('template_include', array('minimal_sitemap', 'run'), 11);
-add_filter('wp_headers', array('minimal_sitemap', 'headers'), 1);
+
+if(isset($_GET['sitemap']))
+{
+	if($_GET['sitemap'] != 'airports')
+	{
+		require_once get_template_directory() . '/inc/minimal_sitemap/sitemap.php';
+		add_filter('template_include', array('minimal_sitemap', 'run'), 2);
+		add_filter('wp_headers', array('minimal_sitemap', 'headers'), 1);		
+	}
+}
+
 
 function get_inline_css($sheet)
 {

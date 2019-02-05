@@ -421,7 +421,7 @@ hr
 }
 .layoutfixed article.type-post
 {
-	background-color: rgba(0, 0, 0, 0.1);
+	background-color: rgba(0, 0, 0, 0.05);
 }
 #index
 {
@@ -1014,7 +1014,7 @@ html:not(.fl-builder-edit) .fl-row-bg-photo.fl-row-full-height > .fl-row-content
 .min_brief
 {
 	padding: 5px;
-	background-color: rgba(0,0,0,0.1);
+	background-color: rgba(0,0,0,0.05);
 }
 .min_product
 {
