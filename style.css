@@ -382,11 +382,11 @@ hr
 }
 #content h1.small
 {
-	font-size: 150%;
+	font-size: 200%;
 }
 #content h2.small
 {
-	font-size: 120%;
+	font-size: 150%;
 }
 #content h1:not(.small)
 {
@@ -421,7 +421,7 @@ hr
 }
 .layoutfixed article.type-post
 {
-	background-color: rgba(0, 0, 0, 0.05);
+	background-color: rgba(0, 0, 0, 0.02);
 }
 #index
 {
@@ -1014,7 +1014,7 @@ html:not(.fl-builder-edit) .fl-row-bg-photo.fl-row-full-height > .fl-row-content
 .min_brief
 {
 	padding: 5px;
-	background-color: rgba(0,0,0,0.05);
+	background-color: rgba(0,0,0,0.02);
 }
 .min_product
 {
