@@ -15,7 +15,7 @@
 			</div><!-- .entry-meta -->	
 			
 			<?php if(get_the_excerpt()) : ?>
-				<h2 class="uppercase light">
+				<h2 class="uppercase light small">
 					<?php echo get_the_excerpt(); ?>
 				</h2>
 			<?php endif; ?>
