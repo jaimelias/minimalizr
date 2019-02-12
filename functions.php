@@ -455,6 +455,7 @@ function front_page_json_ld()
 		}
 		wp_reset_query(); 
 		
+		$publisher = false;
 		
 		if(get_theme_mod('minimalizr_large_icon'))
 		{
@@ -462,12 +463,11 @@ function front_page_json_ld()
 			$logo['@type'] = 'ImageObject';
 			$logo['url'] = esc_url(get_theme_mod('minimalizr_large_icon'));
 			$json['logo'] = $logo;
-		}		
-		
-		$publisher = array();
-		$publisher['@type'] = 'Organization';
-		$publisher['name'] = esc_html(get_bloginfo('name'));
-		$publisher['logo'] = $logo;
+			$publisher = array();
+			$publisher['@type'] = 'Organization';
+			$publisher['name'] = esc_html(get_bloginfo('name'));
+			$publisher['logo'] = $logo;			
+		}
 		
 		if(has_post_thumbnail())
 		{
@@ -488,7 +488,12 @@ function front_page_json_ld()
 		$json['dateModified'] = esc_html(get_the_modified_date('c'));
 		$json['mainEntityOfPage'] = $mainEntityOfPage;
 		$json['author'] = $author;
-		$json['publisher'] = $publisher;
+		
+		if($publisher)
+		{
+			$json['publisher'] = $publisher;
+		}
+		
 		$json['description'] = esc_html(get_the_excerpt());
 		
 		if(has_post_thumbnail())	
