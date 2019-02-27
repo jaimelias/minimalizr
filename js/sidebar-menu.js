@@ -3,7 +3,6 @@ $(document).ready(function() {
 	"use strict";
 	change_topBG();
 	minimal_submit();
-	gdpr();
 	slideshow();
 	
     $('[data-toggle="offcanvas"]').click(function() {
@@ -153,23 +152,6 @@ function minimal_submit()
 	
 	$(".wpcf7-form").find(".modal-close").click(function(){
 		$(".modal-container").addClass('hidden');
-	});		
-}
-
-function gdpr()
-{
-	if(getCookie('gdpr') == '')
-	{
-		$('#gdpr').removeClass('hidden');
-	}
-	else
-	{
-		$('#gdpr').addClass('hidden');
-	}
-	
-	$('#gdpr').find('.close').click(function(){
-		$('#gdpr').addClass('hidden');
-		setCookie('gdpr', true, 30);
 	});		
 }
 

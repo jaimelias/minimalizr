@@ -79,6 +79,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
 			$atts['title']  = ! empty( $item->title )	? $item->title	: '';
 			$atts['target'] = ! empty( $item->target )	? $item->target	: '';
 			$atts['rel']    = ! empty( $item->xfn )		? $item->xfn	: '';
+			$atts['class'] = '';
 
 			// If item has_children add atts to a.
 			if ( $args->has_children && $depth === 0 ) {
@@ -88,6 +89,34 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
 				$atts['aria-haspopup']	= 'true';
 			} else {
 				$atts['href'] = ! empty( $item->url ) ? $item->url : '';
+			}
+			
+			if(get_theme_mod('minimalizr_menu_weight') && $depth === 0)
+			{
+				if(get_theme_mod('minimalizr_menu_weight') != '')
+				{
+					if($atts['class'] != '')
+					{
+						$atts['class'] .= ' ';
+					}
+					
+					if(get_theme_mod('minimalizr_menu_weight') == 'light')
+					{
+						$atts['class'] .= 'light';
+					}
+					if(get_theme_mod('minimalizr_menu_weight') == 'normal')
+					{
+						$atts['class'] .= 'light';
+					}
+					if(get_theme_mod('minimalizr_menu_weight') == 'semibold')
+					{
+						$atts['class'] .= 'semibold';
+					}
+					if(get_theme_mod('minimalizr_menu_weight') == 'bold')
+					{
+						$atts['class'] .= 'strong';
+					}					
+				}
 			}
 
 			$atts = apply_filters( 'nav_menu_link_attributes', $atts, $item, $args );

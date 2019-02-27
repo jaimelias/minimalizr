@@ -43,15 +43,33 @@ class MyTheme_Customize {
 			'sanitize_callback' => 'esc_html'
 			));		
 		$wp_customize->add_control('minimalizr_menu', array(
-			'label' => __('Minimalizr Menu', 'minimalizr'),
+			'label' => __('Menu Type', 'minimalizr'),
 			'section' => 'minimalizr',
 			'settings' => 'minimalizr_menu',
 			'type' => 'select',
 			'choices' => array(
-				'minimal' => __('minimal', 'minimalizr'),
-				'responsive' => __('responsive', 'minimalizr')
+				'minimal' => __('Minimal', 'minimalizr'),
+				'responsive' => __('Responsive', 'minimalizr')
 				)
 		));	
+		//minimalizr_menu
+		$wp_customize->add_setting('minimalizr_menu_weight', array(
+			'type' => 'theme_mod',
+			'capability' => 'edit_theme_options',
+			'sanitize_callback' => 'esc_html'
+			));			
+		$wp_customize->add_control('minimalizr_menu_weight', array(
+			'label' => __('Menu Weight', 'minimalizr'),
+			'section' => 'minimalizr',
+			'settings' => 'minimalizr_menu_weight',
+			'type' => 'select',
+			'choices' => array(
+				'light' => __('Light', 'minimalizr'),
+				'normal' => __('Normal', 'minimalizr'),
+				'semibold' => __('Semi-bold', 'minimalizr'),
+				'bold' => __('Bold', 'minimalizr')
+				)
+		));			
 		
 
 		//facebook page id

@@ -1030,20 +1030,6 @@ img.attachment-thumbnail
 	max-width: 100%;
 	height: auto;
 }
-/*-------------------------------*/
-/*             GDPR              */
-/*-------------------------------*/
-
-#gdpr
-{
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	width: 100%;
-	box-sizing: border-box;
-	background-color: yellow;
-	color: #000;
-}
 
 /*-------------------------------*/
 /*         Contact Form 7        */

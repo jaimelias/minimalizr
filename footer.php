@@ -44,11 +44,6 @@
 
 </div><!-- #wrapper -->
 
-	<div id="gdpr" class="hidden small text-center">
-		<p class="small"><?php echo __('We use cookies to ensure that we give you the best experience on our website. If you continue to use this site we will assume that you are happy with it.', 'minimalizr'); ?> <button class="close pure-button pure-button-primary"><i class="fas fa-times"></i></button></p>
-	</div>
-
-
 <div id="datepicker-container"></div>
 <div id="timepicker-container"></div>
 
