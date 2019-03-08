@@ -30,7 +30,7 @@
 			{
 				if(is_singular() && strlen(get_the_excerpt()) > 0)
 				{
-					echo '<p itemprop="description" class="large strong">'.get_the_excerpt().'</p><hr/>';
+					echo '<p itemprop="description" class="large bottom-10">'.get_the_excerpt().'</p><hr/>';
 				}
 				if(is_tax() && strlen(term_description()) > 0)
 				{

@@ -9,7 +9,7 @@
 	<!-- Google Optimize -->
 <?php endif; ?>
 
-<?php if(get_theme_mod('tagmanager_container_id') == null && get_theme_mod('analytics_tracking_id') != null): ?>
+<?php if(get_theme_mod('analytics_tracking_id') != null): ?>
 	<!-- Google Analytics -->
 	<script>
 	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;

@@ -4,6 +4,14 @@
 	{
 		width: 50%;
 	}
+	#content h1:not(.small)
+	{
+		font-size: 175%;
+	}
+	#content h2:not(.small)
+	{
+		font-size: 150%;
+	}
 }
 @media (min-width: 1px)
 {
@@ -14,10 +22,6 @@
 	.show-lg
 	{
 		display: none;
-	}
-	.entry-content p, .entry-content ul, .entry-content ol, .entry-content blockquote 
-	{
-		font-size: 1.2em;
 	}
 	.minimal-header
 	{
@@ -132,10 +136,6 @@
 	.responsive ul.top_menu li:not(:first-child)
 	{
 		border-top: 1px solid rgba(125,125,125,0.1);
-	}	
-	.entry-content p, .entry-content ul, .entry-content ol, .entry-content blockquote 
-	{
-		font-size: 1em;
 	}
 	.minimal-header, body:not(.blog) #content.layoutfixed #primary, #secondary
 	{
@@ -145,7 +145,6 @@
 	{
 		line-height: 150%;
 	}
-
 	img.alignleft, img.alignright,  img.aligncenter, img.alignnone 
 	{
 		max-width: 200px;

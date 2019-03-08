@@ -113,10 +113,7 @@ a{
 abbr[title]{
     border-bottom:1px dotted
 }
-h1{
-    font-size:2em;
-    margin:.67em 0
-}
+
 mark{
     background:#ff0;
     color:#000
@@ -371,6 +368,10 @@ hr
 	line-height: 200%;
 	display: block;
 }
+h1.site-title, h2.site-title{
+    font-size:2em;
+    margin: 0;
+}
 #content h1:not(.light):not(.normal):not(.semibold), #content h2:not(.light):not(.normal):not(.semibold), #content h3:not(.light):not(.normal):not(.semibold), #content h4:not(.light):not(.normal):not(.semibold), #content h5:not(.light):not(.normal):not(.semibold), #content h6:not(.light):not(.normal):not(.semibold)
 {
 	font-weight: 800;
@@ -390,21 +391,20 @@ hr
 }
 #content h1:not(.small)
 {
-	font-size: 300%;
+	font-size: 250%;
 }
 #content h2:not(.small)
 {
-	font-size: 200%;
+	font-size: 175%;
 }
 #main blockquote {
-  font-size: 200%;
   margin: 0 0 20px 0;
   line-height: 120%;
   opacity: 0.8;
 }
 #main blockquote:before, #main blockquote:after
 {
-	font-size: 200%;
+	font-size: 150%;
 }
 #main blockquote:before
 {
