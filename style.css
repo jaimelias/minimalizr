@@ -85,6 +85,7 @@ html
 {
     -ms-text-size-adjust:100%;
     -webkit-text-size-adjust:100%;
+	scroll-behavior: smooth;
 }
 html, body
 {
@@ -360,6 +361,11 @@ hr
     content: "";
     clear: both;
     display: table;
+}
+.entry-content li > ul, .entry-content li > ol
+{
+	margin: 0 0 0 20px !important;
+	padding: 0 !important;	
 }
 .entry-content ul:not(.picker__list):not(.list-style-none), .entry-content ol 
 {
@@ -1015,10 +1021,6 @@ html:not(.fl-builder-edit) .fl-row-bg-photo.fl-row-full-height > .fl-row-content
 {
 	padding: 5px;
 	background-color: rgba(0,0,0,0.02);
-}
-.min_product
-{
-	background-color: rgba(0,0,0,0.3);
 }
 
 /*-------------------------------*/
