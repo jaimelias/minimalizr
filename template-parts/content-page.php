@@ -34,7 +34,7 @@
 				}
 				if(is_tax() && strlen(term_description()) > 0)
 				{
-					echo '<h3 itemprop="description">'.esc_html(get_term(get_queried_object()->term_id)->description).'</h3><hr />';
+					echo '<p itemprop="description" class="large bottom-10">'.esc_html(get_term(get_queried_object()->term_id)->description).'</p><hr />';
 				}
 			}			
 		}	

@@ -12,6 +12,10 @@
 	{
 		font-size: 150%;
 	}
+	.hide-sm
+	{
+		display: none;
+	}
 }
 @media (min-width: 1px)
 {

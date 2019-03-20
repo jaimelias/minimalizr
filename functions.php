@@ -596,6 +596,20 @@ function facebook_messenger()
 add_shortcode( 'messenger', 'facebook_messenger' );
 
 
+function whatsapp_button()
+{
+	$output = null;
+	
+	if(get_theme_mod('whatsapp') != null)
+	{
+		$number = preg_replace('/[^0-9.]+/', '', get_theme_mod('whatsapp'));
+		$url = 'https://wa.me/'.$number.'?text='.get_the_title();
+		$output = '<a class="pure-button button-whatsapp semibold" href="'.esc_url($url).'"><span class="large"><i class="fab fa-whatsapp"></i></span> <span class="small hide-sm">WhatsApp</span></a>';
+	}
+	return $output;
+}
+add_shortcode( 'whatsapp', 'whatsapp_button' );
+
 function web_chat($class = null)
 {
 	if(get_theme_mod('web_chat') != null)
