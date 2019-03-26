@@ -165,17 +165,7 @@ function minimalizr_scripts() {
 	wp_enqueue_script( 'minimalizr-sidebar-menuJS', esc_url($theme_url . '/js/sidebar-menu.js'), array('jquery'), '', true );	
 
 	wp_enqueue_script( 'landing-cookies', esc_url($theme_url . '/js/cookies.js'), array('jquery'), '', true);
-	
-	
-	wp_register_script('min_sharethis', esc_url('https://platform-api.sharethis.com/js/sharethis.js#property='.esc_html(get_theme_mod('min_sharethis')).'&product=inline-share-buttons'), array('jquery'), 'async_defer', true);	
-	
-	if(get_theme_mod('min_sharethis') != null && !is_front_page())
-	{
-		if(is_singular('post') || is_home())
-		{
-			wp_enqueue_script( 'min_sharethis');
-		}
-	}	
+
 	
 	if (get_theme_mod('disqus') != null) {
 		

@@ -87,10 +87,10 @@ class MyTheme_Customize {
 		
 
 		// social media links
-		$settingId = array("disqus", "sales_phone", "sales_email","web_chat", "min_address", "min_sharethis", "whatsapp", "facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google");
-		$settingLabel = array("Disqus", "Sales Phone", "Sales Email", "Web Chat URL", "Company Address", "Sharethis ID", "WhatsApp Number", "Facebook URL", "Twitter URL", "LinkedIn URL", "Youtube URL", "Instagram URL", "Pinterest URL", "Google My Business");
-		$settingDefault = array("", "", "", "https://", "", "", "", "https://", "https://", "https://", "https://", "https://", "https://", "https://");
-		$settingSanitize = array("esc_html", "esc_html", "sanitize_email", "esc_url", "esc_html", "esc_html", "esc_html", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url");
+		$settingId = array("disqus", "sales_phone", "sales_email","web_chat", "min_address", "whatsapp", "facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google");
+		$settingLabel = array("Disqus", "Sales Phone", "Sales Email", "Web Chat URL", "Company Address", "WhatsApp Number", "Facebook URL", "Twitter URL", "LinkedIn URL", "Youtube URL", "Instagram URL", "Pinterest URL", "Google My Business");
+		$settingDefault = array("", "", "", "https://", "", "", "https://", "https://", "https://", "https://", "https://", "https://", "https://");
+		$settingSanitize = array("esc_html", "esc_html", "sanitize_email", "esc_url", "esc_html", "esc_html", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url");
 		
 		for($x = 0; $x < count($settingId); $x++)
 		{
