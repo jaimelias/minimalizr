@@ -1,37 +1,26 @@
 <?php
-/**
- * minimalizr Theme Customizer
- *
- * @package minimalizr
- */
-
-/**
- * Add postMessage support for site title and description for the Theme Customizer.
- *
- * @param WP_Customize_Manager $wp_customize Theme Customizer object.
- */
-
 
 class MyTheme_Customize {
 
    public static function register ( $wp_customize ) {
 
-		// social media section	  
-	  $wp_customize->add_section( 'minimalizr', array(
-		'title'          => "Minimalizr - ".__( 'Settings', 'minimalizr' ),
-		'priority'       => 35,
-		));  
+		//social media section	  
+		$wp_customize->add_section(
+			'minimalizr', array(
+			'title' => "Minimalizr - ".__( 'Settings', 'minimalizr'),
+			'priority' => 35,
+		));
 
 		//minimal logo
-		$wp_customize->add_setting( 'minimalizr_large_icon' );
-		$wp_customize->add_setting( 'minimalizr_fav_icon' );
+		$wp_customize->add_setting('minimalizr_large_icon');
+		$wp_customize->add_setting('minimalizr_fav_icon');
 		$wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'minimalizr_large_icon', array(
-			'label'    => __( 'Large Icon', 'minimalizr' ),
+			'label'    => __( 'Large Icon', 'minimalizr'),
 			'section'  => 'minimalizr',
 			'settings' => 'minimalizr_large_icon',
 		) ) );	
 		$wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'minimalizr_fav_icon', array(
-			'label'    => __( 'Favicon', 'minimalizr' ),
+			'label'    => __( 'Favicon', 'minimalizr'),
 			'section'  => 'minimalizr',
 			'settings' => 'minimalizr_fav_icon',
 		) ) );			
@@ -69,28 +58,13 @@ class MyTheme_Customize {
 				'semibold' => __('Semi-bold', 'minimalizr'),
 				'bold' => __('Bold', 'minimalizr')
 				)
-		));			
+		));				
 		
-
-		//facebook page id
-		$wp_customize->add_setting( 'facebook_page_name', array(
-			'type' => 'theme_mod',
-			'capability' => 'edit_theme_options',
-			'sanitize_callback' => 'esc_html'
-			));
-		$wp_customize->add_control( 'facebook_page_name', array(
-			'label' => __('Facebook Page Name'),
-			'section' => 'minimalizr',
-			'settings' => 'facebook_page_name',
-			'type' => 'text'
-		));			
-		
-
 		// social media links
-		$settingId = array("disqus", "sales_phone", "sales_email","web_chat", "min_address", "whatsapp", "facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google");
-		$settingLabel = array("Disqus", "Sales Phone", "Sales Email", "Web Chat URL", "Company Address", "WhatsApp Number", "Facebook URL", "Twitter URL", "LinkedIn URL", "Youtube URL", "Instagram URL", "Pinterest URL", "Google My Business");
-		$settingDefault = array("", "", "", "https://", "", "", "https://", "https://", "https://", "https://", "https://", "https://", "https://");
-		$settingSanitize = array("esc_html", "esc_html", "sanitize_email", "esc_url", "esc_html", "esc_html", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url");
+		$settingId = array("disqus", "min_tel", "min_address", "whatsapp", "facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google");
+		$settingLabel = array("Disqus", "Company Telephone", "Company Address", "WhatsApp Number", "Facebook URL", "Twitter URL", "LinkedIn URL", "Youtube URL", "Instagram URL", "Pinterest URL", "Google My Business");
+		$settingDefault = array("", "", "", "", "https://", "https://", "https://", "https://", "https://", "https://", "https://");
+		$settingSanitize = array("esc_html", "esc_html", "esc_html", "esc_html", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url");
 		
 		for($x = 0; $x < count($settingId); $x++)
 		{
@@ -148,26 +122,26 @@ class MyTheme_Customize {
 		  ) );
 		}	
 
-	$googleId = array('analytics_tracking_id', 'tagmanager_container_id', 'google_optimize_container_id');
-	$googleLable = array('Analytics Tracking ID', 'Tag Manager Container ID', 'Optimize Container ID');
+	$analytics = array('analytics_tracking_id', 'tagmanager_container_id', 'google_optimize_container_id', 'facebook_pixel_id');
+	$analytics_label = array('Analytics Tracking ID', 'Tag Manager Container ID', 'Optimize Container ID', 'Facebook Pixel ID');
 
-	  $wp_customize->add_section( 'minimalizr_google', array(
-		'title'          => __( 'Google Settings', 'minimalizr' ),
+	  $wp_customize->add_section( 'minimalizr_anlytics', array(
+		'title'          => __( 'Analytics', 'minimalizr'),
 		'priority'       => 34,
 		));  
 		
-		for($x = 0; $x < count($googleId); $x++)
+		for($x = 0; $x < count($analytics); $x++)
 		{
-			$wp_customize->add_setting( $googleId[$x], array(
+			$wp_customize->add_setting( $analytics[$x], array(
 				'type' => 'theme_mod',
 				'default' =>	'',
 				'capability' => 'edit_theme_options',
 				'sanitize_callback' => 'esc_html'
 				));
-			$wp_customize->add_control( $googleId[$x], array(
-				'label' => $googleLable[$x],
-				'section' => 'minimalizr_google',
-				'settings' => $googleId[$x],
+			$wp_customize->add_control( $analytics[$x], array(
+				'label' => $analytics_label[$x],
+				'section' => 'minimalizr_anlytics',
+				'settings' => $analytics[$x],
 				'type' => 'text'
 			));
 		}		
@@ -199,7 +173,7 @@ class MyTheme_Customize {
       <style type="text/css">
 		<?php self::generate_css('a:not(.pure-button), a:visited:not(.pure-button), .linkcolor', 'color', 'link_textcolor'); ?>
 		<?php self::generate_css('#content', 'color', 'contentFont'); ?>   
-		<?php self::generate_css('.visible-menu', 'background-color', 'topBg'); ?>
+		<?php self::generate_css('.minimal-header', 'background-color', 'topBg'); ?>
 		<?php self::generate_css('.minimal-header, .minimal-header a, .minimal-header a:visited', 'color', 'topFont'); ?>
 		<?php self::generate_css('.top_menu > li.dropdown > ul.dropdown-menu li, .minimal .top_navigator, body.toggled .responsive .top_navigator', 'background-color', 'sidebarBg'); ?>
 		<?php self::generate_css('.responsive .top_menu > li.dropdown > ul.dropdown-menu, .responsive .top_menu > li.dropdown > ul.dropdown-menu a, .minimal .top_menu li a, .minimal .top_menu, body.toggled .responsive .top_navigator a', 'color', 'sidebarFont'); ?>
@@ -226,11 +200,11 @@ class MyTheme_Customize {
 
    public static function live_preview() {
       wp_enqueue_script( 
-           'mytheme-themecustomizer', // Give the script a unique ID
-           get_template_directory_uri() . '/js/customizer.js', // Define the path to the JS file
-           array( 'customize-preview' ), // Define dependencies
-           '20130508', // Define a version (optional) 
-           true // Specify whether to put in footer (leave this true)
+           'mytheme-themecustomizer',
+           get_template_directory_uri() . '/js/customizer.js',
+           array( 'customize-preview'),
+           '20130508',
+           true
       );
    }
 
@@ -251,11 +225,8 @@ class MyTheme_Customize {
     }
 }
 
-add_action( 'customize_register' , array( 'MyTheme_Customize' , 'register' ) );
-
-add_action( 'wp_head' , array( 'MyTheme_Customize' , 'header_output' ) );
-
-add_action( 'customize_preview_init' , array( 'MyTheme_Customize' , 'live_preview' ) );
-
+add_action( 'customize_register', array('MyTheme_Customize', 'register'));
+add_action( 'wp_head', array( 'MyTheme_Customize' , 'header_output'));
+add_action( 'customize_preview_init', array('MyTheme_Customize', 'live_preview'));
 
 ?>

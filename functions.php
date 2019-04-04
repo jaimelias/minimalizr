@@ -600,18 +600,6 @@ function whatsapp_button()
 }
 add_shortcode( 'whatsapp', 'whatsapp_button' );
 
-function web_chat($class = null)
-{
-	if(get_theme_mod('web_chat') != null)
-	{
-		if($class != null)
-		{
-			$class = 'class="'.esc_html($class).'"';
-		}
-		return '<span class="block"><a onclick="LC_API.open_chat_window(); return false;" '.$class.' target="_blank" href="'.esc_url(get_theme_mod('web_chat')).'" ><i class="fas fa-comment" ></i> '.esc_html(__('Chat', 'minimalizr')).'</a></span>';		
-	}
-}
-
 function sales_phone($class = null)
 {
 	if(get_theme_mod('sales_phone') != null)
@@ -797,4 +785,32 @@ function hide_admin_bar(){
 remove_action('wp_footer', 'FLBuilder::include_jquery');
 
 add_filter( 'widget_text', 'do_shortcode' );
+
+function facebook_pixel()
+{
+	if(get_theme_mod('facebook_pixel_id') != null)
+	{
+		ob_start();
+		?>
+			<script>
+			!function(f,b,e,v,n,t,s)
+			{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+			n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+			if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+			n.queue=[];t=b.createElement(e);t.async=!0;
+			t.src=v;s=b.getElementsByTagName(e)[0];
+			s.parentNode.insertBefore(t,s)}(window,document,'script',
+			'https://connect.facebook.net/en_US/fbevents.js');
+			 fbq('init', '<?php echo esc_html(get_theme_mod('facebook_pixel_id')); ?>'); 
+			fbq('track', 'PageView');
+			</script><noscript><img height="1" width="1" 
+			src="https://www.facebook.com/tr?id=<?php echo esc_html(get_theme_mod('facebook_pixel_id')); ?>&ev=PageView
+			&noscript=1"/></noscript>
+		<?php
+		$output = ob_get_contents();
+		ob_end_clean();
+		echo $output;
+	}
+}
+add_action('wp_head', 'facebook_pixel');
 

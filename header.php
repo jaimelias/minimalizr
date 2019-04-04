@@ -154,7 +154,7 @@
 
 <div id="wrapper" class="clearfix">	
 	
-<div class="minimal-header clearfix block visible-menu">
+<div class="minimal-header clearfix block">
 	<div class="pure-g">
 		<div class="left pure-u-1 pure-u-sm-1-2 pure-u-md-1-5 pure-u-lg-1-6">
 			<div class="pull-left minimal-menu-title">

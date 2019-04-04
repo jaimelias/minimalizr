@@ -602,7 +602,7 @@ body.toggled #wrapper .minimal .top_navigator {
   margin: 0;
   position: fixed;
   top: 0;
-  z-index: 10;
+  z-index: 99999;
   display: block;
   width: 100%; 
   -webkit-transition: all 0.5s ease;
@@ -610,6 +610,8 @@ body.toggled #wrapper .minimal .top_navigator {
   -o-transition: all 0.5s ease;
   transition: all 0.5s ease;
   box-sizing: border-box;
+  background-color: #fff;
+  color: #444;
 }
 
 .minimal-header a, .minimal-header, .site-title > a
@@ -624,6 +626,8 @@ body.toggled #wrapper .minimal .top_navigator {
 	font-family: 'Open Sans', sans-serif;
 	display: inline-block;
 	line-height: 1;
+	white-space:nowrap;
+	overflow: hidden;	
 }
 .minimal-header .site-title > a
 {
@@ -756,6 +760,7 @@ a.dropdown-toggle > .caret
 	border: 3px solid #fff;
 	box-shadow: 0 0 1px rgba(0,0,0,0.3);
 	display: inline-block;
+	z-index: 9999;
 }
 #secondary .widget
 {
@@ -1045,7 +1050,7 @@ img.attachment-thumbnail
 /*-------------------------------*/
 /*         Contact Form 7        */
 /*-------------------------------*/
-.wpcf7 .wpcf7-form{padding:20px}.wpcf7 *:focus{outline:0}.wpcf7 .screen-reader-response{display:none}.wpcf7 .wpcf7-response-output{text-align:center;clear:both;display:block}.wpcf7 .wpcf7-not-valid,.wpcf7 .wpcf7-validation-errors,.invalid_field{background-color:#c45252 !important;color:#fff !important}.wpcf7 .wpcf7-not-valid::placeholder,.wpcf7 .wpcf7-validation-errors::placeholder,.wpcf7 .invalid_field::placeholder{color:#eee}.wpcf7 .wpcf7-mail-sent-ok{background-color:#53bc53;color:#fff}.wpcf7 .pure-g>.pure-u-1{margin-bottom:20px}.wpcf7 label{display:block}.wpcf7 .wpcf7-not-valid-tip{display:none}.wpcf7 .wpcf7-list-item {display:block}.modal-container{position:fixed;top:0;left:0;width:100%;height:100%;box-sizing:border-box;z-index:9999;background-color:rgba(0,0,0,0.7);overflow:auto}.modal-content{width:600px;max-width:100%;margin:15% auto; padding: 20px; background-color: #fff;}.modal-close{font-size:24px;}
+.wpcf7 .wpcf7-form{padding:20px}.wpcf7 *:focus{outline:0}.wpcf7 .screen-reader-response{display:none}.wpcf7 .wpcf7-response-output{text-align:center;clear:both;display:block}.wpcf7 .wpcf7-not-valid,.wpcf7 .wpcf7-validation-errors,.invalid_field{background-color:#c45252 !important;color:#fff !important}.wpcf7 .wpcf7-not-valid::placeholder,.wpcf7 .wpcf7-validation-errors::placeholder,.wpcf7 .invalid_field::placeholder{color:#eee}.wpcf7 .wpcf7-mail-sent-ok{background-color:#53bc53;color:#fff}.wpcf7 .pure-g>.pure-u-1{margin-bottom:20px}.wpcf7 label{display:block}.wpcf7 .wpcf7-not-valid-tip{display:none}.wpcf7 .wpcf7-list-item {display:block}.modal-container{box-shadow: 0 0 1px rgba(0,0,0,0.5);position:fixed;top:0;left:0;width:100%;height:100%;box-sizing:border-box;z-index:999999;background-color:rgba(0,0,0,0.7);overflow:auto}.modal-content{width:600px;max-width:100%;margin:15% auto; padding: 20px; background-color: #fff;}.modal-close{font-size:24px;}
 
 /*--------------------------------------------------------------
 # Calendar
