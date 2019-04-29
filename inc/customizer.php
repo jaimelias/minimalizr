@@ -58,29 +58,11 @@ class MyTheme_Customize {
 				'semibold' => __('Semi-bold', 'minimalizr'),
 				'bold' => __('Bold', 'minimalizr')
 				)
-		));				
+		));
 		
-		// social media links
-		$settingId = array("disqus", "min_tel", "min_address", "whatsapp", "facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google");
-		$settingLabel = array("Disqus", "Company Telephone", "Company Address", "WhatsApp Number", "Facebook URL", "Twitter URL", "LinkedIn URL", "Youtube URL", "Instagram URL", "Pinterest URL", "Google My Business");
-		$settingDefault = array("", "", "", "", "https://", "https://", "https://", "https://", "https://", "https://", "https://");
-		$settingSanitize = array("esc_html", "esc_html", "esc_html", "esc_html", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url");
 		
-		for($x = 0; $x < count($settingId); $x++)
-		{
-			$wp_customize->add_setting( $settingId[$x], array(
-				'type' => 'theme_mod',
-				'default' =>	$settingDefault[$x],
-				'capability' => 'edit_theme_options',
-				'sanitize_callback' => $settingSanitize[$x]
-				));
-			$wp_customize->add_control( $settingId[$x], array(
-				'label' => $settingLabel[$x],
-				'section' => 'minimalizr',
-				'settings' => $settingId[$x],
-				'type' => 'text'
-			));
-		}
+		self::social_media($wp_customize);
+		self::contact($wp_customize);
 		
 		//colors
 		$minimalizrColors = array("contentFont", "link_textcolor", "topBg", "topFont", "sidebarBg", "sidebarFont", "footerBg", "footerFont", "footerLink", "formBg", "formFont", "inputBg", "inputFont", "inputBorder");
@@ -166,6 +148,56 @@ class MyTheme_Customize {
   	  $wp_customize->get_setting( 'inputBorder' )->transport = 'postMessage';
 
    }
+   
+   public static function contact($wp_customize)
+   {
+		// social media links
+		$settingId = array('whatsapp', 'messenger', 'skype');
+		$settingLabel = array('WhatsApp Number', 'Messenger Username', 'Skype Username');
+		$settingDefault = array('', '', '');
+		$settingSanitize = array('intval', 'esc_html', 'esc_html');
+		
+		for($x = 0; $x < count($settingId); $x++)
+		{
+			$wp_customize->add_setting( $settingId[$x], array(
+				'type' => 'theme_mod',
+				'default' =>	$settingDefault[$x],
+				'capability' => 'edit_theme_options',
+				'sanitize_callback' => $settingSanitize[$x]
+				));
+			$wp_customize->add_control( $settingId[$x], array(
+				'label' => $settingLabel[$x],
+				'section' => 'minimalizr',
+				'settings' => $settingId[$x],
+				'type' => 'text'
+			));
+		}	   
+   }
+   
+	public static function social_media($wp_customize)
+	{
+		// social media links
+		$settingId = array("disqus", "min_tel", "min_address", "facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google");
+		$settingLabel = array("Disqus Username", "Company Telephone", "Company Address", "Facebook URL", "Twitter URL", "LinkedIn URL", "Youtube URL", "Instagram URL", "Pinterest URL", "Google My Business URL");
+		$settingDefault = array("", "", "", "https://", "https://", "https://", "https://", "https://", "https://", "https://");
+		$settingSanitize = array("esc_html", "esc_html", "esc_html", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url");
+		
+		for($x = 0; $x < count($settingId); $x++)
+		{
+			$wp_customize->add_setting( $settingId[$x], array(
+				'type' => 'theme_mod',
+				'default' =>	$settingDefault[$x],
+				'capability' => 'edit_theme_options',
+				'sanitize_callback' => $settingSanitize[$x]
+				));
+			$wp_customize->add_control( $settingId[$x], array(
+				'label' => $settingLabel[$x],
+				'section' => 'minimalizr',
+				'settings' => $settingId[$x],
+				'type' => 'text'
+			));
+		}		
+	}
 
    public static function header_output() {
       ?>

@@ -32,7 +32,7 @@
 		
 		?></div><!-- .smcontainer -->
 				
-		<div class="site-info text-center clearfix">
+		<div class="site-info semibold text-center clearfix">
 		<i class="fa fa-copyright"></i> <span><?php echo esc_html(date('Y')); ?></span> <?php echo esc_html(get_bloginfo('name')); ?>
 		</div><!-- .site-info -->
 		</footer><!-- #footer -->	

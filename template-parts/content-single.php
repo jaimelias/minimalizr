@@ -15,7 +15,7 @@
 			</div><!-- .entry-meta -->	
 			
 			<?php if(get_the_excerpt()) : ?>
-				<h2 class="uppercase light small">
+				<h2 class="light small">
 					<?php echo get_the_excerpt(); ?>
 				</h2>
 			<?php endif; ?>
@@ -27,9 +27,7 @@
 					</a></p>
 				<?php endif; ?>		
 		</header><!-- .entry-header -->
-		
-		<?php minimalizr_sharethis(); ?>
-		
+				
 	<?php endif; ?>
 	
 		
@@ -41,7 +39,6 @@
 	<?php if(minimalizr_get_meta( "minimalizr_width" ) != 'full'): ?>
 		<footer class="entry-footer">
 			<?php minimalizr_entry_footer(); ?>
-			<?php minimalizr_sharethis(); ?>
 		</footer><!-- .entry-footer -->
 	<?php endif; ?>
 </article><!-- #post-## -->

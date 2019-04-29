@@ -152,7 +152,7 @@ function minimalizr_scripts() {
 	//css
 	wp_enqueue_style( 'minimalLayout', esc_url($theme_url.'/css/minimal-layout.css'), array());
 	
-	wp_enqueue_style( 'minimalizr-style', esc_url(get_stylesheet_uri()), array( 'minimalLayout'));		
+	wp_enqueue_style( 'minimalizr-style', esc_url(get_stylesheet_uri()), array( 'minimalLayout'), time());		
     wp_add_inline_style( 'minimalizr-style', get_inline_css('media-query'));
 
 	
@@ -185,6 +185,29 @@ function minimalizr_scripts() {
 	
 }
 add_action( 'wp_enqueue_scripts', 'minimalizr_scripts', 0);
+
+function cf7_dequeue_recaptcha()
+{
+	$dequeu = true;
+	
+	if(is_singular())
+	{
+		global $post;
+		
+		if(has_shortcode($post->post_content, 'contact-form-7'))
+		{
+			$dequeu = false;
+		}
+	}
+	
+	if($dequeu === true)
+	{
+		wp_dequeue_script('google-recaptcha');
+	}
+}
+
+add_action( 'wp_enqueue_scripts', 'cf7_dequeue_recaptcha', 11);
+
 
 
 // Check if Site Origin is installed
@@ -394,8 +417,9 @@ function add_favicon()
 add_action( 'wp_head', 'add_favicon');
 
 
-function front_page_json_ld()
+function ld_json_callback($json)
 {
+	
 	if(is_front_page())
 	{
 		
@@ -423,10 +447,6 @@ function front_page_json_ld()
 		}			
 		
 		$json['contactPoint'] = $contactPoint;
-		
-			?>
-			<script type="application/ld+json"><?php echo json_encode($json); ?></script>
-			<?php
 	}
 	elseif(is_singular('post'))
 	{
@@ -488,17 +508,20 @@ function front_page_json_ld()
 		if(has_post_thumbnail())	
 		{
 			$json['image'] = $image;
-		}
-		
-
-		
-			?>
-			<script type="application/ld+json"><?php echo json_encode($json); ?></script>
-			<?php		
+		}		
 	}
+	return $json;
 }
 
-add_action( 'wp_head', 'front_page_json_ld');
+add_filter('minimal_ld_json', 'ld_json_callback', 1, 3);
+
+
+function front_page_json_script()
+{
+	echo '<script type="application/ld+json">'.json_encode(apply_filters('minimal_ld_json', array())).'</script>';
+}
+
+add_action( 'wp_head', 'front_page_json_script');
 
 
 function add_google_plus_rel()
@@ -517,7 +540,8 @@ function doctype_opengraph($output) {
 }
 add_filter('language_attributes', 'doctype_opengraph');
 
-
+remove_action( 'wp_head', 'feed_links', 2 );
+remove_action( 'wp_head', 'feed_links_extra', 3 ); 
 remove_action( 'wp_head', 'rest_output_link_wp_head');
 remove_action( 'wp_head', 'wp_oembed_add_discovery_links');
 remove_action( 'template_redirect', 'rest_output_link_header', 11, 0 );
@@ -529,14 +553,6 @@ remove_action('wp_head', 'print_emoji_detection_script', 7);
 remove_action('wp_print_styles', 'print_emoji_styles');
 remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
 remove_action( 'admin_print_styles', 'print_emoji_styles' );
-
-add_action( 'wp_print_styles', 'my_deregister_styles', 100);
-function my_deregister_styles(){ 
-	if(!is_user_logged_in())
-	{
-		wp_deregister_style('dashicons'); 
-	}	
-}
 
 
 // First, make sure Jetpack doesn't concatenate all its CSS
@@ -571,11 +587,11 @@ function remove_jetpack_styles() {
 }
 add_action('wp_print_styles', 'remove_jetpack_styles' );
 
-function facebook_messenger()
+function messenger_button()
 {
-	if(get_theme_mod('facebook_page_name') != null)
+	if(get_theme_mod('messenger') != null)
 	{
-		$output = '<p><a title="Facebook Messenger" class="fb_messenger" target="_blank" href="'.esc_url('https://m.me/'.get_theme_mod('facebook_page_name')).'" ><i class="fas fa-comment" ></i> '.esc_html(__('Facebook Messenger', 'minimalizr')).'</a></p>';		
+		$output = '<a title="Facebook Messenger" class="button-messenger pure-button" target="_blank" href="'.esc_url('https://m.me/'.get_theme_mod('messenger')).'" ><i class="fab fa-facebook-messenger"></i> '.esc_html(__('Messenger', 'minimalizr')).'</a>';		
 	}
 	else
 	{
@@ -583,7 +599,21 @@ function facebook_messenger()
 	}
 	return $output;
 }
-add_shortcode( 'messenger', 'facebook_messenger' );
+add_shortcode( 'messenger', 'messenger_button' );
+
+function skype_button()
+{
+	if(get_theme_mod('skype') != '')
+	{
+		$output = '<a title="Skype Call" class="button-skype pure-button" target="_blank" href="'.esc_html('skype:'.get_theme_mod('skype')).'" ><i class="fab fa-skype"></i> '.esc_html(__('Skype', 'minimalizr')).'</a>';		
+	}
+	else
+	{
+		$output = '<p class="small">'.esc_html(__('Skype username is not set yet.', 'minimalizr')).'</p>';
+	}
+	return $output;
+}
+add_shortcode( 'skype', 'skype_button' );
 
 
 function whatsapp_button()
@@ -594,7 +624,7 @@ function whatsapp_button()
 	{
 		$number = preg_replace('/[^0-9.]+/', '', get_theme_mod('whatsapp'));
 		$url = 'https://wa.me/'.$number.'?text='.get_the_title();
-		$output = '<a class="pure-button button-whatsapp semibold" href="'.esc_url($url).'"><span class="large"><i class="fab fa-whatsapp"></i></span> <span class="small hide-sm">WhatsApp</span></a>';
+		$output = '<a class="pure-button button-whatsapp" href="'.esc_url($url).'"><i class="fab fa-whatsapp"></i> WhatsApp</a>';
 	}
 	return $output;
 }
@@ -705,22 +735,6 @@ function async_defer_JS($tag, $handle, $src)
 add_filter( 'script_loader_tag', 'async_defer_JS', 10, 3 );
 
 
-//Contact Form 7 Output
-function modal_response( $output, $class, $content, $instance)
-	{
-		return '<div class="modal-container hidden large strong uppercase"><div class="modal-content"><div class="modal-header text-right"><span class="modal-close pointer"><i class="fas fa-times"></i></span></div>'.$output.'</div></div>';
-	}
-add_filter('wpcf7_form_response_output', 'modal_response', 10, 4);
-
-function remove_ajax_loader()
-{
-	remove_filter( 'wpcf7_ajax_loader', 'filter_wpcf7_ajax_loader', 10, 1 );
-}
-add_filter('wpcf7_ajax_loader', 'remove_ajax_loader', 10, 1);
-
-
-
-
 /**
  * Custom template tags for this theme.
  */
@@ -746,8 +760,6 @@ require get_template_directory() . '/inc/bootstrap-nav-walker.php';
 require get_template_directory() . '/inc/metaboxes.php';
 
 require get_template_directory() . '/inc/minimal.php';
-
-require get_template_directory() . '/inc/the_gallery.php';
 
 //sitemap
 
@@ -813,4 +825,6 @@ function facebook_pixel()
 	}
 }
 add_action('wp_head', 'facebook_pixel');
+
+require_once get_template_directory() . '/inc/minimal-class.php';
 

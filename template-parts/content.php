@@ -37,17 +37,8 @@
 	<hr />
 		
 	<footer class="entry-footer">
-		<div class="pure-g">
-			<div class="pure-u-3-4">
-				<?php minimalizr_sharethis(); ?>
-			</div>		
-			<div class="pure-u-1-4 strong">
-				<div class="large clearfix">
-					<span class="pull-right">
-						<span class="inline-block"><span class="disqus-comment-count" data-disqus-url="<?php the_permalink(); ?>">0</span></span> <i class="fas fa-comments"></i>
-					</span>
-				</div>
-			</div>
+		<div class="large">
+			<span class="inline-block"><span class="disqus-comment-count" data-disqus-url="<?php the_permalink(); ?>">0</span></span> <i class="fas fa-comments"></i>
 		</div>
 	</footer><!-- .entry-footer -->
 </article><!-- #post-## -->

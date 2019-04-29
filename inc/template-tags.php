@@ -166,18 +166,6 @@ function minimalizr_categorized_blog() {
 	}
 }
 
-function minimalizr_sharethis()
-{
-	$image = wp_get_attachment_url( get_post_thumbnail_id( get_the_ID() ) );
-	if(minimalizr_get_meta( "minimalizr_width" ) != 'full')
-	{
-		?>
-		
-			<div class="bottom-20"><div data-image="<?php echo esc_url($image); ?>" data-title="<?php the_title(); ?>" data-description="<?php echo strip_tags(get_the_excerpt());?>" data-url="<?php the_permalink(); ?>" class="sharethis-inline-share-buttons"></div></div>	
-		
-		<?php
-	}
-}
 
 /**
  * Flush out the transients used in minimalizr_categorized_blog.
