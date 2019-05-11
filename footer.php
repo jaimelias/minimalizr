@@ -14,10 +14,9 @@
 		
 		<?php get_sidebar(); ?>
 
-		
-			<div class="smcontainer large">
 		<?php 
 				$media = array("facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google");
+				$min_sm_btn = '';
 				
 				for($x = 0; $x < count($media); $x++)
 				{
@@ -25,12 +24,20 @@
 						{
 							if(!filter_var(get_theme_mod($media[$x]), FILTER_VALIDATE_URL) === false)
 							{
-								echo '<a id="mn'.esc_html($media[$x]).'" target="_blank" class="smbutton" href="'.esc_url(get_theme_mod($media[$x])).'"><i class="fab fa-'.esc_html($media[$x]).'"></i></a>';
+								$min_sm_btn .= '<a id="mn'.esc_html($media[$x]).'" target="_blank" class="smbutton" href="'.esc_url(get_theme_mod($media[$x])).'"><i class="fab fa-'.esc_html($media[$x]).'"></i></a>';
 							}
 						}	
 				}
 		
-		?></div><!-- .smcontainer -->
+		?>
+		
+		<?php if($min_sm_btn != ''): ?>
+			<div class="smcontainer large">
+				<?php echo $min_sm_btn; ?>
+			</div><!-- .smcontainer -->
+		<?php endif; ?>
+		
+		
 				
 		<div class="site-info semibold text-center clearfix">
 		<i class="fa fa-copyright"></i> <span><?php echo esc_html(date('Y')); ?></span> <?php echo esc_html(get_bloginfo('name')); ?>

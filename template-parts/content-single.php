@@ -18,14 +18,7 @@
 				<h2 class="light small">
 					<?php echo get_the_excerpt(); ?>
 				</h2>
-			<?php endif; ?>
-		
-			
-				<?php if ( has_post_thumbnail() ) : ?>
-					<p><a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>">
-					<?php the_post_thumbnail('medium', array('class' => 'img-responsive')); ?>
-					</a></p>
-				<?php endif; ?>		
+			<?php endif; ?>	
 		</header><!-- .entry-header -->
 				
 	<?php endif; ?>

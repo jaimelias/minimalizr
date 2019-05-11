@@ -426,6 +426,22 @@ function ld_json_callback($json)
 		$contactPoint = array();
 		$contactPoint['@type'] = 'ContactPoint';
 		$contactPoint['contactType'] = 'customer service';
+		$contactPoint['url'] = esc_url(get_the_permalink());
+		$contactPoint['sameAs'] = array();
+		
+		$media = array("facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google");
+		
+		for($x = 0; $x < count($media); $x++)
+		{
+				if(get_theme_mod($media[$x]) != null)
+				{
+					if(!filter_var(get_theme_mod($media[$x]), FILTER_VALIDATE_URL) === false)
+					{
+						array_push($contactPoint['sameAs'], get_theme_mod($media[$x]));
+					}
+				}	
+		}		
+		
 		if(get_theme_mod('min_tel') != null)
 		{
 			$contactPoint['telephone'] = esc_html(get_theme_mod('min_tel'));
@@ -453,6 +469,7 @@ function ld_json_callback($json)
 		$mainEntityOfPage = array();
 		$mainEntityOfPage['@type'] = 'WebPage';
 		$mainEntityOfPage['@id'] = esc_url(get_the_permalink());
+		$mainEntityOfPage['url'] = esc_url(get_the_permalink());
 		
 		$author = array();
 		$author['@type'] = 'Person';
@@ -624,7 +641,7 @@ function whatsapp_button()
 	{
 		$number = preg_replace('/[^0-9.]+/', '', get_theme_mod('whatsapp'));
 		$url = 'https://wa.me/'.$number.'?text='.get_the_title();
-		$output = '<a class="pure-button button-whatsapp" href="'.esc_url($url).'"><i class="fab fa-whatsapp"></i> WhatsApp</a>';
+		$output = '<a class="pure-button button-whatsapp" target="_blank" href="'.esc_url($url).'"><i class="fab fa-whatsapp"></i> WhatsApp</a>';
 	}
 	return $output;
 }
@@ -762,16 +779,7 @@ require get_template_directory() . '/inc/metaboxes.php';
 require get_template_directory() . '/inc/minimal.php';
 
 //sitemap
-
-if(isset($_GET['sitemap']))
-{
-	if($_GET['sitemap'] != 'airports')
-	{
-		require_once get_template_directory() . '/inc/minimal_sitemap/sitemap.php';
-		add_filter('template_include', array('minimal_sitemap', 'run'), 2);
-		add_filter('wp_headers', array('minimal_sitemap', 'headers'), 1);		
-	}
-}
+require_once get_template_directory() . '/inc/minimal_sitemap/sitemap.php';	
 
 
 function get_inline_css($sheet)
@@ -815,9 +823,7 @@ function facebook_pixel()
 			'https://connect.facebook.net/en_US/fbevents.js');
 			 fbq('init', '<?php echo esc_html(get_theme_mod('facebook_pixel_id')); ?>'); 
 			fbq('track', 'PageView');
-			</script><noscript><img height="1" width="1" 
-			src="https://www.facebook.com/tr?id=<?php echo esc_html(get_theme_mod('facebook_pixel_id')); ?>&ev=PageView
-			&noscript=1"/></noscript>
+			</script>
 		<?php
 		$output = ob_get_contents();
 		ob_end_clean();

@@ -2,15 +2,19 @@
 
 if (!class_exists('minimal_sitemap'))
 {
-	class minimal_sitemap{
-		
+	class minimal_sitemap
+	{
+		function __construct()
+		{
+			add_filter('template_include', array('minimal_sitemap', 'run'), 2);
+			add_filter('wp_headers', array('minimal_sitemap', 'headers'), 10);
+		}
 		
 		public static function headers($headers)
 		{
 			if(!is_admin() && isset($_GET['sitemap']))
 			{
-				$headers = array();
-				$headers['Content-type'] = 'application/xml';
+				header('Content-type: application/xml');
 			}
 			return $headers;
 		}
@@ -158,7 +162,8 @@ if (!class_exists('minimal_sitemap'))
 			}
 			return $output;
 		}
-		
-	}	
+	}
+	
+	$sitemap = new minimal_sitemap();
 }
 ?>
