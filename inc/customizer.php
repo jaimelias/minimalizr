@@ -155,7 +155,7 @@ class MyTheme_Customize {
 		$settingId = array('whatsapp', 'messenger', 'skype');
 		$settingLabel = array('WhatsApp Number', 'Messenger Username', 'Skype Username');
 		$settingDefault = array('', '', '');
-		$settingSanitize = array('intval', 'esc_html', 'esc_html');
+		$settingSanitize = array('esc_html', 'esc_html', 'esc_html');
 		
 		for($x = 0; $x < count($settingId); $x++)
 		{
