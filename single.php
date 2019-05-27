@@ -16,7 +16,7 @@ get_header(); ?>
 				<?php get_template_part( 'template-parts/content', 'single' ); ?>
 				
 				<?php
-					if ( comments_open() || get_comments_number() ) :
+					if ((comments_open() || get_comments_number()) && get_theme_mod('disqus') != null) :
 						echo '<div class="min-comments">';
 						comments_template();
 						echo '</div>';
