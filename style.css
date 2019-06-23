@@ -620,7 +620,7 @@ body.toggled #wrapper .minimal .top_navigator {
 
 .minimal-header a, .minimal-header, .site-title > a
 {
-	color: #fff;
+	color: #444;
 }
 .minimal-header .site-title
 {
@@ -852,15 +852,21 @@ ul.top_menu
 {
     list-style: none;
 }
-ul.top_menu .dropdown-menu > li > a,
+ul.top_menu .dropdown-menu > li > a
+{
+    background-color: #ccc;
+	padding: 15px 30px 15px 30px;
+	border-top: 1px solid rgba(125,125,125,0.1);
+}
 ul.top_menu .dropdown-menu > li > a:hover,
 ul.top_menu .dropdown-menu > li > a:active,
 ul.top_menu .dropdown-menu > li > a:focus
 {
-    background-color: rgba(0,0,0,0.05);
-	padding: 15px 30px 15px 30px;
-	border-top: 1px solid rgba(125,125,125,0.1);	
+    filter:alpha(opacity=90);
+    background-image:-webkit-linear-gradient(transparent,rgba(0,0,0,.05) 40%,rgba(0,0,0,.1));
+    background-image:linear-gradient(transparent,rgba(0,0,0,.05) 40%,rgba(0,0,0,.1))	
 }
+
 ul.top_menu > li.dropdown > ul.dropdown-menu.toggled
 {
 	display: block !important;
@@ -1055,7 +1061,7 @@ html:not(.fl-builder-edit) .fl-row-bg-photo.fl-row-full-height > .fl-row-content
 /*          Min - Grids         */
 /*-------------------------------*/
 
-img.attachment-thumbnail
+img.attachment-thumbnail, img[class^="wp-image"]
 {
 	max-width: 100%;
 	height: auto;
