@@ -200,9 +200,24 @@ function cf7_dequeue_recaptcha()
 		}
 	}
 	
+	if(is_tax())
+	{
+		$tax = get_taxonomy( get_queried_object()->taxonomy );
+		$description = get_term(get_queried_object()->term_id)->description;
+		
+		if(has_shortcode($description, 'contact-form-7'))
+		{
+			$dequeu = false;
+		}
+	}
+	
 	if($dequeu === true)
 	{
 		wp_dequeue_script('google-recaptcha');
+	}
+	else
+	{
+		wp_enqueue_script('google-recaptcha');
 	}
 }
 
@@ -330,17 +345,11 @@ function ogp_alternate() {
 function limit_350($x)
 {
 	$length = 350;
-	$x = strip_tags($x);
-	
-	if(strlen($x)<=$length)
-	{
-		return $x;
-	}
-	else
-	{
-		$y = substr($x,0,$length) . '...';
-		return $y;
-	}
+	$replace = array("\r\n", "\n", "\r", "#");
+	$x = str_replace($replace, " ", $x);
+	$x = preg_replace('/\s+/', ' ', $x);
+	$x = ltrim($x, ' ');
+	return substr($x, 0, $length);
 }
 
 function minimalizr_render_meta_tags() {
@@ -359,13 +368,17 @@ function minimalizr_render_meta_tags() {
 	{
 		$tax = get_taxonomy( get_queried_object()->taxonomy );
 		$title = esc_html($tax->labels->singular_name).': '.esc_html(single_term_title( '', false ));
-		$description = get_term(get_queried_object()->term_id)->description;
 		$url = home_url(add_query_arg(array(),$wp->request));
+		
+		$Parsedown = new Parsedown();
+		$description = get_term(get_queried_object()->term_id)->description;
+		$description = strip_shortcodes($description);
+		$description = $Parsedown->line($description);
+		$description = strip_tags($description);
 	}
-
+	
 	$description = limit_350($description);	
-	
-	
+		
 	$image = wp_get_attachment_url( get_post_thumbnail_id( get_the_ID() ) );
 	
 	
