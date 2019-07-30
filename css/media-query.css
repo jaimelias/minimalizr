@@ -12,6 +12,14 @@
 	{
 		font-size: 150%;
 	}
+	#content h1.small
+	{
+		font-size: 150%;
+	}
+	#content h2.small
+	{
+		font-size: 125%;
+	}	
 	.hide-sm
 	{
 		display: none;

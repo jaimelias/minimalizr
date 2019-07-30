@@ -218,6 +218,10 @@ td,th{
     padding:0
 }
 
+.entry-content p a.pure-button
+{
+	margin-bottom: 5px;
+}
 #wrapper form fieldset, .entry-footer > div:not(:last-child), .wp-caption, .entry-content table
 {
 	margin-bottom: 20px;
