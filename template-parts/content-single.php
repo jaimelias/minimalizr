@@ -15,9 +15,9 @@
 			</div><!-- .entry-meta -->	
 			
 			<?php if(get_the_excerpt()) : ?>
-				<h2 class="light small">
+				<p class="light large">
 					<?php echo get_the_excerpt(); ?>
-				</h2>
+				</p>
 			<?php endif; ?>	
 		</header><!-- .entry-header -->
 				
