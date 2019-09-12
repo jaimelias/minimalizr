@@ -588,6 +588,10 @@ remove_action( 'admin_print_styles', 'print_emoji_styles' );
 // First, make sure Jetpack doesn't concatenate all its CSS
 add_filter( 'jetpack_implode_frontend_css', '__return_false' );
 
+// disable xml-rpc xmlrp
+add_filter('xmlrpc_enabled', '__return_false');
+
+
 function remove_jetpack_styles() {
   wp_deregister_style( 'AtD_style' ); // After the Deadline
   wp_deregister_style( 'jetpack_likes' ); // Likes
@@ -653,7 +657,24 @@ function whatsapp_button()
 	if(get_theme_mod('whatsapp') != null)
 	{
 		$number = preg_replace('/[^0-9.]+/', '', get_theme_mod('whatsapp'));
-		$url = 'https://wa.me/'.$number.'?text='.get_the_title();
+		$text = null;
+		
+		if(is_singular())
+		{
+			global $post;
+			
+			$text .= '?text='.$post->post_title;
+		}
+		else if(is_tax())
+		{
+			$text .= '?text='.single_term_title( '', false);
+		}
+		else{
+			$text .= '?text='.get_bloginfo('name');
+		}
+		
+		
+		$url = 'https://wa.me/'.$number.$text;
 		$output = '<a class="pure-button button-whatsapp" target="_blank" href="'.esc_url($url).'"><i class="fab fa-whatsapp"></i> WhatsApp</a>';
 	}
 	return $output;
