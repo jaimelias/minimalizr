@@ -152,7 +152,7 @@ function minimalizr_scripts() {
 	//css
 	wp_enqueue_style( 'minimalLayout', esc_url($theme_url.'/css/minimal-layout.css'), array());
 	
-	wp_enqueue_style( 'minimalizr-style', esc_url(get_stylesheet_uri()), array( 'minimalLayout'), time());		
+	wp_enqueue_style( 'minimalizr-style', esc_url(get_stylesheet_uri()), array( 'minimalLayout'));		
     wp_add_inline_style( 'minimalizr-style', get_inline_css('media-query'));
 
 	
@@ -430,7 +430,7 @@ function add_favicon()
 add_action( 'wp_head', 'add_favicon');
 
 
-function ld_json_callback($json)
+function ld_json_cb($json)
 {
 	
 	if(is_front_page())
@@ -464,7 +464,7 @@ function ld_json_callback($json)
 		$json['@context'] = 'http://schema.org';
 		$json['@type'] = 'Organization';
 		$json['url'] = esc_url(home_url());
-		$json['legalName'] = esc_html(get_bloginfo('name'));
+		$json['name'] = esc_html(get_bloginfo('name'));
 		
 		if(get_theme_mod('minimalizr_large_icon'))
 		{
@@ -543,15 +543,15 @@ function ld_json_callback($json)
 	return $json;
 }
 
-add_filter('minimal_ld_json', 'ld_json_callback', 1, 3);
+add_filter('minimal_ld_json', 'ld_json_cb', 1, 3);
 
 
-function front_page_json_script()
+function ld_json_script()
 {
 	echo '<script type="application/ld+json">'.json_encode(apply_filters('minimal_ld_json', array())).'</script>';
 }
 
-add_action( 'wp_head', 'front_page_json_script');
+add_action( 'wp_head', 'ld_json_script');
 
 
 function add_google_plus_rel()
@@ -650,32 +650,37 @@ function skype_button()
 add_shortcode( 'skype', 'skype_button' );
 
 
-function whatsapp_button()
+function whatsapp_button($label = '')
 {
 	$output = null;
 	
 	if(get_theme_mod('whatsapp') != null)
 	{
+		$text = '';
 		$number = preg_replace('/[^0-9.]+/', '', get_theme_mod('whatsapp'));
-		$text = null;
+		
+		if($label == '')
+		{
+			$label = 'Whatsapp';
+		}
 		
 		if(is_singular())
 		{
 			global $post;
 			
-			$text .= '?text='.$post->post_title;
+			$text .= '?text='.urlencode($post->post_title);
 		}
 		else if(is_tax())
 		{
-			$text .= '?text='.single_term_title( '', false);
+			$text .= '?text='.urlencode(single_term_title( '', false));
 		}
 		else{
-			$text .= '?text='.get_bloginfo('name');
+			$text .= '?text='.urlencode(get_bloginfo('name'));
 		}
 		
 		
 		$url = 'https://wa.me/'.$number.$text;
-		$output = '<a class="pure-button button-whatsapp" target="_blank" href="'.esc_url($url).'"><i class="fab fa-whatsapp"></i> WhatsApp</a>';
+		$output = '<a class="pure-button button-whatsapp" target="_blank" href="'.esc_url($url).'"><i class="fab fa-whatsapp"></i> '.esc_html($label).'</a>';
 	}
 	return $output;
 }

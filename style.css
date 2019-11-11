@@ -764,9 +764,9 @@ a.dropdown-toggle > .caret
 .button-whatsapp, .button-messenger, .button-skype
 {
 	color: #fff;
-	border: 3px solid #fff;
 	box-shadow: 0 0 1px rgba(0,0,0,0.3);
 	display: inline-block;
+	border-radius: 25px;
 }
 .button-messenger
 {
@@ -1065,7 +1065,15 @@ html:not(.fl-builder-edit) .fl-row-bg-photo.fl-row-full-height > .fl-row-content
 /*          Min - Grids         */
 /*-------------------------------*/
 
-img.attachment-thumbnail, img[class^="wp-image"], .packages.type-packages img
+figure.wp-block-image
+{
+	background-color: #fff;
+	padding: 10px;
+	margin: 0 0 20px 0;
+	text-align: center;
+	box-sizing: border-box;
+}
+img.attachment-thumbnail, img[class^="wp-image"], .wp-block-image > img
 {
 	max-width: 100%;
 	height: auto;

@@ -14,7 +14,7 @@ if (!class_exists('minimal_sitemap'))
 		{
 			if(!is_admin() && isset($_GET['sitemap']))
 			{
-				header('Content-type: application/xml');
+				$headers['Content-Type'] = 'Content-type: application/xml';
 			}
 			return $headers;
 		}
