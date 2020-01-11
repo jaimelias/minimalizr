@@ -141,10 +141,6 @@
 /**	> 768px MD **/
 @media (min-width: 768px)
 {
-	.hide-lg
-	{
-		display: none;
-	}
 	.responsive ul.top_menu li:not(:first-child)
 	{
 		border-top: 1px solid rgba(125,125,125,0.1);
@@ -184,6 +180,13 @@
 	{
 		padding: 30px;
 	}	
+}
+@media (min-width: 768px ) and (max-width: 1024px)
+{
+	.hide-md
+	{
+		display: none;
+	}
 }
 @media (min-width: 1024px)
 {
@@ -307,6 +310,13 @@
 		padding: 30px;
 	}
 }
+@media (min-width: 1024px ) and (max-width: 1280px)
+{
+	.hide-lg
+	{
+		display: none;
+	}
+}
 @media  (min-width: 1280px)
 {
 	.pure-g.gutters{
@@ -317,5 +327,9 @@
 	  box-sizing: border-box;
 	  padding-left: 20px;
 	  padding-right: 20px;
+	}
+	.hide-xl
+	{
+		display: none;
 	}
 }

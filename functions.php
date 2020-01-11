@@ -152,7 +152,7 @@ function minimalizr_scripts() {
 	//css
 	wp_enqueue_style( 'minimalLayout', esc_url($theme_url.'/css/minimal-layout.css'), array());
 	
-	wp_enqueue_style( 'minimalizr-style', esc_url(get_stylesheet_uri()), array( 'minimalLayout'));		
+	wp_enqueue_style( 'minimalizr-style', esc_url(get_stylesheet_uri()), array( 'minimalLayout'), time());		
     wp_add_inline_style( 'minimalizr-style', get_inline_css('media-query'));
 
 	
@@ -650,13 +650,12 @@ function skype_button()
 add_shortcode( 'skype', 'skype_button' );
 
 
-function whatsapp_button($label = '')
+function whatsapp_button($label = '', $text = '')
 {
 	$output = null;
 	
 	if(get_theme_mod('whatsapp') != null)
 	{
-		$text = '';
 		$number = preg_replace('/[^0-9.]+/', '', get_theme_mod('whatsapp'));
 		
 		if($label == '')
@@ -664,20 +663,24 @@ function whatsapp_button($label = '')
 			$label = 'Whatsapp';
 		}
 		
-		if(is_singular())
+		if($text == '')
 		{
-			global $post;
-			
-			$text .= '?text='.urlencode($post->post_title);
-		}
-		else if(is_tax())
-		{
-			$text .= '?text='.urlencode(single_term_title( '', false));
-		}
-		else{
-			$text .= '?text='.urlencode(get_bloginfo('name'));
+			if(is_singular())
+			{
+				global $post;
+				$text = $post->post_title;
+			}
+			else if(is_tax())
+			{
+				$text = single_term_title( '', false);
+			}
+			else{
+				$text = get_bloginfo('name');
+			}	
 		}
 		
+		
+		$text =  '?text='.urlencode($text);
 		
 		$url = 'https://wa.me/'.$number.$text;
 		$output = '<a class="pure-button button-whatsapp" target="_blank" href="'.esc_url($url).'"><i class="fab fa-whatsapp"></i> '.esc_html($label).'</a>';
