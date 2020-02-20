@@ -367,7 +367,7 @@ hr
 {
 	line-height: 200%;	
 }
-.entry-content p:not(:last-child)
+.entry-content p:not(:last-child):not([class*=bottom])
 {
 	margin: 0 0 20px 0;
 }
@@ -1044,6 +1044,13 @@ html:not(.fl-builder-edit) .fl-row-bg-photo.fl-row-full-height > .fl-row-content
 html:not(.fl-builder-edit) .fl-row-bg-photo.fl-row-full-height > .fl-row-content-wrap > .fl-row-content
 {
 	z-index: 1;
+}
+/*-------------------------------*/
+/*          Block Gallery        */
+/*-------------------------------*/
+.blockgallery
+{
+	margin-bottom: 20px;
 }
 /*-------------------------------*/
 /*          Min - Grids         */

@@ -639,7 +639,7 @@ function skype_button()
 {
 	if(get_theme_mod('skype') != '')
 	{
-		$output = '<a title="Skype Call" class="button-skype pure-button" target="_blank" href="'.esc_html('skype:'.get_theme_mod('skype')).'" ><i class="fab fa-skype"></i> '.esc_html(__('Skype', 'minimalizr')).'</a>';		
+		$output = '<a title="Skype Call" class="button-skype pure-button" target="_blank" href="'.('skype:'.get_theme_mod('skype')).'" ><i class="fab fa-skype"></i> '.esc_html(__('Skype', 'minimalizr')).'</a>';		
 	}
 	else
 	{
