@@ -19,14 +19,14 @@
 					</div><!-- .entry-meta -->					
 				</div>		
 				<div class="pure-u-2-3">		
-					<?php the_title( sprintf( '<h2 class="entry-title small"><a class="small normal" href="%s">', esc_url( get_permalink() ) ), '</a></h2>' ); ?>
+					<?php the_title( sprintf( '<h2 class="entry-title"><a class="normal" href="%s">', esc_url( get_permalink() ) ), '</a></h2>' ); ?>
 					<div class="entry-content normal small">
 						<?php the_excerpt();?>
 					</div><!-- .entry-content -->
 				</div>
 			</div>
 		<?php else: ?>
-			<?php the_title( sprintf( '<h2 class="entry-title small"><a class="small normal" href="%s">', esc_url( get_permalink() ) ), '</a></h2>' ); ?>
+			<?php the_title( sprintf( '<h2 class="entry-title"><a class="normal" href="%s">', esc_url( get_permalink() ) ), '</a></h2>' ); ?>
 			<div class="entry-content normal small">
 				<?php the_excerpt();?>
 			</div><!-- .entry-content -->		
