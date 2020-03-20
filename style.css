@@ -1031,20 +1031,6 @@ html.fl-builder-edit .minimal-header, html.fl-builder-edit .minimal .top_navigat
 	color: #fff;
 	z-index: 1;
 }
-html:not(.fl-builder-edit) .fl-row-bg-photo.fl-row-full-height > .fl-row-content-wrap::before
-{
-	content: " ";
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	background: linear-gradient(to bottom, rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.3) 100%);
-}
-html:not(.fl-builder-edit) .fl-row-bg-photo.fl-row-full-height > .fl-row-content-wrap > .fl-row-content
-{
-	z-index: 1;
-}
 /*-------------------------------*/
 /*          Block Gallery        */
 /*-------------------------------*/
