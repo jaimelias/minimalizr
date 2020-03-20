@@ -33,10 +33,6 @@
     display:inline-block;
     zoom:1
 }
-.pure-g [class*=pure-u]{
-    font-family:sans-serif
-}
-
 .pure-u-1-6{
     width:16.6667%
 }
