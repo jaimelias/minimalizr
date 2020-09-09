@@ -355,6 +355,12 @@ strong, .strong
 	color: #000;
 	padding: 10px;	
 }
+.minimal_warning
+{
+	background-color:  #ffff4d;
+	color: #000;
+	padding: 10px;	
+}
 /*--------------------------------------------------------------
 >>> GRIDS RESPONSIVE CSS:
 --------------------------------------------------------------*/
