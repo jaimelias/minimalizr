@@ -13,30 +13,37 @@
 	<?php 
 	
 		$output = null;
-	
-
-		$this_title = get_the_title();
-		
-		if(is_tax())
-		{
-			$this_title = html_entity_decode($this_title);
-		}
-		
-		$output .= '<h1 class="entry-title">'.$this_title.'</h1>';
+		$title = (is_tax()) ? html_entity_decode(get_the_title()) : get_the_title();
+		$title = '<h1 class="entry-title">'.$title.'</h1>';
+		$description = null;
 		
 		if(has_excerpt())
 		{
 			if(is_singular() && strlen(get_the_excerpt()) > 0)
 			{
-				$output .= '<p itemprop="description" class="large bottom-10">'.get_the_excerpt().'</p><hr/>';
+				$description = '<p itemprop="description" class="large bottom-10">'.get_the_excerpt().'</p>';
 			}
-			if(is_tax() && strlen(term_description()) > 0)
+			if($description && strlen(term_description()) > 0)
 			{
-				$output .= '<p itemprop="description" class="large bottom-10">'.esc_html(get_term(get_queried_object()->term_id)->description).'</p><hr />';
+				$description = '<p itemprop="description" class="large bottom-10">'.esc_html(get_term(get_queried_object()->term_id)->description).'</p>';
 			}
 		}
 
-		echo (in_array('bodyfull', get_body_class())) ? '<div class="minimal-box text-center"><div class="container">'.$output.'</div></div>' : $output;
+		
+		if(in_array('bodyfull', get_body_class()))
+		{
+			echo '<div class="minimal-box text-center"><div class="container">'.$title.$description.'</div></div>';
+		}
+		else
+		{
+			echo $title.$description;
+			
+			if(!is_tax())
+			{
+				echo  '<hr/>';
+			}
+		}
+
 	?>
 	</header><!-- .entry-header -->
 	
