@@ -21,7 +21,7 @@
 		{
 			if(is_singular() && strlen(get_the_excerpt()) > 0)
 			{
-				$description = '<p itemprop="description" class="large bottom-10">'.get_the_excerpt().'</p>';
+				$description = '<p itemprop="description" class="large bottom-10">'.get_the_excerpt().'</p><hr/>';
 			}
 			if($description && strlen(term_description()) > 0)
 			{
@@ -37,11 +37,6 @@
 		else
 		{
 			echo $title.$description;
-			
-			if(!is_tax())
-			{
-				echo  '<hr/>';
-			}
 		}
 
 	?>
