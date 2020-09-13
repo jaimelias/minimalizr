@@ -21,7 +21,12 @@
 		{
 			if(is_singular() && strlen(get_the_excerpt()) > 0)
 			{
-				$description = '<p itemprop="description" class="large bottom-10">'.get_the_excerpt().'</p><hr/>';
+				$description = '<p itemprop="description" class="large bottom-10">'.get_the_excerpt().'</p>';
+				
+				if(in_array('bodyfull', get_body_class()))
+				{
+					$description .= '<hr/>';
+				}
 			}
 			if($description && strlen(term_description()) > 0)
 			{
