@@ -38,7 +38,7 @@
 			}
 		}
 
-		echo (in_array('bodyfull', get_body_class())) ? '<div class="minimal-box text-center">'.$output.'</div>' : $output;
+		echo (in_array('bodyfull', get_body_class())) ? '<div class="minimal-box text-center"><div class="container">'.$output.'</div></div>' : $output;
 	?>
 	</header><!-- .entry-header -->
 	<?php endif; ?>
