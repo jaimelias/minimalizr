@@ -9,8 +9,6 @@
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 
-
-	<?php if(!is_front_page()): ?>
 	<header class="entry-header">
 	<?php 
 	
@@ -41,7 +39,7 @@
 		echo (in_array('bodyfull', get_body_class())) ? '<div class="minimal-box text-center"><div class="container">'.$output.'</div></div>' : $output;
 	?>
 	</header><!-- .entry-header -->
-	<?php endif; ?>
+	
 
 	<div class="entry-content">
 		<?php the_content(); ?>
