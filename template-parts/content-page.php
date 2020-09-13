@@ -23,7 +23,7 @@
 			{
 				$description = '<p itemprop="description" class="large bottom-10">'.get_the_excerpt().'</p>';
 				
-				if(in_array('bodyfull', get_body_class()))
+				if(!in_array('bodyfull', get_body_class()))
 				{
 					$description .= '<hr/>';
 				}
