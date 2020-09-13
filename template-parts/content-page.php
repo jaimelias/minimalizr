@@ -9,15 +9,10 @@
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 
-	<?php if(is_front_page()): ?>
-
-	<?php else: ?>
 	<header class="entry-header">
 	<?php 
 	
 		$output = null;
-	
-
 		$this_title = get_the_title();
 		
 		if(is_tax())
