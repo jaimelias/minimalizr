@@ -671,6 +671,17 @@ a.dropdown-toggle > .caret
 	cursor: pointer;
 }
 
+.minimal-box
+{
+	padding: 20px 10px;
+	background-color: #f7f7f7;
+}
+.minimal-box h1, .minimal-box h2
+{
+	font-size: 2em !important;
+	text-transform: uppercase;
+}
+
 /*-------------------------------*/
 /*            Overlay            */
 /*-------------------------------*/
