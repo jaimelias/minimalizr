@@ -144,7 +144,12 @@ class Minimal_Classes
 	public static function top_menu()
 	{
 		$menu = Minimal_Classes::responsive();	
-		$menu .= Minimal_Classes::minimal();
+		
+		if(has_nav_menu('primary'))
+		{
+			$menu .= Minimal_Classes::minimal();
+		}
+		
 		echo $menu;
 	}
 	

@@ -610,6 +610,10 @@ body.toggled #wrapper .minimal .top_navigator {
 {
 	top: 32px;
 }
+.minimal .top_navigator
+{
+	background-color: #fff;
+}
 .minimal-header
 {
   margin: 0;
@@ -625,6 +629,7 @@ body.toggled #wrapper .minimal .top_navigator {
   box-sizing: border-box;
   background-color: #fff;
   color: #444;
+  box-shadow: 0 0 1px rgba(0,0,0,0.5);
 }
 
 .minimal-header a, .minimal-header, .site-title > a
