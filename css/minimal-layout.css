@@ -7,7 +7,7 @@
 .pure-button:focus,a:active,a:hover{
     outline:0
 }
-.pure-table{
+.pure-table, .wp-block-table > table{
     border-collapse:collapse;
     border-spacing:0
 }
@@ -147,11 +147,11 @@
     margin:.5em 0;
     display:block
 }
-.pure-table{
+.pure-table, .wp-block-table > table{
     empty-cells:show;
     border:1px solid #cbcbcb
 }
-.pure-table td,.pure-table th{
+.pure-table td,.pure-table th, .wp-block-table > table td{
     border-left:1px solid #cbcbcb;
     border-width:0 0 0 1px;
     font-size:inherit;
@@ -159,7 +159,7 @@
     overflow:visible;
     padding:.5em 1em
 }
-.pure-table td:first-child,.pure-table th:first-child{
+.pure-table td:first-child,.pure-table th:first-child, .wp-block-table > table td:first-child{
     border-left-width:0
 }
 .pure-table thead{
@@ -168,16 +168,16 @@
     text-align:left;
     vertical-align:bottom
 }
-.pure-table td{
+.pure-table td, .wp-block-table > table td{
     background-color:transparent
 }
 .pure-table-odd td,.pure-table-striped tr:nth-child(2n-1) td{
     background-color:#f2f2f2
 }
-.pure-table-bordered td{
+.pure-table-bordered td, .wp-block-table > table td{
     border-bottom:1px solid #cbcbcb
 }
-.pure-table-bordered tbody>tr:last-child>td{
+.pure-table-bordered tbody>tr:last-child>td, .wp-block-table > table tbody>tr:last-child>td{
     border-bottom-width:0
 }
 .hidden,[hidden]{
