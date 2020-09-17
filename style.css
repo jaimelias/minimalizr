@@ -1088,6 +1088,10 @@ figure.wp-block-image
 	box-sizing: border-box;
 	width: 100%;
 }
+figure.wp-block-table
+{
+	margin: 0;
+}
 img.attachment-thumbnail, img[class^="wp-image"], .wp-block-image > img
 {
 	max-width: 100%;
