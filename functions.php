@@ -186,44 +186,20 @@ function minimalizr_scripts() {
 }
 add_action( 'wp_enqueue_scripts', 'minimalizr_scripts', 0);
 
-function cf7_dequeue_recaptcha()
-{
-	$dequeu = true;
-	
-	if(is_singular())
-	{
-		global $post;
-		
-		if(has_shortcode($post->post_content, 'contact-form-7'))
-		{
-			$dequeu = false;
-		}
-	}
-	
-	if(is_tax())
-	{
-		$tax = get_taxonomy( get_queried_object()->taxonomy );
-		$description = get_term(get_queried_object()->term_id)->description;
-		
-		if(has_shortcode($description, 'contact-form-7'))
-		{
-			$dequeu = false;
-		}
-	}
-	
-	if($dequeu === true)
-	{
-		wp_dequeue_script('google-recaptcha');
-	}
-	else
-	{
-		wp_enqueue_script('google-recaptcha');
-	}
+
+function contact_form_7_check() {
+    if ( get_field( 'enable_contact_form_on_this_page' ) ) {
+    } else {
+        add_filter( 'wpcf7_load_js', '__return_false' );
+        add_filter( 'wpcf7_load_css', '__return_false' );
+        add_action( 'wp_print_scripts', 'disable_recaptcha' );
+    }
 }
-
-add_action( 'wp_enqueue_scripts', 'cf7_dequeue_recaptcha', 11);
-
-
+function disable_recaptcha() {
+    wp_dequeue_script( 'google-recaptcha' );
+    wp_dequeue_script( 'google-recaptcha-js' );
+}
+add_action( 'wp', 'contact_form_7_check' );
 
 // Check if Site Origin is installed
 
