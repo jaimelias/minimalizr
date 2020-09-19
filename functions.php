@@ -163,8 +163,12 @@ function minimalizr_scripts() {
 	if(is_admin()) return;
 	
 	$theme_url = get_template_directory_uri();
-	$wp_scripts->registered['jquery-core']->src = 'https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js';
-    $wp_scripts->registered['jquery']->deps = ['jquery-core'];	
+	
+	if(!isset($_GET['fl_builder']))
+	{
+		$wp_scripts->registered['jquery-core']->src = 'https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js';
+		$wp_scripts->registered['jquery']->deps = ['jquery-core'];			
+	}
 	
 	wp_enqueue_script( 'minimalizr-sidebar-menuJS', esc_url($theme_url . '/js/sidebar-menu.js'), array('jquery'), '', true );	
 	wp_enqueue_script( 'landing-cookies', esc_url($theme_url . '/js/cookies.js'), array('jquery'), '', true);
