@@ -26,8 +26,8 @@ const set_device = () => {
 			setCookie('device', 'undefined', 30);
 		}				
 	}
-	$('input.device').each(function(){
-		$(this).val(getCookie('device'));
+	jQuery('input.device').each(function(){
+		jQuery(this).val(getCookie('device'));
 	});	
 }
 
@@ -41,8 +41,8 @@ const set_landing_domain = () => {
 			setCookie('landing_domain', 'undefined', 30);
 		}		
 	}
-	$('input.landing_domain').each(function(){
-		$(this).val(getCookie('landing_domain'));
+	jQuery('input.landing_domain').each(function(){
+		jQuery(this).val(getCookie('landing_domain'));
 	});		
 }
 
@@ -56,8 +56,8 @@ const set_landing_path = () => {
 			setCookie('landing_path', 'undefined', 30);
 		}	
 	}
-	$('input.landing_path').each(function(){
-		$(this).val(getCookie('landing_path'));
+	jQuery('input.landing_path').each(function(){
+		jQuery(this).val(getCookie('landing_path'));
 	});		
 }
 
@@ -124,8 +124,8 @@ const set_channel = () => {
 	}
 	
 	
-	$('input.channel').each(function(){
-		$(this).val(getCookie('channel'));
+	jQuery('input.channel').each(function(){
+		jQuery(this).val(getCookie('channel'));
 	});	
 }
 
@@ -137,7 +137,7 @@ const setCookie = (cname, cvalue, exdays) => {
 }
 
 const getCookie = (cname) => {
-    var name = cname + "=";
+    var name = cname + '=';
     var ca = document.cookie.split(';');
     for(var i = 0; i < ca.length; i++) {
         var c = ca[i];

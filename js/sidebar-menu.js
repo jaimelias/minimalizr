@@ -1,19 +1,19 @@
-jQuery(document).ready(function() {
+jQuery(() => {
 
 	'use strict';
 	
-    jQuery('[data-toggle="offcanvas"]').click(function() {
+    jQuery('[data-toggle="offcanvas"]').click(() => {
  
         jQuery('body').toggleClass('toggled');
 		is_overlay_visible();
     });
 	
-	jQuery('.overlay').click(function(){
+	jQuery('.overlay').click(() => {
 		jQuery('body').toggleClass('toggled');
 		is_overlay_visible();
 	});
 
-	jQuery('.top_menu > li.dropdown > a > .caret').click(function(e){
+	jQuery('.top_menu > li.dropdown > a > .caret').click(e =>{
 		e.preventDefault();
 	});
 	
@@ -34,7 +34,7 @@ jQuery(document).ready(function() {
 		}
     });
 
-    function is_overlay_visible() {
+    const is_overlay_visible = () => {
         jQuery('.overlay').toggle();
         if (jQuery('body').hasClass('toggled')) 
 		{
@@ -53,27 +53,27 @@ jQuery(document).ready(function() {
 	//scroll
 	beaver_scroll_down();
 	
-});
+	jQuery(window).on('load resize', () => {
 
-
-jQuery(window).on('load resize', function(){
-
-	//fix sidebar height bug
-	jQuery('.top_navigator').each(function(){
-		if(jQuery(this).parent().hasClass('minimal') || (jQuery(this).parent().hasClass('responsive') && jQuery(window).width() < 1024))
-		{
-			jQuery(this).attr('style', 'height: 100vh;');
-		}
-		else
-		{
-			jQuery(this).removeAttr('style');
-		}
+		//fix sidebar height bug
+		jQuery('.top_navigator').each(function(){
+			if(jQuery(this).parent().hasClass('minimal') || (jQuery(this).parent().hasClass('responsive') && jQuery(window).width() < 1024))
+			{
+				jQuery(this).attr('style', 'height: 100vh;');
+			}
+			else
+			{
+				jQuery(this).removeAttr('style');
+			}
+		});	
 	});
-		
+	
+	
 });
 
-function beaver_fullbg_forms()
-{
+
+
+const beaver_fullbg_forms = () => {
 	if(jQuery('.fl-row-bg-photo').find('form').length)
 	{
 		jQuery('.fl-row-bg-photo').find('form').each(function(){
@@ -86,8 +86,7 @@ function beaver_fullbg_forms()
 	}
 }
 
-function beaver_scroll_down()
-{
+const beaver_scroll_down = () => {
 	if(!jQuery('html').hasClass('.fl-builder-edit'))
 	{
 		jQuery('.fl-row-full-height').each(function(){
