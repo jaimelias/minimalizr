@@ -360,19 +360,25 @@ function limit_350($x)
 function minimalizr_render_meta_tags() {
 	
 	global $wp;
+	global $post;
 	$description = null;
-	$title = get_the_title();
+	
 	$url =  get_permalink();
 	
 	
-	if(has_excerpt())
+	if(isset($post))
 	{
-		$description = get_the_title().'. '.get_the_excerpt();
+		$title = $post->post_title;
+		
+		if(has_excerpt())
+		{
+			$description = $title.'. '.$post->post_excerpt;
+		}
 	}
 	if(is_tax())
 	{
 		$tax = get_taxonomy( get_queried_object()->taxonomy );
-		$title = esc_html($tax->labels->singular_name).': '.esc_html(single_term_title( '', false ));
+		$title = $tax->labels->singular_name.': '. single_term_title( '', false );
 		$url = home_url(add_query_arg(array(),$wp->request));
 		
 		$Parsedown = new Parsedown();
@@ -396,8 +402,8 @@ function minimalizr_render_meta_tags() {
 			<meta property="og:url" content="<?php echo esc_url($url); ?>" />
 			
 			<?php if($description != null): ?>
-				<meta name="description" content="<?php echo esc_html($description);?>" />
-				<meta property="og:description" content="<?php echo esc_html($description);?>" />
+				<meta name="description" content="<?php esc_html_e($description);?>" />
+				<meta property="og:description" content="<?php esc_html_e($description);?>" />
 			<?php endif; ?>
 
 			<?php if(has_post_thumbnail() && !is_tax()): ?>
