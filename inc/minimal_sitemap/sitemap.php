@@ -6,23 +6,34 @@ if (!class_exists('minimal_sitemap'))
 	{
 		function __construct()
 		{
-			add_filter('template_include', array('minimal_sitemap', 'run'), 2);
-			add_filter('wp_headers', array('minimal_sitemap', 'headers'), 10);
+			$this->init();
+			
+
 		}
 		
-		public static function headers($headers)
+		public function init()
 		{
-			if(!is_admin() && isset($_GET['sitemap']))
+			if(isset($_GET['minimal-sitemap']))
+			{
+				$this->query_param = sanitize_text_field($_GET['minimal-sitemap']);
+			}
+			add_filter('template_include', array(&$this, 'run'), 100);
+			add_filter('wp_headers', array(&$this, 'headers'), 100);
+		}
+		
+		public function headers($headers)
+		{
+			if(!is_admin() && isset($this->query_param))
 			{
 				$headers['Content-Type'] = 'Content-type: application/xml';
 			}
 			return $headers;
 		}
-		public static function run($template)
+		public function run($template)
 		{
-			if(isset($_GET['sitemap']))
+			if(isset($this->query_param))
 			{
-				$post_type = sanitize_text_field($_GET['sitemap']);
+				$post_type = $this->query_param;
 				
 				if($post_type == '')
 				{
@@ -38,16 +49,17 @@ if (!class_exists('minimal_sitemap'))
 				$args['suppress_filters'] = true;
 				
 				//Polylang fix all languages
-				if(minimal_sitemap::polylang())
+				if($this->polylang())
 				{
-					$args['lang'] = minimal_sitemap::polylang();
+					$args['lang'] = $this->polylang();
 				}
 				
 				$sitemap_query = new WP_Query($args);
-				$output = '';
+				$output = null;
 				
 				if($sitemap_query->have_posts())
 				{
+					
 					ob_start();
 					
 					echo '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">';
@@ -56,6 +68,7 @@ if (!class_exists('minimal_sitemap'))
 					{
 						$sitemap_query->the_post();
 						global $post;
+
 						?>
 						<url>
 						<loc><?php the_permalink(); ?></loc>
@@ -66,7 +79,7 @@ if (!class_exists('minimal_sitemap'))
 							</image:image>
 						<?php endif; ?>
 						
-						<changefreq><?php echo esc_html(minimal_sitemap::changefreq($post)); ?></changefreq>
+						<changefreq><?php echo esc_html($this->changefreq($post)); ?></changefreq>
 						<lastmod><?php the_modified_date('Y-m-d'); ?></lastmod>
 						<mobile:mobile/>
 						</url>
@@ -78,8 +91,10 @@ if (!class_exists('minimal_sitemap'))
 					ob_end_clean();
 					$output = $content;
 				}
+				
 				wp_reset_query();
-				exit(ent2ncr(minimal_sitemap::sanitize_output($output)));	
+							
+				exit(ent2ncr($this->sanitize_output(apply_filters('minimal_sitemap', $output))));
 			}
 			else
 			{
@@ -87,14 +102,14 @@ if (!class_exists('minimal_sitemap'))
 			}
 		}
 
-		public static function sanitize_output($buffer) {
+		public function sanitize_output($buffer) {
 			$search = array('/\>[^\S ]+/s', '/[^\S ]+\</s', '/(\s)+/s');
 			$replace = array('>', '<', '\\1');
 			$buffer = preg_replace($search, $replace, $buffer);
 			return $buffer;
 		}
 		
-		public static function polylang()
+		public function polylang()
 		{
 			global $polylang;
 			$output = false;
@@ -122,7 +137,7 @@ if (!class_exists('minimal_sitemap'))
 			return $output;
 		}
 		
-		public static function changefreq($post)
+		public function changefreq($post)
 		{
 			$output = 'weekly';
 			
@@ -139,7 +154,7 @@ if (!class_exists('minimal_sitemap'))
 			}
 			else
 			{
-				if($post->ID == get_option('page_on_front') || $post->ID == get_option('page_for_posts') || minimal_sitemap::polylang_alt($post) == get_option('page_on_front') || minimal_sitemap::polylang_alt($post) == get_option('page_for_posts'))
+				if($post->ID == get_option('page_on_front') || $post->ID == get_option('page_for_posts') || $this->polylang_alt($post) == get_option('page_on_front') || $this->polylang_alt($post) == get_option('page_for_posts'))
 				{
 					$output = 'daily';
 				}
@@ -151,7 +166,7 @@ if (!class_exists('minimal_sitemap'))
 			return $output;
 		}
 		
-		public static function polylang_alt($post)
+		public function polylang_alt($post)
 		{
 			$output = false;
 			global $polylang;
