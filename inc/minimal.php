@@ -179,7 +179,7 @@ class Minimal_Classes
 			'depth'             => 2,
 			'menu_class'        => 'top_menu',
 			'container' => false,
-			'items_wrap'      => '<nav class="top_navigator"><ul class="top_menu"><li class="sidebar-brand"><a href="'.esc_url(home_url()).'"><i class="fas fa-home"></i> '.__("Home", "minimalizr").'</a></li>%3$s</ul></nav>',
+			'items_wrap'      => '<nav class="top_navigator"><ul class="top_menu"><li class="sidebar-brand"><a href="'.esc_url(home_url()).'"><i class="fas fa-home"></i></a></li>%3$s</ul></nav>',
 			'fallback_cb'       => 'wp_bootstrap_navwalker::fallback',
 			'walker'            => new wp_bootstrap_navwalker())
 		);

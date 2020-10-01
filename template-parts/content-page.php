@@ -14,7 +14,7 @@
 	
 		$output = null;
 		$title = (is_tax()) ? html_entity_decode(get_the_title()) : get_the_title();
-		$title = '<h1 class="entry-title">'.$title.'</h1>';
+		$title = (is_front_page()) ?  '<h2 class="entry-title">'.$title.'</h2>' : '<h1 class="entry-title">'.$title.'</h1>';
 		$description = null;
 		
 		if(has_excerpt())
