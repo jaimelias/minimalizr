@@ -347,9 +347,9 @@ function ogp_alternate() {
 	}
 }
 
-function limit_350($x)
+function limit_200($x)
 {
-	$length = 350;
+	$length = 200;
 	$replace = array("\r\n", "\n", "\r", "#");
 	$x = str_replace($replace, " ", $x);
 	$x = preg_replace('/\s+/', ' ', $x);
@@ -361,8 +361,7 @@ function minimalizr_render_meta_tags() {
 	
 	global $wp;
 	global $post;
-	$description = null;
-	
+	$description = null;	
 	$url =  get_permalink();
 	
 	
@@ -372,7 +371,7 @@ function minimalizr_render_meta_tags() {
 		
 		if(has_excerpt())
 		{
-			$description = $title.'. '.$post->post_excerpt;
+			$description = (strlen($post->post_excerpt) < 50) ? $title.'. '.$post->post_excerpt : $post->post_excerpt;
 		}
 	}
 	if(is_tax())
@@ -388,7 +387,7 @@ function minimalizr_render_meta_tags() {
 		$description = strip_tags($description);
 	}
 	
-	$description = limit_350($description);	
+	$description = limit_200($description);	
 		
 	$image = wp_get_attachment_url( get_post_thumbnail_id( get_the_ID() ) );
 	
