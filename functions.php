@@ -387,7 +387,7 @@ function minimalizr_render_meta_tags() {
 		$description = strip_tags($description);
 	}
 	
-	$description = limit_200($description);	
+	$description = ($description) ? limit_200(apply_filters('minimal_description', $description)) : null;	
 		
 	$image = wp_get_attachment_url( get_post_thumbnail_id( get_the_ID() ) );
 	
