@@ -373,6 +373,8 @@ function minimalizr_render_meta_tags() {
 		{
 			$description = (strlen($post->post_excerpt) < 50) ? $title.'. '.$post->post_excerpt : $post->post_excerpt;
 		}
+		
+		$description = apply_filters('minimal_description', $description);
 	}
 	if(is_tax())
 	{
@@ -387,7 +389,7 @@ function minimalizr_render_meta_tags() {
 		$description = strip_tags($description);
 	}
 	
-	$description = ($description) ? limit_200(apply_filters('minimal_description', $description)) : limit_200(apply_filters('minimal_description', $title));	
+	$description = limit_200($description);	
 		
 	$image = wp_get_attachment_url( get_post_thumbnail_id( get_the_ID() ) );
 	
