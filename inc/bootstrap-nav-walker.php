@@ -106,7 +106,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
 					}
 					if(get_theme_mod('minimalizr_menu_weight') == 'normal')
 					{
-						$atts['class'] .= 'light';
+						$atts['class'] .= 'normal';
 					}
 					if(get_theme_mod('minimalizr_menu_weight') == 'semibold')
 					{
