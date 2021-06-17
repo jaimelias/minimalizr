@@ -1,32 +1,15 @@
-<?php if(get_theme_mod('google_optimize_container_id') != null): ?>
-	<!-- Google Optimize -->
-	<style>.async-hide { opacity: 0 !important} </style>
-	<script>(function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;h.start=1*new Date;
-	h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
-	(a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
-	})(window,document.documentElement,'async-hide','dataLayer',4000,
-	{'<?php echo esc_html(get_theme_mod('google_optimize_container_id')); ?>':true});</script>
-	<!-- Google Optimize -->
-<?php endif; ?>
+<?php
 
-<?php if(get_theme_mod('analytics_tracking_id') != null): ?>
-	<!-- Google Analytics -->
+	$analytics_tracking_id = get_theme_mod('analytics_tracking_id');
+
+	if($analytics_tracking_id != null): ?>
+	<!-- Google Analytics -->	
+	<script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo esc_html($analytics_tracking_id); ?>"></script>
 	<script>
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', '<?php echo esc_html(get_theme_mod('analytics_tracking_id')); ?>', 'auto');
-	<?php if(get_theme_mod('google_optimize_container_id') != null): ?>ga('require', '<?php echo esc_html(get_theme_mod('google_optimize_container_id')); ?>');<?php endif; ?>	
-	ga('send', 'pageview');
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', '<?php echo esc_html($analytics_tracking_id); ?>');
 	</script>
-	<script async src='https://www.google-analytics.com/analytics.js'></script>
 	<!-- Google Analytics -->
-<?php endif; ?>
-
-<?php if(get_theme_mod('tagmanager_container_id') != null): ?>
-	<!-- Google Tag Manager -->
-	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-	new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-	j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-	'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-	})(window,document,'script','dataLayer','<?php echo esc_html(get_theme_mod('tagmanager_container_id')); ?>');</script>
-	<!-- End Google Tag Manager -->	
 <?php endif; ?>

@@ -104,8 +104,8 @@ class MyTheme_Customize {
 		  ) );
 		}	
 
-	$analytics = array('analytics_tracking_id', 'tagmanager_container_id', 'google_optimize_container_id', 'facebook_pixel_id');
-	$analytics_label = array('Analytics Tracking ID', 'Tag Manager Container ID', 'Optimize Container ID', 'Facebook Pixel ID');
+	$analytics = array('analytics_tracking_id', 'facebook_pixel_id');
+	$analytics_label = array('Analytics Tracking ID', 'Facebook Pixel ID');
 
 	  $wp_customize->add_section( 'minimalizr_anlytics', array(
 		'title'          => __( 'Analytics', 'minimalizr'),
