@@ -92,7 +92,7 @@ class Minimalizr {
 
 		if(!defined('DY_CORE_FUNCTIONS'))
 		{
-			require_once $this->theme_directory . '/dy-core/loader.php';
+			require_once $this->theme_directory . '/submodules/dy-core/loader.php';
 		}
 
 	}
