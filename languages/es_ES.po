@@ -1,0 +1,376 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Minimalizr\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-09-24 06:07+0000\n"
+"PO-Revision-Date: 2018-09-24 06:08+0000\n"
+"Last-Translator: Jaimelías <jaime@panamajethub.com>\n"
+"Language-Team: Spanish (Spain)\n"
+"Language: es_ES\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/"
+
+#: 404.php:15
+msgid "Oops! That page can&rsquo;t be found."
+msgstr ""
+
+#: 404.php:19
+msgid ""
+"It looks like nothing was found at this location. Maybe try one of the links "
+"below or a search?"
+msgstr ""
+
+#: 404.php:27
+msgid "Most Used Categories"
+msgstr ""
+
+#. %1$s: smiley
+#: 404.php:44
+#, php-format
+msgid "Try looking in the monthly archives. %1$s"
+msgstr ""
+
+#: functions.php:46
+msgid "Primary Menu"
+msgstr ""
+
+#: functions.php:138
+msgid "Footer 1"
+msgstr ""
+
+#: functions.php:139
+msgid "Footer 2"
+msgstr ""
+
+#: functions.php:140
+msgid "Footer 3"
+msgstr ""
+
+#: functions.php:141
+msgid "Footer 4"
+msgstr ""
+
+#: functions.php:142
+msgid "Page"
+msgstr ""
+
+#: functions.php:143
+msgid "Blog"
+msgstr ""
+
+#: functions.php:263
+msgid "Warning"
+msgstr ""
+
+#: functions.php:263
+msgid "The following plugins are required by the current theme:"
+msgstr ""
+
+#: functions.php:625
+msgid "Facebook Messenger"
+msgstr ""
+
+#: functions.php:629
+msgid "Facebook page name is not set yet."
+msgstr ""
+
+#: functions.php:644
+msgid "Chat"
+msgstr ""
+
+#: footer.php:58
+msgid ""
+"We use cookies to ensure that we give you the best experience on our website."
+" If you continue to use this site we will assume that you are happy with it."
+msgstr ""
+"Usamos cookies para garantizar brindarle la mejor experiencia en nuestro "
+"sitio web. Si continúa utilizando este sitio, asumiremos que está satisfecho "
+"con esto."
+
+#: search.php:16
+#, php-format
+msgid "Search Results for: %s"
+msgstr ""
+
+#: template-parts/content-none.php:13
+msgid "Nothing Found"
+msgstr ""
+
+#: template-parts/content-none.php:19
+#, php-format
+msgid ""
+"Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr ""
+
+#: template-parts/content-none.php:23
+msgid ""
+"Sorry, but nothing matched your search terms. Please try again with some "
+"different keywords."
+msgstr ""
+
+#: template-parts/content-none.php:28
+msgid ""
+"It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps "
+"searching can help."
+msgstr ""
+
+#: template-parts/content-page.php:50
+msgid "Pages:"
+msgstr ""
+
+#: template-parts/content.php:27
+msgid "Continue Reading"
+msgstr "Leer más"
+
+#: inc/extras.php:82
+#, php-format
+msgid "Page %s"
+msgstr ""
+
+#: inc/customizer.php:21
+msgid "Settings"
+msgstr ""
+
+#: inc/customizer.php:29
+msgid "Large Icon"
+msgstr ""
+
+#: inc/customizer.php:34
+msgid "Favicon"
+msgstr ""
+
+#: inc/customizer.php:46
+msgid "Minimalizr Menu"
+msgstr ""
+
+#: inc/customizer.php:51
+msgid "minimal"
+msgstr ""
+
+#: inc/customizer.php:52
+msgid "responsive"
+msgstr ""
+
+#: inc/customizer.php:96
+msgid "Content Font"
+msgstr ""
+
+#: inc/customizer.php:97
+msgid "Links"
+msgstr ""
+
+#: inc/customizer.php:98
+msgid "Top Background"
+msgstr ""
+
+#: inc/customizer.php:99
+msgid "Top Font"
+msgstr ""
+
+#: inc/customizer.php:100
+msgid "Sub-Menu/Sidebar Background"
+msgstr ""
+
+#: inc/customizer.php:101
+msgid "Sub-Menu/Sidebar Font"
+msgstr ""
+
+#: inc/customizer.php:102
+msgid "Footer Background"
+msgstr ""
+
+#: inc/customizer.php:103
+msgid "Footer Font"
+msgstr ""
+
+#: inc/customizer.php:104
+msgid "Footer Link"
+msgstr ""
+
+#: inc/customizer.php:105
+msgid "Forms Background"
+msgstr ""
+
+#: inc/customizer.php:106
+msgid "Forms Font"
+msgstr ""
+
+#: inc/customizer.php:107
+msgid "Input Background"
+msgstr ""
+
+#: inc/customizer.php:108
+msgid "Input Font"
+msgstr ""
+
+#: inc/customizer.php:109
+msgid "Input Border"
+msgstr ""
+
+#: inc/customizer.php:137
+msgid "Google Settings"
+msgstr ""
+
+#: inc/minimal.php:46
+msgid "Home"
+msgstr ""
+
+#: inc/metaboxes.php:24
+msgid "Minimalizr - Page Layout"
+msgstr ""
+
+#: inc/metaboxes.php:37
+msgid "Width"
+msgstr ""
+
+#: inc/metaboxes.php:39
+msgid "Fixed"
+msgstr ""
+
+#: inc/metaboxes.php:40
+msgid "Full"
+msgstr ""
+
+#: inc/template-tags.php:17
+msgid "by"
+msgstr "por"
+
+#. used between list items, there is a space after the comma
+#: inc/template-tags.php:30
+msgid ", "
+msgstr ""
+
+#: inc/template-tags.php:32
+#, php-format
+msgid "Posted in %1$s"
+msgstr "Publicado en %1$s"
+
+#: inc/template-tags.php:38
+#, php-format
+msgid "Tags %1$s"
+msgstr ""
+
+#: inc/template-tags.php:57
+#, php-format
+msgid "Category: %s"
+msgstr ""
+
+#: inc/template-tags.php:59
+#, php-format
+msgid "Tag: %s"
+msgstr ""
+
+#: inc/template-tags.php:61
+#, php-format
+msgid "Author: %s"
+msgstr ""
+
+#: inc/template-tags.php:63
+#, php-format
+msgid "Year: %s"
+msgstr ""
+
+#: inc/template-tags.php:63
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr ""
+
+#: inc/template-tags.php:65
+#, php-format
+msgid "Month: %s"
+msgstr ""
+
+#: inc/template-tags.php:65
+msgctxt "monthly archives date format"
+msgid "F Y"
+msgstr ""
+
+#: inc/template-tags.php:67
+#, php-format
+msgid "Day: %s"
+msgstr ""
+
+#: inc/template-tags.php:67
+msgctxt "daily archives date format"
+msgid "F j, Y"
+msgstr ""
+
+#: inc/template-tags.php:70
+msgctxt "post format archive title"
+msgid "Asides"
+msgstr ""
+
+#: inc/template-tags.php:72
+msgctxt "post format archive title"
+msgid "Galleries"
+msgstr ""
+
+#: inc/template-tags.php:74
+msgctxt "post format archive title"
+msgid "Images"
+msgstr ""
+
+#: inc/template-tags.php:76
+msgctxt "post format archive title"
+msgid "Videos"
+msgstr ""
+
+#: inc/template-tags.php:78
+msgctxt "post format archive title"
+msgid "Quotes"
+msgstr ""
+
+#: inc/template-tags.php:80
+msgctxt "post format archive title"
+msgid "Links"
+msgstr ""
+
+#: inc/template-tags.php:82
+msgctxt "post format archive title"
+msgid "Statuses"
+msgstr ""
+
+#: inc/template-tags.php:84
+msgctxt "post format archive title"
+msgid "Audio"
+msgstr ""
+
+#: inc/template-tags.php:86
+msgctxt "post format archive title"
+msgid "Chats"
+msgstr ""
+
+#: inc/template-tags.php:89
+#, php-format
+msgid "Archives: %s"
+msgstr ""
+
+#. 1: Taxonomy singular name, 2: Current taxonomy term
+#: inc/template-tags.php:93
+#, php-format
+msgid "%1$s: %2$s"
+msgstr ""
+
+#: inc/template-tags.php:95
+msgid "Archives"
+msgstr ""
+
+#. Name of the theme
+msgid "Minimalizr"
+msgstr ""
+
+#. Description of the theme
+msgid "Description"
+msgstr ""
+
+#. URI of the theme
+#. Author URI of the theme
+msgid "http://jaimelias.com/"
+msgstr ""
+
+#. Author of the theme
+msgid "Jaimelias.com"
+msgstr ""

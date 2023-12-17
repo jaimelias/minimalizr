@@ -1,0 +1,3 @@
+[submodule "submodules/dy-core"]
+	path = submodules/dy-core
+	url = https://github.com/jaimelias/dy-core.git
