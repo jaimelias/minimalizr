@@ -16,4 +16,3 @@ rm dy-core-master.tar.gz
 
 # Rename the extracted folder to "dy-core"
 mv -f dy-core-master dy-core
-
