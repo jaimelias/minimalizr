@@ -203,8 +203,12 @@ const registerGrid = ({textareaId, containerId, maxId, isDisabled, hotDataFilter
 		}
 		
 		let gridData = jQuery(grid).handsontable('getData');
-		gridData = hotDataFilter({gridData, gridId: gridId});
 
+		if(typeof hotDataFilter !== 'undefined')
+		{
+			gridData = hotDataFilter({gridData, gridId: gridId});
+		}
+		
 		if(typeof gridData === 'undefined')
 		{
 			return false;
