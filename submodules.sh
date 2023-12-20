@@ -3,6 +3,8 @@
 # Change directory to "submodules"
 cd submodules
 
+rm -rf dy-core-master dy-core
+
 # Download the archive from GitHub
 curl -LJO "https://github.com/jaimelias/dy-core/archive/master.tar.gz"
 
@@ -13,4 +15,5 @@ tar -zxvf dy-core-master.tar.gz
 rm dy-core-master.tar.gz
 
 # Rename the extracted folder to "dy-core"
-mv dy-core-master dy-core
+mv -f dy-core-master dy-core
+
