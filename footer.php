@@ -59,8 +59,7 @@
 
 </div><!-- #minimal-wrapper -->
 
-<div id="datepicker-container"></div>
-<div id="timepicker-container"></div>
+
 
 <?php wp_footer(); ?>
 
