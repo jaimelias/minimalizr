@@ -22,7 +22,6 @@ class Dynamic_Core_Admin {
 		add_action('admin_enqueue_scripts', array(&$this, 'enqueue_styles'));
     }
 
-
 	public function enqueue_scripts()
 	{
 		global $dy_load_picker_scripts;
@@ -31,6 +30,11 @@ class Dynamic_Core_Admin {
 		{
 			load_picker_scripts($this->plugin_dir_url_file, $this->plugin_dir);
 		}
+
+		wp_enqueue_script( 'hyperFormula', 'https://cdn.jsdelivr.net/npm/hyperformula/dist/hyperformula.full.min.js', array('jquery'), '2.6.0', true );
+		wp_enqueue_script( 'handsontableJS', 'https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js', array('jquery', 'hyperFormula'), '14', true );
+		wp_enqueue_script( 'hot', $this->plugin_dir_url_file . 'js/hot.js', array('jquery', 'handsontableJS'), time(), true );
+
 	}
 	public function enqueue_styles()
 	{
@@ -40,6 +44,8 @@ class Dynamic_Core_Admin {
 		{
 			load_picker_styles($this->plugin_dir_url_file);
 		}
+
+		wp_enqueue_style( 'handsontableCss', $this->plugin_dir_url_file . 'css/handsontable.full.min.css', array(), '14', 'all' );
 	}
 
     public function args()
