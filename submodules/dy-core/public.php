@@ -7,7 +7,7 @@ class Dynamic_Core_Public {
     
     public function __construct()
     {
-        $this->version = '0.0.4';
+        $this->version = '0.0.5';
         $this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
         $this->dirname_file = dirname( __FILE__ );
         add_shortcode('whatsapp', array(&$this, 'whatsapp_button'));

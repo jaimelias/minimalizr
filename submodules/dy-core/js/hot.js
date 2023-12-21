@@ -323,7 +323,7 @@ const getDefaultData = ({el, hotDataFilter}) => {
 	const maxNum = parseInt(jQuery(`#${maxId}`).val());
 
 	let gridData = [...Array(maxNum).keys()].map(() => [...Array(headers.length).keys()].map(() => ''));
-	let rows = hotDataFilter({gridId, gridData});
+	let rows = (typeof hotDataFilter !== 'undefined') ? hotDataFilter({gridId, gridData}): gridData;
 
 	return {[gridId]: rows};
 };
