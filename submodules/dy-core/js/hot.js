@@ -63,7 +63,7 @@ const registerGrid = ({textareaId, containerId, maxId, isDisabled, hotDataFilter
 	const colsNum = headers.length;
 	const defaultRows = getInitialGrid({rows: maxNum, cols: colsNum, columns});
 
-	if(!content || defaultRows.length === 0)
+	if(defaultRows.length === 0)
 	{
 		return false;
 	}
