@@ -238,7 +238,11 @@ class Dynamic_Core_Public {
 
     public function whatsapp_modal()
     {
+
+        if(isset($_GET['fl_builder'])):
         ?>
+
+            
 
             <div id="dy-whatsapp-modal" class="hidden">
                 <div id="dy-whatsapp-modal-content">
@@ -249,6 +253,7 @@ class Dynamic_Core_Public {
             </div>
 
         <?php
+        endif;
     }
 
     public function whatsapp_modal_css()
