@@ -1,8 +1,3 @@
-//beaver builder fix scroll top
-
-const $ = jQuery;
-
-
 
 //jquery slim fixes
 
@@ -25,4 +20,8 @@ if (typeof jQuery === 'function' && typeof jQuery.fn.init === 'function' && jQue
     });
 
 }
+
+//beaver builder fix scroll top
+
+const $ = jQuery;
 
