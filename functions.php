@@ -350,7 +350,7 @@ class Minimalizr {
 
 		if(is_array($ld))
 		{
-			if(count($ld) === 0)
+			if(count($ld) !== 0)
 			{
 				echo '<script type="application/ld+json">'.json_encode($ld).'</script>';
 			}
