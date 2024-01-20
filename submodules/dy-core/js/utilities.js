@@ -6,11 +6,16 @@ const storeFieldNames = ['first_name', 'lastname', 'country_calling_code', 'phon
 window.addEventListener('pageshow', event =>  {
     const historyTraversal = event.persisted;
 
-    if ( historyTraversal && sessionStorage.getItem('last_form_submit_url') === window.location.href ) 
+
+    if(typeof Storage !== 'undefined')
     {
-        sessionStorage.removeItem('last_form_submit_url');
-        window.location.reload();
+        if ( historyTraversal && sessionStorage.getItem('last_form_submit_url') === window.location.href ) 
+        {
+            sessionStorage.removeItem('last_form_submit_url');
+            window.location.reload();
+        }
     }
+
 });
 
 jQuery(() => {
@@ -167,7 +172,12 @@ const getNonce = async () => {
 
 const handleSubmitButton = form => {
     jQuery(form).find('button').prop('disabled', true);
-    sessionStorage.setItem('last_form_submit_url', window.location.href);
+
+    if(typeof Storage !== 'undefined')
+    {
+        sessionStorage.setItem('last_form_submit_url', window.location.href);
+    }
+    
 };
 
 const createFormSubmit = async (form) => {
@@ -211,7 +221,7 @@ const createFormSubmit = async (form) => {
         formFields.forEach(o => {
             const {name, value} = o;
     
-            if(storeFieldNames.includes(name))
+            if(storeFieldNames.includes(name) && typeof Storage !== 'undefined')
             {
                 sessionStorage.setItem(name, value);
             }
@@ -305,42 +315,42 @@ const formSubmit = ({method, action, formFields}) => {
 
 const storePopulate = () => {
 	
-	
-    jQuery('form').each(function(){
-        const thisForm = jQuery(this);
+    if(typeof Storage !== 'undefined')
+    {
+        jQuery('form').each(function(){
+            const thisForm = jQuery(this);
 
-        if(jQuery(thisForm).attr('data-action') &&  jQuery(thisForm).attr('data-method'))
-        {
-            const formFields = formToArray(thisForm);
+            if(jQuery(thisForm).attr('data-action') &&  jQuery(thisForm).attr('data-method'))
+            {
+                const formFields = formToArray(thisForm);
 
-            formFields.forEach(i => {
-                const name = i.name;
-                const value = sessionStorage.getItem(name);
-                const field = jQuery(thisForm).find('[name="'+name+'"]');
-                const tag = jQuery(field).prop('tagName');
-                const type = jQuery(field).attr('type');
-                
-                if(value && storeFieldNames.includes(name))
-                {
-                    if(tag == 'INPUT')
+                formFields.forEach(i => {
+                    const name = i.name;
+                    const value = sessionStorage.getItem(name);
+                    const field = jQuery(thisForm).find('[name="'+name+'"]');
+                    const tag = jQuery(field).prop('tagName');
+                    const type = jQuery(field).attr('type');
+                    
+                    if(value && storeFieldNames.includes(name))
                     {
-                        if(type == 'checkbox' || type == 'radio')
+                        if(tag == 'INPUT')
                         {
-                            jQuery(field).prop('checked', true);
+                            if(type == 'checkbox' || type == 'radio')
+                            {
+                                jQuery(field).prop('checked', true);
+                            }
+                            else
+                            {
+                                jQuery(field).val(value);
+                            }
                         }
-                        else
+                        else if(tag == 'TEXTAREA' || tag == 'SELECT')
                         {
                             jQuery(field).val(value);
-                        }
+                        }			
                     }
-                    else if(tag == 'TEXTAREA' || tag == 'SELECT')
-                    {
-                        jQuery(field).val(value);
-                    }			
-                }
-            });
-        }
-    });
-
-
+                });
+            }
+        });
+    }
 }

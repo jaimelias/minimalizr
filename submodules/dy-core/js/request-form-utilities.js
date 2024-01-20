@@ -81,7 +81,7 @@ const countryOptions = data => {
 		
 		const field = jQuery(this);
 		const name = jQuery(field).attr('name');
-		const storedValue = sessionStorage.getItem(name);
+		
 		const hasCountryCallingCodes = jQuery(field).hasClass('countryCallingCode');
 
 		data.forEach(x => {
@@ -105,6 +105,13 @@ const countryOptions = data => {
 
 		if (typeof Storage !== 'undefined' && storedValue)
 		{
+
+			const storedValue = sessionStorage.getItem(name);
+
+			if(!storedValue){
+				return false;
+			}
+
 			jQuery(field).find(`option[value="${storedValue}"]`).attr({'selected': 'selected'}).trigger('change');
 		}
 
