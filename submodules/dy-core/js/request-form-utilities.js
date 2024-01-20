@@ -103,7 +103,7 @@ const countryOptions = data => {
 		});
 
 
-		if (typeof Storage !== 'undefined' && storedValue)
+		if (typeof Storage !== 'undefined')
 		{
 
 			const storedValue = sessionStorage.getItem(name);
