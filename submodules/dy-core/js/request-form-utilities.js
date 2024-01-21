@@ -77,7 +77,23 @@ const countryOptions = data => {
 		.filter(i => i[0] && i[1])
 		.sort((a, b) => a[1].localeCompare(b[1]));
 
-	jQuery('.countrylist, .countryCallingCode').each(function() {
+
+	if(jQuery('.countrylist').length > 0)
+	{
+		renderCountryCodes(({className: 'countrylist', data}));
+	}
+
+	if(jQuery('.countryCallingCode').length > 0)
+	{
+		renderCountryCodes(({className: 'countryCallingCode', data}));
+	}
+}
+
+
+const renderCountryCodes = ({className, data}) => {
+
+
+	jQuery(`.${className}`).each(function() {
 		
 		const field = jQuery(this);
 		const name = jQuery(field).attr('name');
@@ -95,9 +111,7 @@ const countryOptions = data => {
 				: `${countryName} ${countryFlag}`;
 
 			const optionValue = (hasCountryCallingCodes) ? countryCallingCode : countryCode;
-
 			const thisOption = jQuery('<option></option>').attr({'value': optionValue.replace('-', '')}).html(optionText);
-	
 			jQuery(this).append(thisOption);
 
 		});
@@ -115,7 +129,8 @@ const countryOptions = data => {
 			jQuery(field).find(`option[value="${storedValue}"]`).attr({'selected': 'selected'}).trigger('change');
 		}
 
-	});		
+	});	
+
 }
 
 

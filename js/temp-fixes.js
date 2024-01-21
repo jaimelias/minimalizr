@@ -1,7 +1,13 @@
 
 //jquery slim fixes
 
+
+console.log(jQuery.fn.jquery.indexOf('slim'));
+
+
 if (typeof jQuery === 'function' && typeof jQuery.fn.init === 'function' && jQuery.fn.jquery.indexOf('slim') !== -1) {
+
+
 
     jQuery.fn.extend({
         animate: function(o) {
