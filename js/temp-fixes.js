@@ -2,9 +2,6 @@
 //jquery slim fixes
 
 
-console.log(jQuery.fn.jquery.indexOf('slim'));
-
-
 if (typeof jQuery === 'function' && typeof jQuery.fn.init === 'function') {
 
     if(typeof jQuery().animate === 'undefined')
