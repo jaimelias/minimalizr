@@ -42,7 +42,7 @@ if(!class_exists('Dynamic_Core_Orders'))
 if(!class_exists('Dynamic_Core_Clients'))
 {
     require_once $plugin_dir_path . 'integrations/clients.php';
-    new Dynamic_Core_Orders();
+    new Dynamic_Core_Clients();
 }
 
 if(!class_exists('Dynamic_Core_Providers'))
