@@ -105,7 +105,8 @@ class Dynamic_Core_Public {
             'lang' => current_language(),
             'ipGeoLocation' => array(
                 'token' => get_option('dy_ipgeolocation_api_token')
-            )
+            ),
+            'utc' => time()
         );
 
         if(isset($post))

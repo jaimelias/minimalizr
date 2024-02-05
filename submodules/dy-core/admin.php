@@ -71,8 +71,8 @@ class Dynamic_Core_Admin {
 
 
 		//settings - security
-		register_setting($this->setting_id, 'dy_recaptcha_site_key', 'sanitize_user');
-		register_setting($this->setting_id, 'dy_recaptcha_secret_key', 'sanitize_user');
+		register_setting($this->setting_id, 'dy_recaptcha_site_key', 'esc_html');
+		register_setting($this->setting_id, 'dy_recaptcha_secret_key', 'esc_html');
         register_setting($this->setting_id, 'dy_cloudflare_api_token', 'esc_html');
         register_setting($this->setting_id, 'dy_sentry_api_key', 'sanitize_user');
 
