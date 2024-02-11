@@ -93,43 +93,101 @@ const countryOptions = data => {
 const renderCountryCodes = ({className, data}) => {
 
 
-	jQuery(`.${className}`).each(function() {
+	if(className === 'countryCallingCode')
+	{
+		jQuery(`select.${className}`).on('change blur', function() {
+			const allSelects = jQuery(this);
 		
-		const field = jQuery(this);
-		const name = jQuery(field).attr('name');
+			allSelects.each(function() {
+				const field = jQuery(this);
+				const firstOption = field.find('option:eq(0)');
+				const selectedOption = field.find('option:selected');
+				const text = selectedOption.text();
+				const value = selectedOption.val();
 		
-		const hasCountryCallingCodes = jQuery(field).hasClass('countryCallingCode');
+				if (text && text !== '--') {
+					const arrText = text.split(" ");
+					if (arrText.length >= 2) {
+						const [flag, code] = arrText.slice(-2);
+						const modifiedTextContent = `${flag} ${code}`;
+							
+						firstOption.val(value).text(modifiedTextContent);
 
-		data.forEach(x => {
-
-			const countryFlag = x[3];
-			const countryName = x[1];
-			const countryCallingCode = x[2];
-			const countryCode = x[0];
-			const optionText = (hasCountryCallingCodes) 
-				? `${countryName} ${countryFlag} +${countryCallingCode}`
-				: `${countryName} ${countryFlag}`;
-
-			const optionValue = (hasCountryCallingCodes) ? countryCallingCode : countryCode;
-			const thisOption = jQuery('<option></option>').attr({'value': optionValue.replace('-', '')}).html(optionText);
-			jQuery(this).append(thisOption);
-
-		});
+						firstOption.prop('selected', true);
+					}
+				}
+			});
+		});		
+	}
 
 
-		if (typeof Storage !== 'undefined')
-		{
+	jQuery(window).on('load', function(){
+		jQuery(`.${className}`).each(function() {
+			
+			const field = jQuery(this);
+			const name = jQuery(field).attr('name');
+			const hasCountryCallingCodes = jQuery(field).hasClass('countryCallingCode');
 
-			const storedValue = sessionStorage.getItem(name);
+			data.forEach(x => {
 
-			if(!storedValue){
-				return false;
+				const countryFlag = x[3];
+				const countryName = x[1];
+				const countryCallingCode = x[2];
+				const countryCode = x[0];
+				const optionText = (hasCountryCallingCodes) 
+					? `${countryName} ${countryFlag} +${countryCallingCode}`
+					: `${countryName} ${countryFlag}`;
+
+				const optionValue = (hasCountryCallingCodes) ? countryCallingCode : countryCode;
+				const thisOption = jQuery('<option></option>').attr({'value': optionValue.replace('-', '')}).html(optionText);
+				jQuery(field).append(thisOption);
+
+			});
+
+
+			if (typeof Storage !== 'undefined')
+			{
+
+				const storedValue = sessionStorage.getItem(name);
+
+				if(!storedValue){
+					return false;
+				}
+
+				jQuery(field).find(`option[value="${storedValue}"]`).prop('selected', true).trigger('change');
 			}
 
-			jQuery(field).find(`option[value="${storedValue}"]`).attr({'selected': 'selected'}).trigger('change');
-		}
+		});
+	});
 
-	});	
+
+
+
+
+	if(className === 'countryCallingCode')
+	{
+		jQuery(`select.${className}`).on('mousedown', function() {
+
+			const allSelects = jQuery(this);
+		
+			allSelects.each(function() {
+				const field = jQuery(this);
+				const firstOption = field.find('option:eq(0)');
+				const value = jQuery(firstOption).val();
+		
+				if (firstOption.text() !== '--') {
+					firstOption.val('');
+					firstOption.text('--');
+					firstOption.trigger('change');
+
+					jQuery(field).find(`option[value="${value}"]`).prop('selected', true);
+				}
+			});
+		
+		});		
+	}
+
+	
 
 }
 
