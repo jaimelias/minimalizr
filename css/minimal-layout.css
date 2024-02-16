@@ -355,6 +355,11 @@ strong, .strong
 	padding: 20px !important;
 }
 
+.is-style-error a, .minimal_alert a, .is-style-success a, .minimal_success a, .is-style-warning a, .minimal_warning a, .is-style-info a, .minimal_info a
+{
+    color: #000 !important;
+}
+
 input[type=text].invalid_field::placeholder, input[type=number].invalid_field::placeholder, input[type=email].invalid_field::placeholder, textarea.invalid_field::placeholder{
     color: #444;
 }
