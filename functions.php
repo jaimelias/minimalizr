@@ -495,8 +495,9 @@ class Minimalizr {
 		
 		if(!isset($_GET['fl_builder']) && !is_user_logged_in())
 		{
-			$wp_scripts->registered['jquery-core']->src = $theme_url.'/js/jquery-3.6.1.slim.min.js';
-			$wp_scripts->registered['jquery']->deps = ['jquery-core'];	
+			wp_deregister_script('jquery');
+			wp_register_script('jquery', $theme_url.'/js/jquery-3.6.1.slim.min.js', false, null, true);
+			wp_enqueue_script('jquery');
 		}
 
 		//temp jquery slim fixes and $ fixes
