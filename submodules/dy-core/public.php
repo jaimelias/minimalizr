@@ -7,7 +7,7 @@ class Dynamic_Core_Public {
     
     public function __construct()
     {
-        $this->version = '0.0.8';
+        $this->version = '0.0.9';
         $this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
         $this->dirname_file = dirname( __FILE__ );
         add_shortcode('whatsapp', array(&$this, 'whatsapp_button'));
@@ -103,9 +103,6 @@ class Dynamic_Core_Public {
             'permalink' => get_the_permalink(),
             'pluginUrl' => $this->plugin_dir_url_file,
             'lang' => current_language(),
-            'ipGeoLocation' => array(
-                'token' => get_option('dy_ipgeolocation_api_token')
-            ),
             'utc' => time()
         );
 

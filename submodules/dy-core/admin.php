@@ -77,7 +77,6 @@ class Dynamic_Core_Admin {
         register_setting($this->setting_id, 'dy_sentry_api_key', 'sanitize_user');
 
 		//settings - analytics
-		register_setting($this->setting_id, 'dy_ipgeolocation_api_token', 'sanitize_user');
 		register_setting($this->setting_id, 'dy_gtag_tracking_id', 'sanitize_user');
 		register_setting($this->setting_id, 'dy_gtm_tracking_id', 'sanitize_user');
 		register_setting($this->setting_id, 'dy_facebook_pixel_id', 'sanitize_user');
@@ -197,15 +196,6 @@ class Dynamic_Core_Admin {
 			$this->setting_id, 
 			$this->section_security,
 			array('name' => 'dy_sentry_api_key') 
-		);
-
-		add_settings_field( 
-			'dy_ipgeolocation_api_token', 
-			__( 'IpGeolocation.io API Token', 'dynamicpackages' ), 
-			array(&$this, 'settings_input'), 
-			$this->setting_id, 
-			$this->section_analytics,
-			array('name' => 'dy_ipgeolocation_api_token', 'url' => 'http://ipgeolocation.io/') 
 		);
 
 		add_settings_field( 

@@ -35,20 +35,14 @@ if(!class_exists('Dynamic_Core_WP_JSON'))
 
 if(!class_exists('Dynamic_Core_Orders'))
 {
-    require_once $plugin_dir_path . 'integrations/orders.php';
-    new Dynamic_Core_Orders();
-}
-
-if(!class_exists('Dynamic_Core_Clients'))
-{
-    require_once $plugin_dir_path . 'integrations/clients.php';
-    new Dynamic_Core_Clients();
+    //require_once $plugin_dir_path . 'integrations/orders.php';
+    //$GLOBALS['dy_orders'] =  new Dynamic_Core_Orders();
 }
 
 if(!class_exists('Dynamic_Core_Providers'))
 {
     require_once $plugin_dir_path . 'integrations/providers.php';
-    new Dynamic_Core_Providers();
+    $GLOBALS['dy_providers'] = new Dynamic_Core_Providers();
 }
 
 

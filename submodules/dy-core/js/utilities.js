@@ -1,5 +1,4 @@
 
-const excludeGeolocation = ['country_code3', 'is_eu', 'country_tld', 'languages', 'country_flag', 'geoname_id', 'time_zone_current_time', 'time_zone_dst_savings', 'time_zone_is_dst', 'zipcode', 'continent_code', 'continent_name'];
 const storeFieldNames = ['first_name', 'lastname', 'country_calling_code', 'phone', 'email', 'repeat_email', 'country', 'city', 'address'];
 
 //refresh page to removed disabled button
@@ -112,37 +111,6 @@ const formToArray = form => {
 
 
 
-
-const getGeoLocation = async () => {
-    const {ipGeoLocation} = dyCoreArgs;
-    let output = [];
-
-    return fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${ipGeoLocation.token}`).then(resp => {
-        if(resp.ok)
-        {
-            return resp.json();
-        }
-        else
-        {
-            throw Error(resp.statusText);
-        }
-    }).then(data => {
-
-        for(let k in data)
-        {
-            if(typeof data[k] !== 'object')
-            {
-                if(!excludeGeolocation.includes(k))
-                {
-                    output.push({name: `geo_loc_${k}`, value: data[k]});
-                }
-            }
-        }
-
-        return output;
-    })
-};
-
 const getNonce = async () => {
     const {homeUrl} = dyCoreArgs;
     const now = Date.now();
@@ -185,7 +153,7 @@ const createFormSubmit = async (form) => {
     //disable button to prevent double-click
     handleSubmitButton(form);
 
-    const {ipGeoLocation, lang} = dyCoreArgs;
+    const {lang} = dyCoreArgs;
 	let formFields = formToArray(form);
 	const method = String(jQuery(form).attr('data-method')).toLowerCase();
 	let action = jQuery(form).attr('data-action');  
@@ -237,17 +205,6 @@ const createFormSubmit = async (form) => {
                 formFields.push({name: x, value: getCookie(x)});
             }
         });
-
-        //geolocation
-        if(ipGeoLocation)
-        {
-            const geoLocation = await getGeoLocation();
-
-            if(geoLocation)
-            {
-                formFields = [...formFields, ...geoLocation];
-            }
-        }
     }
 
     if(hashParams)

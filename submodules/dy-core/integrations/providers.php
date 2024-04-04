@@ -211,6 +211,7 @@ class Dynamic_Core_Providers {
 
 		return $output;
 	}
+
 }
 
 ?>

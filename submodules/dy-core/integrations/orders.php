@@ -8,11 +8,11 @@ class Dynamic_Core_Orders {
     function __construct()
     {
 		$this->name = 'dy-orders';
+		$this->valid_checkout_status = array('error', 'pending', 'paid', 'confirmed', 'postponed', 'cancelled');
         add_action('init', array(&$this, 'package_post_type'));
     }
 
 	public function package_post_type() {
-
 	
 		$labels = array(
 			'name' => __( 'Orders', 'dynamicpackages' ),
@@ -58,6 +58,63 @@ class Dynamic_Core_Orders {
 		
 		register_post_type( $this->name, $args );
 
+	}
+
+	public function save_order($data, $providers)
+	{
+
+		$unique_id = uniqid();
+
+		$post_data = array(
+			'post_title'    => 'temp_'.$unique_id,
+			'post_type'     => 'dy-orders',
+			'post_status'   => 'publish'
+		);
+
+		$post_id = wp_insert_post($post_data);
+
+		if(!$post_id)
+		{
+			return false;
+		}
+
+
+		//this var has to passed later to the send email form 
+		$hash_string = $unique_id.$post_id;
+
+		$metadata = array(
+			'unique_id' => $unique_id,
+			'hash' => hash('sha1', $hash_string),
+			'first_name' =>  $data['first_name'],
+			'lastname' => $data['lastname'],
+			'phone' => $data['country_calling_code'] .''.$data['phone'],
+			'email' => $data['email'],
+			'lang' => $data['lang'],
+			'description' => $data['description'],
+			'add_ons' => $data['add_ons'],
+			'post_id' => $data['post_id'],
+			'package_url' => $data['package_url'],
+			'total' => $data['total'],
+			'outstanding' => $data['outstanding'],
+			'amount' => $data['amount'],
+			'payment_type' => $data['payment_type'],
+			'deposit' => $data['deposit']
+		);
+
+		$metadata_json = json_encode($metadata);
+		add_post_meta($post_id, 'client_metadata', $metadata_json, true);
+
+		// Updates post title with the id of the order and name of the client
+		$new_title = $post_id . ' - ' . $data['first_name'] . ' '. $data['lastname']. ': '. $data['title'];
+		$post_update_data = array(
+			'ID'         => $post_id,
+			'post_title' => $new_title,
+			'post_name' => 'order-' . $post_id
+		);
+
+		wp_update_post($post_update_data);
+
+		return $post_id;
 	}
 
 }
