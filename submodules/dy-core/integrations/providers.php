@@ -8,7 +8,6 @@ class Dynamic_Core_Providers {
     function __construct()
     {
 		$this->name = 'dy-providers';
-		$this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
         add_action('init', array(&$this, 'handle_create_edit'));
 		add_filter('dy_list_providers', array(&$this, 'get_providers'));
 		add_action('init', array(&$this, 'register_taxonomies'));
