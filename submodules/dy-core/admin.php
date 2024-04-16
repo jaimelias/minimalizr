@@ -17,7 +17,7 @@ class Dynamic_Core_Admin {
 			$this->plugin_dir_url_file = get_stylesheet_directory_uri();
 			$this->plugin_dir = get_template_directory();
 
-			write_log(array('plugin_dir_url_file' => plugin_dir_url( __FILE__ ), 'plugin_dir' => plugin_dir_url( __DIR__ )));
+			write_log(array('plugin_dir_url_file' => $this->plugin_dir_url_file, 'plugin_dir' => $this->plugin_dir));
 
 		}
 
