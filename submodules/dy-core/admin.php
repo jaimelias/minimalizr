@@ -10,17 +10,11 @@ class Dynamic_Core_Admin {
 		$this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
 		$this->plugin_dir = plugin_dir_url( __DIR__ );
 
-
 		if(is_in_theme())
 		{
-			//write_log('is_in_theme');
 			$this->plugin_dir_url_file = get_stylesheet_directory_uri();
 			$this->plugin_dir = get_template_directory();
-
-			write_log(array('plugin_dir_url_file' => $this->plugin_dir_url_file, 'plugin_dir' => $this->plugin_dir));
-
 		}
-
 		
         $this->plugin_name = 'Dynamic Core';
         $this->slug = 'dy-core';

@@ -11,13 +11,10 @@ class Dynamic_Core_Public {
         $this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
         $this->dirname_file = dirname( __FILE__ );
 
-
 		if(is_in_theme())
 		{
 			$this->plugin_dir_url_file = get_stylesheet_directory_uri();
-			$this->plugin_dir = get_template_directory_uri();
-
-            write_log(array($this->plugin_dir_url_file, $this->plugin_dir));
+			$this->plugin_dir = get_template_directory();
 		}
 
         add_shortcode('whatsapp', array(&$this, 'whatsapp_button'));
@@ -52,7 +49,7 @@ class Dynamic_Core_Public {
 
         wp_enqueue_script('sha512', $this->plugin_dir_url_file . 'js/sha512.js', '', 'async_defer', true);
 
-        wp_enqueue_script('dy-qrcode', $this->plugin_dir_url_file . 'js/qrcode.min.js', array('jquery'), $this->version, true);
+        //wp_enqueue_script('dy-qrcode', $this->plugin_dir_url_file . 'js/qrcode.min.js', array('jquery'), $this->version, true);
 
         wp_enqueue_script('dy-core-utilities', $this->plugin_dir_url_file . 'js/utilities.js', array('sha512', 'jquery', 'landing-cookies'), $this->version, true);
         wp_add_inline_script('dy-core-utilities', $this->args(), 'before');
