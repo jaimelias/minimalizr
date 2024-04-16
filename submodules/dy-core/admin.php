@@ -8,6 +8,13 @@ class Dynamic_Core_Admin {
     public function __construct()
     {
 		$this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
+
+		if(is_in_theme())
+		{
+			write_log('is_in_theme');
+			$this->plugin_dir_url_file = get_stylesheet_directory_uri();
+		}
+
 		$this->plugin_dir = plugin_dir_url( __DIR__ );
         $this->plugin_name = 'Dynamic Core';
         $this->slug = 'dy-core';

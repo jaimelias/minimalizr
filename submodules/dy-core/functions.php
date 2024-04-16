@@ -653,6 +653,39 @@ if(!function_exists('is_valid_time'))
 	}
 }
 
+if(!function_exists('is_in_theme'))
+{
+	function is_in_theme() {
+		$path = dirname(__FILE__);
+		
+		// Check if the script is in a theme directory
+		$theme_dir = WP_CONTENT_DIR . '/themes/';
+		$theme_dir = str_replace('\\', '/', $theme_dir); // Windows fix
+		if (strpos($path, $theme_dir) === 0) {
+			return true;
+		}
+	
+		return false;
+	}	
+}
+
+if(!function_exists('is_in_plugin'))
+{
+	function is_in_plugin() {
+		$path = dirname(__FILE__);
+		
+		// Check if the script is in a plugin directory
+		$plugin_dir = WP_CONTENT_DIR . '/plugins/';
+		$plugin_dir = str_replace('\\', '/', $plugin_dir); // Windows fix
+		if (strpos($path, $plugin_dir) === 0) {
+			return true;
+		}
+	
+		return false;
+	}	
+}
+
+
 
 
 ?>
