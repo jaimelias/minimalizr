@@ -13,7 +13,7 @@ class Dynamic_Core_Public {
 
 		if(is_in_theme())
 		{
-			$this->plugin_dir_url_file = get_stylesheet_directory_uri();
+			$this->plugin_dir_url_file = get_stylesheet_directory_uri().'/';
 			$this->plugin_dir = get_template_directory();
 		}
 
@@ -37,8 +37,6 @@ class Dynamic_Core_Public {
         global $dy_load_request_form_utilities_scripts;
 
         $sentry_api_key = get_option('dy_sentry_api_key');
-
-        write_log($this->plugin_dir_url_file);
 
         if(!empty($sentry_api_key))
         {
