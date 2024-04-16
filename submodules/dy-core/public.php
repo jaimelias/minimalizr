@@ -13,7 +13,7 @@ class Dynamic_Core_Public {
 
 		if(is_in_theme())
 		{
-			$this->plugin_dir_url_file = get_stylesheet_directory_uri().'/';
+			$this->plugin_dir_url_file = get_stylesheet_directory_uri().'/submodules/dy-core/';
 			$this->plugin_dir = get_template_directory();
 		}
 
