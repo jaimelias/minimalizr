@@ -38,6 +38,8 @@ class Dynamic_Core_Public {
 
         $sentry_api_key = get_option('dy_sentry_api_key');
 
+        write_log($this->plugin_dir_url_file);
+
         if(!empty($sentry_api_key))
         {
             wp_enqueue_script('sentry-lazy-load', 'https://js.sentry-cdn.com/'.esc_html($sentry_api_key).'.min.js', array(), '', false);
@@ -49,7 +51,7 @@ class Dynamic_Core_Public {
 
         wp_enqueue_script('sha512', $this->plugin_dir_url_file . 'js/sha512.js', '', 'async_defer', true);
 
-        //wp_enqueue_script('dy-qrcode', $this->plugin_dir_url_file . 'js/qrcode.min.js', array('jquery'), $this->version, true);
+        wp_enqueue_script('dy-qrcode', $this->plugin_dir_url_file . 'js/qrcode.min.js', array('jquery'), $this->version, true);
 
         wp_enqueue_script('dy-core-utilities', $this->plugin_dir_url_file . 'js/utilities.js', array('sha512', 'jquery', 'landing-cookies'), $this->version, true);
         wp_add_inline_script('dy-core-utilities', $this->args(), 'before');
