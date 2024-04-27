@@ -7,7 +7,7 @@ class Dynamic_Core_Public {
     
     public function __construct()
     {
-        $this->version = '0.0.9';
+        $this->version = '0.0.12';
         $this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
         $this->dirname_file = dirname( __FILE__ );
 
@@ -15,8 +15,6 @@ class Dynamic_Core_Public {
 		{
 			$this->plugin_dir_url_file = get_stylesheet_directory_uri().'/submodules/dy-core/';
 			$this->plugin_dir = get_template_directory().'/submodules/dy-core/';
-
-            write_log($this->plugin_dir);
 		}
 
         add_shortcode('whatsapp', array(&$this, 'whatsapp_button'));

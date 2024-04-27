@@ -156,7 +156,7 @@ const createFormSubmit = async (form) => {
     const {lang} = dyCoreArgs;
 	let formFields = formToArray(form);
 	const method = String(jQuery(form).attr('data-method')).toLowerCase();
-	let action = jQuery(form).attr('data-action');  
+	let action = atob(jQuery(form).attr('data-action'));  
 	const nonce = jQuery(form).attr('data-nonce') || '';  
     const hasEmail = (typeof formFields.find(i => i.name === 'email') !== 'undefined') ? true : false;
     let hashParams = jQuery(form).attr('data-hash-params') || '';
