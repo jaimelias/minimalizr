@@ -28,7 +28,7 @@ const whatsappButton = () => {
 
     const modal = jQuery('#dy-whatsapp-modal');
     const qrcode = jQuery('#dy-whatsapp-qrcode');
-    const link = jQuery('#dy-whatsapp-link');
+    const link = jQuery('#dy-whatsapp-link > a');
 
     jQuery('.button-whatsapp').each(function(){
 
@@ -39,6 +39,7 @@ const whatsappButton = () => {
             e.preventDefault();
 
             const href = jQuery(el).attr('href');
+
 
             if(/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
             {

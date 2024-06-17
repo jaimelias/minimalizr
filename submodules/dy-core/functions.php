@@ -513,8 +513,6 @@ if(!function_exists('validate_recaptcha'))
 										cloudflare_ban_ip_address();
 									}
 								}
-								
-								write_log(json_encode($debug_output));
 							}
 						}
 					}

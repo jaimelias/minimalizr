@@ -51,7 +51,7 @@ class Dynamic_Core_Public {
 
         wp_enqueue_script('dy-qrcode', $this->plugin_dir_url_file . 'js/qrcode.min.js', array('jquery'), $this->version, true);
 
-        wp_enqueue_script('dy-core-utilities', $this->plugin_dir_url_file . 'js/utilities.js', array('sha512', 'jquery', 'landing-cookies'), $this->version, true);
+        wp_enqueue_script('dy-core-utilities', $this->plugin_dir_url_file . 'js/utilities.js', array('sha512', 'jquery', 'landing-cookies'), time(), true);
         wp_add_inline_script('dy-core-utilities', $this->args(), 'before');
         
 
@@ -249,7 +249,7 @@ class Dynamic_Core_Public {
                 <div id="dy-whatsapp-modal-content">
                     <span id="dy-whatsapp-modal-close">&times;</span>
                     <div id="dy-whatsapp-qrcode"></div>
-                    <div id="dy-whatsapp-link" class="pure-button small"><a href="#"><?php echo esc_html__('Open Web Whatsapp', 'dynamicpackages'); ?></a></div>
+                    <div id="dy-whatsapp-link" class="pure-button small"><a href="#" target="_blank" rel="noopener noreferrer"><?php echo esc_html__('Open Web Whatsapp', 'dynamicpackages'); ?></a></div>
                 </div>
             </div>
 
