@@ -170,7 +170,7 @@ class Dynamic_Core_Providers {
 
 	public function get_providers($output = array())
 	{
-		$which_var = $this->name.'_get_emails';
+		$which_var = $this->name.'get_providers';
 		global $$which_var;
 
 		if(isset($$which_var))

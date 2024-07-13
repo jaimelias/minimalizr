@@ -112,32 +112,31 @@ const formToArray = form => {
 
 
 
-const getNonce = async () => {
-    const {homeUrl} = dyCoreArgs;
-    const now = Date.now();
-    const url = `${homeUrl}/wp-json/dy-core/args?timestamp=${now}`;
-    const headers = new Headers();
-    headers.append('pragma', 'no-cache');
-    headers.append('cache-control', 'no-cache'); 
-    
+ const getNonce = async () => {
+    const { homeUrl } = dyCoreArgs
+    const now = Date.now()
+    const url = `${homeUrl}/wp-json/dy-core/args?timestamp=${now}`
+
+    const headers = new Headers({
+        'pragma': 'no-cache',
+        'cache-control': 'no-cache'
+    })
+
     const init = {
         method: 'GET',
         headers,
-    };
+    }
 
-    var req = new Request(url);
-
-    return fetch(req, init).then(resp => {
-        if(resp.ok)
-        {
-            return resp.json();
-        }
-        else
-        {
-            throw Error('Unable to get nonce');
-        }
-    }).then(data => data.dy_nonce);
-};
+    try {
+        const response = await fetch(url, init)
+        if (!response.ok) throw new Error('Unable to get nonce')
+        const data = await response.json()
+        return data.dy_nonce
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+}
 
 const handleSubmitButton = form => {
     jQuery(form).find('button').prop('disabled', true);
@@ -166,7 +165,7 @@ const createFormSubmit = async (form) => {
     if(nonce)
     {
         const nonceData = await getNonce();
-
+        
         if(nonceData)
         {
             if(nonce === 'slug')

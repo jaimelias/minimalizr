@@ -684,6 +684,50 @@ if(!function_exists('is_in_plugin'))
 }
 
 
+if(!function_exists('html_to_plain_text'))
+{
+	function html_to_plain_text($html) {
+		// Array of patterns and replacements
+	
+		$html = strip_shortcodes($html);
+	
+		$search = [
+			'/\[javascript protected email address\]/i',
+			'/<br\s*\/?>/i',                   // <br> tags
+			'/<\/?p>/i',                       // <p> and </p> tags
+			'/<li>/i',                         // <li> tags
+			'/<\/li>/i',                       // </li> tags
+			'/<\/?ol[^>]*>/i',                 // <ol> and </ol> tags
+			'/<\/?ul[^>]*>/i',                 // <ul> and </ul> tags
+			'/<h[1-6][^>]*>(.*?)<\/h[1-6]>/i', // <h1> to <h6> tags
+			'/\n+/'                            // multiple new lines
+		];
+	
+		$replace = [
+			"\n",                  // replace [javascript protected email address] with newline
+			"\n",                  // replace <br> with newline
+			"\n",                  // replace <p> and </p> with newline
+			"\n* ",                // replace <li> with newline and bullet
+			"",                    // replace </li> with nothing
+			"\n",                  // replace <ol> and </ol> with newline
+			"\n",                  // replace <ul> and </ul> with newline
+			"$1: ",                // replace <h1> to <h6> with title followed by ":"
+			"\n"                   // replace multiple new lines with single newline
+		];
+	
+		// Perform replacements
+		$text = preg_replace($search, $replace, $html);
+	
+		// Strip any remaining HTML tags
+		$text = wp_strip_all_tags($text);
+	
+		// Trim leading/trailing whitespace and return
+		return trim($text);
+	}
+	
+}
+
+
 
 
 ?>
