@@ -9,20 +9,26 @@ class Dynamic_Core_Orders {
     function __construct()
     {
 		$this->name = 'dy-orders';
-		$this->valid_order_status = array(
+
+
+		$valid_order_status = array(
 			'pending', 
 			'paid', 
 			'confirmed', 
 			'postponed', 
 			'cancelled'
 		);
-		$this->valid_order_status_labels = array(
+		$valid_order_status_labels = array(
 			__('Pending', 'dynamicpackages'), 
 			__('Paid', 'dynamicpackages'), 
 			__('Confirmed', 'dynamicpackages'), 
 			__('Postponed', 'dynamicpackages'), 
 			__('Cancelled', 'dynamicpackages')
 		);
+
+
+		$this->valid_order_status = $valid_order_status;
+		$this->valid_order_status_labels = $valid_order_status_labels;
 
 		$this->booking_fields = array(
 			'pax_regular',
@@ -41,7 +47,7 @@ class Dynamic_Core_Orders {
         add_action('init', array(&$this, 'package_post_type'));
 
 		require_once(plugin_dir_path( __FILE__ ) . 'orders-metaboxes.php');
-		new Dynamic_Core_Orders_Metaboxes($this->valid_order_status, $this->valid_order_status_labels);
+		new Dynamic_Core_Orders_Metaboxes($valid_order_status, $valid_order_status_labels);
     }
 
 	public function package_post_type() {
