@@ -1,4 +1,6 @@
 <?php
+
+#[AllowDynamicProperties]
 class Dynamic_Core_Orders_Metaboxes {
 
     public function __construct($valid_order_status, $valid_order_status_labels) {
