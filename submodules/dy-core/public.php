@@ -110,7 +110,7 @@ class Dynamic_Core_Public {
             'permalink' => get_the_permalink(),
             'pluginUrl' => $this->plugin_dir_url_file,
             'lang' => current_language(),
-            'utc' => time()
+            'timestamp' => round(microtime(true) * 1000)
         );
 
         if(isset($post))
