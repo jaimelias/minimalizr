@@ -699,15 +699,10 @@ if(!function_exists('get_site_time'))
         $utc_offset_minutes = abs(($utc_offset_seconds % 3600) / 60);
         $utc_offset = sprintf('%+03d:%02d', $utc_offset_hours, $utc_offset_minutes);
 
-
-		$date = new DateTime('now', new DateTimeZone($timezone));
-		$timestamp_seconds = $date->getTimestamp();
-		$timestamp_milliseconds = $timestamp_seconds * 1000;
-
 		return array(
-			'timezone' => $timezone,
-			'offset' => $utc_offset,
-			'timestamp' => $timestamp_milliseconds
+			'site_timezone' => $timezone,
+			'site_offset' => $utc_offset,
+			'site_timestamp' => round(microtime(true) * 1000)
 		);
 
 	}

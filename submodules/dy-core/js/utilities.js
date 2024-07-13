@@ -131,7 +131,7 @@ const formToArray = form => {
         const response = await fetch(url, init)
         if (!response.ok) throw new Error('Unable to get nonce')
         const data = await response.json()
-        return data.dy_nonce
+        return data
     } catch (error) {
         console.error(error)
         throw error
@@ -164,17 +164,17 @@ const createFormSubmit = async (form) => {
 
     if(nonce)
     {
-        const nonceData = await getNonce();
+        const {dy_nonce} = await getNonce();
         
-        if(nonceData)
+        if(dy_nonce)
         {
             if(nonce === 'slug')
             {
-                action += `/${nonceData}`;
+                action += `/${dy_nonce}`;
             }
             else if(nonce === 'param')
             {
-                formFields.push({name: 'dy_nonce', value: nonceData});
+                formFields.push({name: 'dy_nonce', value: dy_nonce});
             }
         }
     }
