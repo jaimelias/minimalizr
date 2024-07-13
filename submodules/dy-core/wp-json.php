@@ -29,23 +29,18 @@ class Dynamic_Core_WP_JSON
 
     public function core_args_callback($req)
     {
-        $timezone = get_option('timezone_string');
-        if (empty($timezone)) {
-            $timezone = 'UTC';
+        $site_time = get_site_time();
+
+        $args = array(
+            'dy_nonce' => wp_create_nonce('dy_nonce')
+        );
+
+        foreach($site_time as $k => $v)
+        {
+            $args[$k] = $v;
         }
 
-        $datetime_zone = new DateTimeZone($timezone);
-        $utc_offset_seconds = $datetime_zone->getOffset(new DateTime());
-        $utc_offset_hours = floor($utc_offset_seconds / 3600);
-        $utc_offset_minutes = abs(($utc_offset_seconds % 3600) / 60);
-        $utc_offset = sprintf('%+03d:%02d', $utc_offset_hours, $utc_offset_minutes);
-
-        $result = new WP_REST_Response(array(
-            'dy_nonce' => wp_create_nonce('dy_nonce'),
-            'timestamp' => round(microtime(true) * 1000),
-            'site_timezone' => $timezone,
-            'site_utc_offset' => $utc_offset
-        ), 200);
+        $result = new WP_REST_Response($args, 200);
 
         $result->set_headers(array(
             'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',

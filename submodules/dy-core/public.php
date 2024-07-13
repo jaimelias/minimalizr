@@ -105,13 +105,20 @@ class Dynamic_Core_Public {
     {
         global $post;
 
+        $site_time = get_site_time();
+
         $args = array(
             'homeUrl' => home_url(),
             'permalink' => get_the_permalink(),
             'pluginUrl' => $this->plugin_dir_url_file,
-            'lang' => current_language(),
-            'timestamp' => round(microtime(true) * 1000)
+            'lang' => current_language()
         );
+
+        foreach($site_time as $k => $v)
+        {
+            $args[$k] = $v;
+        }
+
 
         if(isset($post))
         {
