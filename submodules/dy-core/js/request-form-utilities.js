@@ -8,18 +8,28 @@ jQuery(() => {
 const fixInputSpecialTypes = () => {
 
 
-	jQuery('input[type="number"]').on('input', function() {
-		let inputValue = jQuery(this).val();
+	//fixes paste unwanted numbers in number input
+	jQuery('input[type="number"]').bind('paste', function(e) {
 		
-		// Use a common regular expression pattern
-		let pattern = jQuery(this).attr('step') ? /[^\d.-]|(\.)(?=.*\.)|(-)(?=.*-)/g : /[^0-9]/g;
+		e.preventDefault()
+
+		const pasteValue = e.originalEvent.clipboardData.getData('Text')
+		const sanitizedValue = pasteValue.replace(/[^0-9]/g, '')
+	
+		jQuery(this).val(sanitizedValue)
+
+	})
+
+	//fixes typing unwanted numbers in number input
+	jQuery('input[type="number"]').on('keydown', function() {
+		const inputValue = jQuery(this).val();
 	
 		// Use a single regular expression replacement
-		let sanitizedInput = inputValue.replace(pattern, '');
+		const sanitizedValue = inputValue.replace(/[^0-9]/g, '')
 	
 		// Update the input field with the sanitized value
-		jQuery(this).val(sanitizedInput);
-	});
+		jQuery(this).val(sanitizedValue);
+	})
 
 	jQuery('input[type="email"]').on('input', function() {
 		let inputValue = jQuery(this).val();
