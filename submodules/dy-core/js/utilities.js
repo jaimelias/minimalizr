@@ -59,7 +59,12 @@ const whatsappButton = async () => {
                 }
 
                 const url = new URL(whatsappNumber, 'https://wa.me')
-                url.searchParams.append('text', dataText)
+
+                if(dataText)
+                {
+                    url.searchParams.append('text', dataText)
+                }
+                
                 href = url.href
             }
 
