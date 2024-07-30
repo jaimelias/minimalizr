@@ -396,6 +396,7 @@ if(!function_exists('whatsapp_button'))
 {
 	function whatsapp_button($label = '', $text = '')
 	{
+		$output = '';
 		$number = apply_filters('dy_whatsapp_number', '');
 
 		if(intval($number) > 0)
