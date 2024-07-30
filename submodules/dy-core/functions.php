@@ -401,30 +401,12 @@ if(!function_exists('whatsapp_button'))
 
 		if(intval($number) > 0)
 		{
-			if($label === '')
+			if(empty($label))
 			{
 				$label = 'Whatsapp';
 			}
-			
-			if($text === '')
-			{
-				if(is_singular())
-				{
-					global $post;
-					$text = $post->post_title;
-				}
-				else if(is_tax())
-				{
-					$text = single_term_title( '', false);
-				}
-				else
-				{
-					$text = get_bloginfo('name');
-				}
-			}
-				
-
-			$output = '<a class="pure-button button-whatsapp" target="_blank" data-text="'.esc_attr($text).'"><span class="dashicons dashicons-whatsapp"></span> '.esc_html($label).'</a>';
+		
+			$output = '<a class="pure-button button-whatsapp" target="_blank"><span class="dashicons dashicons-whatsapp"></span> '.esc_html($label).'</a>';
 		}
 
 		return $output;
