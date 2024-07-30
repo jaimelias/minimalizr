@@ -31,6 +31,7 @@ const fixInputSpecialTypes = () => {
 		jQuery(this).val(sanitizedValue);
 	})
 
+	//fixes typing unwanted numbers in number input
 	jQuery('input[type="email"]').on('input', function() {
 		let inputValue = jQuery(this).val();
 	

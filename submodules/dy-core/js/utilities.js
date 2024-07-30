@@ -30,6 +30,14 @@ const whatsappButton = () => {
     const qrcode = jQuery('#dy-whatsapp-qrcode');
     const link = jQuery('#dy-whatsapp-link > a');
 
+
+    //closes the modal
+    jQuery('#dy-whatsapp-modal-close').click(function(){
+
+        jQuery(modal).toggleClass('hidden');
+
+    });
+
     jQuery('.button-whatsapp').each(function(){
 
         const el = jQuery(this);
@@ -63,17 +71,6 @@ const whatsappButton = () => {
             jQuery(modal).toggleClass('hidden');
 
         });
-
-
-        //closes the modal
-        jQuery('#dy-whatsapp-modal-close').click(function(){
-
-            jQuery(modal).toggleClass('hidden');
-
-        });
-
-
-
     });
 
 };
