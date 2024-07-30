@@ -24,11 +24,13 @@ jQuery(() => {
 });
 
 
-const whatsappButton = () => {
+const whatsappButton = async () => {
 
-    const modal = jQuery('#dy-whatsapp-modal');
-    const qrcode = jQuery('#dy-whatsapp-qrcode');
-    const link = jQuery('#dy-whatsapp-link > a');
+    const modal = jQuery('#dy-whatsapp-modal')
+    const qrcode = jQuery('#dy-whatsapp-qrcode')
+    const link = jQuery('#dy-whatsapp-link > a')
+    let whatsappNumber = ''
+    let href = ''
 
 
     //closes the modal
@@ -38,15 +40,30 @@ const whatsappButton = () => {
 
     });
 
-    jQuery('.button-whatsapp').each(function(){
+    jQuery('.button-whatsapp').each(async function(){
 
         const el = jQuery(this);
 
-        jQuery(el).click(function(e){
+        jQuery(el).click(async function(e){
 
             e.preventDefault();
 
-            const href = jQuery(el).attr('href');
+            if(!whatsappNumber)
+            {
+                const nonce = await getNonce()
+                const dataText = jQuery(el).attr('data-text')
+
+                if(nonce && nonce.whatsapp_number)
+                {
+                    whatsappNumber = nonce.whatsapp_number.toString()
+                }
+
+                const url = new URL(whatsappNumber, 'https://wa.me')
+                url.searchParams.append('text', dataText)
+                href = url.href
+            }
+
+            if(!whatsappNumber) return
 
 
             if(/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))

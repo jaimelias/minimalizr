@@ -396,25 +396,7 @@ if(!function_exists('whatsapp_button'))
 {
 	function whatsapp_button($label = '', $text = '')
 	{
-		global $polylang;
-		$output = '';
-		$whatsapp = get_option('dy_whatsapp');
-		$current_language = current_language();
-		$default_language = default_language();
-
-		if(isset($polylang))
-		{
-			if($current_language !== $default_language)
-			{
-				$lang_whatsapp = get_option('dy_whatsapp_' . $current_language);
-
-				$whatsapp = (!empty($lang_whatsapp)) 
-					? $lang_whatsapp 
-					: $whatsapp;
-			}
-		}
-
-		$number = preg_replace('/[^0-9.]+/', '', $whatsapp);
+		$number = apply_filters('dy_whatsapp_number', '');
 
 		if(intval($number) > 0)
 		{
@@ -439,12 +421,9 @@ if(!function_exists('whatsapp_button'))
 					$text = get_bloginfo('name');
 				}
 			}
-			
-			
-			$text =  '?text='.urlencode($text);
-			
-			$url = 'https://wa.me/'.$number.$text;
-			$output = '<a class="pure-button button-whatsapp" target="_blank" href="'.esc_url($url).'"><span class="dashicons dashicons-whatsapp"></span> '.esc_html($label).'</a>';
+				
+
+			$output = '<a class="pure-button button-whatsapp" target="_blank" data-text="'.esc_attr($text).'"><span class="dashicons dashicons-whatsapp"></span> '.esc_html($label).'</a>';
 		}
 
 		return $output;

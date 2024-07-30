@@ -28,6 +28,7 @@ class Dynamic_Core_Public {
         add_action('wp_enqueue_scripts', array(&$this, 'enqueue_scripts'));
         add_action('wp_enqueue_scripts', array(&$this, 'enqueue_styles'));
         add_action('minimal_site_alert', array(&$this, 'site_alert'));
+        add_filter('dy_whatsapp_number', array(&$this, 'get_whatsapp_number'));
     }
 
     public function enqueue_scripts()
@@ -332,6 +333,25 @@ class Dynamic_Core_Public {
 
         </style>
         <?php
+    }
+
+    public function get_whatsapp_number()
+    {
+
+		$default_language = default_language();
+		$languages = get_languages();
+        $whatsapp_number = '';
+        
+		
+		for($x = 0; $x < count($languages); $x++)
+		{
+			$lang = $languages[$x];
+            $prefix = ($default_language === $lang) ? '' : '_'.$lang;
+            $whatsapp_number = get_option('dy_whatsapp'.$prefix);
+            $whatsapp_number = preg_replace('/[^0-9.]+/', '', $whatsapp_number);
+		}
+
+        return $whatsapp_number;
     }
 
 }
