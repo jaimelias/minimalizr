@@ -145,21 +145,25 @@ class Minimal_Classes
 	{
 		$header_args = $this->header_args();
 		$title_tag = (is_front_page()) ? 'h1' : 'h2';
-
+	
 		ob_start();
 		?>
 		<div id="minimal-header" class="clearfix block">
 			<div class="pure-g">
 				<div class="left pure-u-1 pure-u-sm-1-2 pure-u-md-1-5 pure-u-lg-1-6">
 					<div class="pull-left minimal-menu-title">
-						<<?php echo $title_tag; ?> class="site-title">
-						<a href="<?php echo esc_url(home_url()); ?>">
-							<?php if(empty($header_args->url)): ?>
-								<?php echo esc_html( get_bloginfo('name') ); ?>
-							<?php else: ?>
-								<img id="minimal-logo" src="<?php echo esc_url($header_args->url); ?>" height="<?php echo esc_attr($header_args->height); ?>" width="<?php echo esc_attr($header_args->width); ?>" alt="<?php esc_attr(bloginfo('name')); ?>" />
-							<?php endif; ?>
-						</a></<?php echo $title_tag; ?>>
+						<<?php echo esc_html($title_tag); ?> class="site-title">
+							<a href="<?php echo esc_url(home_url()); ?>">
+								<?php if (empty($header_args->url)): ?>
+									<?php echo esc_html(get_bloginfo('name')); ?>
+								<?php else: ?>
+									<img id="minimal-logo" src="<?php echo esc_url($header_args->url); ?>" 
+										 height="<?php echo esc_attr($header_args->height); ?>" 
+										 width="<?php echo esc_attr($header_args->width); ?>" 
+										 alt="<?php echo esc_attr(get_bloginfo('name')); ?>" />
+								<?php endif; ?>
+							</a>
+						</<?php echo esc_html($title_tag); ?>>
 					</div>
 				</div>
 				
@@ -169,15 +173,12 @@ class Minimal_Classes
 						<?php echo $this->minimal(); ?>
 					</div>
 				</div>
-
 			</div>
-
 		</div>
 		<?php
-		$output = ob_get_contents();
-		ob_end_clean();
-		echo $output;	
+		echo ob_get_clean();
 	}
+	
 	
 	public function minimal()
 	{
