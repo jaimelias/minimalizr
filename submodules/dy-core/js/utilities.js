@@ -51,7 +51,7 @@ const whatsappButton = async () => {
             if(!whatsappNumber)
             {
                 const nonce = await getNonce()
-                const dataText = jQuery('h1').text()
+                const dataText = jQuery('title').text().trim()
 
                 if(nonce && nonce.whatsapp_number)
                 {
@@ -62,7 +62,7 @@ const whatsappButton = async () => {
 
                 if(dataText)
                 {
-                    url.searchParams.append('text', encodeURIComponent(dataText))
+                    url.searchParams.append('text', dataText)
                 }
                 
                 href = url.href
