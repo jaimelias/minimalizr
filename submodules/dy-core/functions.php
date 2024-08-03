@@ -472,7 +472,7 @@ if(!function_exists('validate_recaptcha'))
 									if(in_array('invalid-input-response', $errors))
 									{
 										write_log($errors);
-										cloudflare_ban_ip_address();
+										//cloudflare_ban_ip_address();
 									}
 								}
 							}
