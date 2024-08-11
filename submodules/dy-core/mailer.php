@@ -11,11 +11,13 @@ class Dy_Mailer
 	public function __construct()
 	{
 		$this->email_limit = 10;
+		$this->api_endpoint = 'https://api.sendgrid.com/v3/mail/send';
 		$this->web_api_key = get_option('sendgrid_web_api_key');
 		$this->email = get_option('sendgrid_email');
 		$this->email_to = get_option('sendgrid_email_to');
 		$this->email_cc = get_option('sendgrid_email_cc');
 		$this->email_bcc = get_option('sendgrid_email_bcc');
+
 		$this->name = (get_option('sendgrid_name')) ? get_option('sendgrid_name') : get_bloginfo('name');
 		$this->settings_title = 'Mailer Config';
 		$this->init();
@@ -173,93 +175,146 @@ class Dy_Mailer
 			return $phpmailer;
 		}
 
-		$email = new \SendGrid\Mail\Mail();
-		$email->setFrom($this->email, $this->name);
-		$email->setSubject($phpmailer->Subject);
-
-		if(!empty($phpmailer->Body))
-		{
-			$email->addContent('text/html', $phpmailer->Body);
-		}
+		$personalizations = array(
+			array(
+				"subject" => $phpmailer->Subject,
+			)
+		);
 		
-		if(!empty($phpmailer->AltBody))
-		{
-			$email->addContent('text/plain', $phpmailer->AltBody);
-		}
+		$from = array(
+			"email" => $this->email,
+			"name"  => $this->name
+		);
 		
+		// Get recipient addresses from wp_mail parameters
 		$to = $phpmailer->getToAddresses();
 		$cc = $phpmailer->getCcAddresses();
 		$bcc = $phpmailer->getBccAddresses();
-
-		//sets the emails from default wp_mail params
-		for($x = 0; $x < count($to); $x++)
-		{
-			$email->addTo($to[$x][0]);
-		}
-		for($x = 0; $x < count($cc); $x++)
-		{
-			$email->addCc($cc[$x][0]);
-		}
-		for($x = 0; $x < count($bcc); $x++)
-		{
-			$email->addBcc($bcc[$x][0]);
-		}
-
-		//set the emails from admin fields
-		$to = $this->email_str_row_to_array($this->email_to);
-		$cc = $this->email_str_row_to_array($this->email_cc);
-		$bcc = $this->email_str_row_to_array($this->email_bcc);
-
-		for($x = 0; $x < count($to); $x++)
-		{
-			$email->addTo($to[$x]);
-		}
-
-		for($x = 0; $x < count($cc); $x++)
-		{
-			$email->addCc($cc[$x]);
-		}
-
-		for($x = 0; $x < count($bcc); $x++)
-		{
-			$email->addBcc($bcc[$x]);
-		}				
 		
+		// Populate the 'to' array
+		foreach ($to as $address) {
 
-		//attachements
+			if(!array_key_exists('to', $personalizations[0]))
+			{
+				$personalizations[0]["to"] = array();
+			}
+
+			$personalizations[0]["to"][] = array("email" => $address[0]);
+		}
+		
+		// Populate the 'cc' array
+		foreach ($cc as $address) {
+
+			if(!array_key_exists('cc', $personalizations[0]))
+			{
+				$personalizations[0]["cc"] = array();
+			}
+
+			$personalizations[0]["cc"][] = array("email" => $address[0]);
+		}
+		
+		// Populate the 'bcc' array
+		foreach ($bcc as $address) {
+
+			if(!array_key_exists('bcc', $personalizations[0]))
+			{
+				$personalizations[0]["bcc"] = array();
+			}
+
+			$personalizations[0]["bcc"][] = array("email" => $address[0]);
+		}
+		
+		// Additional emails from admin fields
+		$config_to = $this->email_str_row_to_array($this->email_to);
+		$config_cc = $this->email_str_row_to_array($this->email_cc);
+		$config_bcc = $this->email_str_row_to_array($this->email_bcc);
+		
+		// Add additional 'to' emails
+		foreach ($config_to as $email) {
+
+			if(!array_key_exists('to', $personalizations[0]))
+			{
+				$personalizations[0]["to"] = array();
+			}
+
+			$personalizations[0]["to"][] = array("email" => $email);
+		}
+		
+		// Add additional 'cc' emails
+		foreach ($config_cc as $email) {
+
+			if(!array_key_exists('cc', $personalizations[0]))
+			{
+				$personalizations[0]["cc"] = array();
+			}
+		
+			$personalizations[0]["cc"][] = array("email" => $email);
+		}
+		
+		// Add additional 'bcc' emails
+		foreach ($config_bcc as $email) {
+
+			if(!array_key_exists('bcc', $personalizations[0]))
+			{
+				$personalizations[0]["bcc"] = array();
+			}
+
+			$personalizations[0]["bcc"][] = array("email" => $email);
+		}
+		
+		// Attachments
 		$attachments = $phpmailer->getAttachments();
+		$formatted_attachments = array();
 		
-
 		foreach ($attachments as $arr) {
 			$pathname = $arr[0];
 			$filename = $arr[2];
 			$mimetype = $arr[4];
 			$file = file_get_contents($pathname);
-			$attachment = new Attachment();
-			$attachment->setContent($file);
-			$attachment->setType($mimetype);
-			$attachment->setFilename(wp_specialchars_decode($filename));
-			$attachment->setDisposition('attachment');
-			$email->addAttachment($attachment);
-		}
-
-
-		$sendgrid = new \SendGrid($this->web_api_key);
 		
-		try {
-			
-			$response = $sendgrid->send($email);
-			
-			if (!($response->statusCode() >= 200 && $response->statusCode() <= 299)) {
-				write_log($response->body());
-			}
-
-		} 
-		catch(Exception $e)
-		{
-			write_log($e->getMessage());
+			$formatted_attachments[] = array(
+				'content' => base64_encode($file),
+				'type' => $mimetype,
+				'filename' => $filename,
+				'disposition' => 'attachment',
+			);
 		}
+		
+		// Build the payload
+		$payload = wp_json_encode(array(
+			'personalizations' => $personalizations,
+			'from' => $from,
+			'subject' => $phpmailer->Subject,
+			'content' => array(
+				array(
+					'type' => 'text/html',
+					'value' => $phpmailer->Body,
+				)
+			),
+			'attachments' => $formatted_attachments
+		));
+		
+		// Set up the arguments for the request
+		$args = array(
+			'method'      => 'POST',
+			'body'        => $payload,
+			'timeout'     => 45,
+			'headers'     => array(
+				'Authorization' => 'Bearer ' . $this->web_api_key,
+				'Content-Type'  => 'application/json',
+			),
+		);
+		
+		// Make the request
+		$response = wp_remote_post($this->api_endpoint, $args);
 
+		
+		// Handle the response (optional)
+		if (is_wp_error($response)) {
+			$error_message = $response->get_error_message();
+			write_log("SendGrid API request failed: $error_message");
+		}
+		
 
 		//deletes attachemets and suppress exceptions writes
 		$this->unlink_attachments();
