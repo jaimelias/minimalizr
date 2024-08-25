@@ -290,10 +290,16 @@ class Dy_Mailer
 					'type' => 'text/html',
 					'value' => $phpmailer->Body,
 				)
-			),
-			'attachments' => $formatted_attachments
+			)
 		));
+
 		
+		if(!empty($formatted_attachments))
+		{
+			$payload['attachments'] = $formatted_attachments;
+		}
+
+
 		// Set up the arguments for the request
 		$args = array(
 			'method'      => 'POST',
