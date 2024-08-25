@@ -277,6 +277,9 @@ class Dy_Mailer
 			);
 		}
 		
+
+		write_log($personalizations);
+
 		// Build the payload
 		$payload = wp_json_encode(array(
 			'personalizations' => $personalizations,
@@ -304,6 +307,8 @@ class Dy_Mailer
 		
 		// Make the request
 		$response = wp_remote_post($this->api_endpoint, $args);
+
+		write_log($response);
 
 		
 		// Handle the response (optional)
