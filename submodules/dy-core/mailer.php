@@ -310,9 +310,6 @@ class Dy_Mailer
 		
 		// Make the request
 		$response = wp_remote_post($this->api_endpoint, $args);
-
-		write_log($response);
-
 		
 		// Handle the response (optional)
 		if (is_wp_error($response)) {
