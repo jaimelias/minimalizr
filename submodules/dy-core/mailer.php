@@ -278,10 +278,8 @@ class Dy_Mailer
 		}
 		
 
-		write_log($personalizations);
-
 		// Build the payload
-		$payload = wp_json_encode(array(
+		$payload = array(
 			'personalizations' => $personalizations,
 			'from' => $from,
 			'subject' => $phpmailer->Subject,
@@ -291,7 +289,7 @@ class Dy_Mailer
 					'value' => $phpmailer->Body,
 				)
 			)
-		));
+		);
 
 		
 		if(!empty($formatted_attachments))
@@ -299,11 +297,10 @@ class Dy_Mailer
 			$payload['attachments'] = $formatted_attachments;
 		}
 
-
 		// Set up the arguments for the request
 		$args = array(
 			'method'      => 'POST',
-			'body'        => $payload,
+			'body'        => wp_json_encode($payload),
 			'timeout'     => 45,
 			'headers'     => array(
 				'Authorization' => 'Bearer ' . $this->web_api_key,
