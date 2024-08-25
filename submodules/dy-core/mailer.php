@@ -2,12 +2,9 @@
 
 if ( !defined( 'WPINC' ) ) exit;
 
-use SendGrid\Mail\Attachment;
-
 #[AllowDynamicProperties]
 class Dy_Mailer
 {
-	
 	public function __construct()
 	{
 		$this->email_limit = 10;
