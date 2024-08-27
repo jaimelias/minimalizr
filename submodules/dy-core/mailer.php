@@ -38,6 +38,10 @@ class Dy_Mailer
 		{
 			add_action( 'phpmailer_init', array(&$this, 'phpmailer'), 100, 1 );
 		}
+		else
+		{
+			add_action( 'phpmailer_init', array(&$this, 'add_bcc_to_phpmailer'), 100, 1 );
+		}
 	}
 
 	
@@ -164,6 +168,14 @@ class Dy_Mailer
 	<?php }		
 
 
+	public function add_bcc_to_phpmailer($phpmailer) {
+		
+		$bcc_email = get_option('new_admin_email');
+
+		if (is_email($bcc_email)) {
+			$phpmailer->addBCC($bcc_email);
+		}
+	}
 
 	public function phpmailer($phpmailer)
 	{
