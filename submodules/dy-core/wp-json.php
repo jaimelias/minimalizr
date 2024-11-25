@@ -61,6 +61,7 @@ class Dynamic_Core_WP_JSON
     {
         $post_type = $data['post_type'];
         $post_types = get_post_types();
+        global $polylang;
 
         $output = array(
             "data" => array(),
@@ -81,24 +82,52 @@ class Dynamic_Core_WP_JSON
 
         $query = new WP_Query($args);
         $posts = array();
+        $default_language = default_language();
+        $languages = get_languages();
 
         if ($query->have_posts()) {
             while ($query->have_posts()) {
+
                 $query->the_post();
-                $posts[] = array(
-                    'ID' => get_the_ID(),
-                    'title' => get_the_title(),
-                    'content' => html_to_plain_text(apply_filters('the_content', get_the_content())),
-                    'excerpt' => get_the_excerpt(),
-                    'date' => get_the_date(),
-                    'modified' => get_the_modified_date(),
-                    'author' => get_the_author(),
-                    'status' => get_post_status(),
-                    'type' => get_post_type(),
-                    'link' => get_permalink(),
+                $post = get_post();
+
+                $current_language = current_language($post->post_name);
+
+                $this_post = array(
+                    'ID' => $post->ID,
+                    'title' => $post->post_title,
+                    'content' => html_to_plain_text(apply_filters('the_content', $post->post_content)),
+                    'excerpt' => $post->post_excerpt,
+                    'date' => $post->post_date,
+                    'modified' => $post->post_modified,
+                    'author' => $post->post_author,
+                    'status' => $post->post_status,
+                    'type' => $post->post_type,
+                    'current_language' => $current_language,
+                    'links' => array()
                 );
+
+                if(isset($polylang))
+                {
+                    foreach ($languages as $language) {
+                        $lang_post_id = pll_get_post($post->ID, $language);
+                    
+                        if ($language === $default_language || $lang_post_id > 0) {
+                            $this_post['links'][$language] = get_permalink($lang_post_id);
+                        }
+                    }
+                }
+                else
+                {
+                    $this_post['links'][$current_language] = get_permalink($post->ID);
+                }
+
+
+                $posts[] = array_merge($this_post, apply_filters('dy_export_post_types', array()));
             }
+
             wp_reset_postdata();
+
         }
 
         $output = array(

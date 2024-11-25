@@ -192,7 +192,7 @@ if(!function_exists('get_languages'))
 
 if(!function_exists('current_language'))
 {
-	function current_language()
+	function current_language($value = '')
 	{
 		global $polylang;
 		$output = '';
@@ -207,7 +207,8 @@ if(!function_exists('current_language'))
 		{
 			if(isset($polylang))
 			{
-				$lang = pll_current_language();
+				//$value === name, locale or slug
+				$lang = (empty($value)) ? pll_current_language() : pll_current_language($value);
 
 				if($lang)
 				{
