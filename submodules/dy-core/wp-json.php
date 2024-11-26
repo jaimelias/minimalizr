@@ -123,7 +123,7 @@ class Dynamic_Core_WP_JSON
                 }
 
 
-                $posts[] = array_merge($this_post, apply_filters('dy_export_post_types', array()));
+                $posts[] = apply_filters('dy_export_post_types', $this_post);
             }
 
             wp_reset_postdata();
