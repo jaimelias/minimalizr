@@ -104,6 +104,7 @@ class Dynamic_Core_WP_JSON
                     'status' => $post->post_status,
                     'type' => $post->post_type,
                     'current_language' => $current_language,
+                    'post_parent' => $post->post_parent,
                     'links' => array(),
                     'exclude' => false
                 );
