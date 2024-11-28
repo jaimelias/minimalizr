@@ -96,8 +96,8 @@ class Dynamic_Core_WP_JSON
                 $this_post = array(
                     'ID' => $post->ID,
                     'title' => $post->post_title,
-                    'content' => html_to_plain_text(apply_filters('the_content', $post->post_content)),
-                    'excerpt' => $post->post_excerpt,
+                    'post_content' => html_to_plain_text(apply_filters('the_content', $post->post_content)),
+                    'post_excerpt' => $post->post_excerpt,
                     'date' => $post->post_date,
                     'modified' => $post->post_modified,
                     'author' => $post->post_author,
@@ -126,8 +126,9 @@ class Dynamic_Core_WP_JSON
 
                 $parsed_post = apply_filters('dy_export_post_types', $this_post);
 
-                if($parsed_post['exclude'] === false)
+                if(!array_key_exists('exclude', $parsed_post) || $parsed_post['exclude'] === false)
                 {
+                    unset($this_post['exclude']);
                     $posts[] = apply_filters('dy_export_post_types', $this_post);
                 }
                 
