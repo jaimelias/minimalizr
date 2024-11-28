@@ -104,7 +104,8 @@ class Dynamic_Core_WP_JSON
                     'status' => $post->post_status,
                     'type' => $post->post_type,
                     'current_language' => $current_language,
-                    'links' => array()
+                    'links' => array(),
+                    'exclude' => false
                 );
 
                 if(isset($polylang))
@@ -122,8 +123,13 @@ class Dynamic_Core_WP_JSON
                     $this_post['links'][$current_language] = get_permalink($post->ID);
                 }
 
+                $parsed_post = apply_filters('dy_export_post_types', $this_post);
 
-                $posts[] = apply_filters('dy_export_post_types', $this_post);
+                if($parsed_post['exclude'] === false)
+                {
+                    $posts[] = apply_filters('dy_export_post_types', $this_post);
+                }
+                
             }
 
             wp_reset_postdata();

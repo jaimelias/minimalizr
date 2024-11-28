@@ -5,6 +5,9 @@ if ( !defined( 'WPINC' ) ) exit;
 #[AllowDynamicProperties]
 class Dynamic_Core_Providers {
 
+
+	private static $cache = [];
+
     function __construct()
     {
 		$this->name = 'dy-providers';
@@ -170,43 +173,39 @@ class Dynamic_Core_Providers {
 
 	public function get_providers($output = array())
 	{
-		$which_var = $this->name.'get_providers';
-		global $$which_var;
+		$cache_key = $this->name.'get_providers';
 
-		if(isset($$which_var))
-		{
-			$output = $$which_var;
-		}
-		else
-		{
-			global $post;
+        if (isset(self::$cache[$cache_key])) {
+            return self::$cache[$cache_key];
+        }
 
-			if(isset($post))
+		global $post;
+
+		if(isset($post))
+		{
+			$terms = get_the_terms($post->ID, $this->name);
+
+			if ( ! empty( $terms ) && ! is_wp_error( $terms ) )
 			{
-				$terms = get_the_terms($post->ID, $this->name);
-
-				if ( ! empty( $terms ) && ! is_wp_error( $terms ) )
+				foreach ( $terms as $t )
 				{
-					foreach ( $terms as $t )
-					{
-						$language = get_term_meta($t->term_id, $this->name . '_language', true);
-						$emails_str = get_term_meta($t->term_id, $this->name . '_emails', true);
-						$emails = $this->email_str_row_to_array($emails_str);
-						
-						$row = array(
-							'id' => $t->term_id,
-							'name' => $t->name,
-							'language' => $language,
-							'emails' => $emails,
-						);
+					$language = get_term_meta($t->term_id, $this->name . '_language', true);
+					$emails_str = get_term_meta($t->term_id, $this->name . '_emails', true);
+					$emails = $this->email_str_row_to_array($emails_str);
+					
+					$row = array(
+						'id' => $t->term_id,
+						'name' => $t->name,
+						'language' => $language,
+						'emails' => $emails,
+					);
 
-						array_push($output, $row);
-					}
+					array_push($output, $row);
 				}
 			}
-
-			$GLOBALS[$which_var] = $output;
 		}
+
+        self::$cache[$cache_key] = $output;
 
 		return $output;
 	}
