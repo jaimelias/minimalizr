@@ -251,19 +251,17 @@ if(!function_exists('get_ip_address'))
 
 if(!function_exists('cloudflare_ban_ip_address'))
 {
-	function cloudflare_ban_ip_address($ip = null){
+	function cloudflare_ban_ip_address($ban_message = ''){
 
 		$output = false;
 		$dy_cloudflare_api_token = get_option('dy_cloudflare_api_token');
 		
 		if(!empty($dy_cloudflare_api_token))
 		{
+			
 			$url = 'https://api.cloudflare.com/client/v4/user/firewall/access_rules/rules';
 			
-			if(empty($ip))
-			{
-				$ip = get_ip_address();
-			}
+			$ip = get_ip_address();
 			
 			if(!isset($_SERVER['HTTP_CF_CONNECTING_IP']))
 			{
@@ -277,7 +275,6 @@ if(!function_exists('cloudflare_ban_ip_address'))
 				}
 			}
 
-
 			$headers = array(
 				'Authorization' => 'Bearer ' . sanitize_text_field($dy_cloudflare_api_token),
 				'Content-Type' => 'application/json'
@@ -288,6 +285,12 @@ if(!function_exists('cloudflare_ban_ip_address'))
 				'configuration' => array('target' => 'ip', 'value' => $ip),
 				'notes' => 'Banned on '.date('Y-m-d H:i:s').' by PHP-script'
 			);
+
+			if(!empty($ban_message))
+			{
+				$data['notes'] .= ' | ' . is_array($ban_message) ? implode(', ', $ban_message): $ban_message;
+			}
+
 
 			$resp = wp_remote_post($url, array(
 				'headers' => $headers,
@@ -305,7 +308,8 @@ if(!function_exists('cloudflare_ban_ip_address'))
 				$log = array(
 					'messages' => $messages,
 					'errors' => $errors,
-					'ip' => $ip
+					'ip' => $ip,
+					'ban_message' => $ban_message
 				);
 
 				$log = json_encode($log);
@@ -419,71 +423,71 @@ if(!function_exists('validate_recaptcha'))
 {
 	function validate_recaptcha()
 	{
-		global $dy_valid_recaptcha;
-		$invalids = array();
-		$output = false;
-
-		if(isset($dy_valid_recaptcha))
+		if(!isset($_POST['g-recaptcha-response']))
 		{
-			$output = $dy_valid_recaptcha;
+			return false;
 		}
-		else
+
+		$secret_key = get_option('dy_recaptcha_secret_key');
+
+		if(!$secret_key)
 		{
-			if(isset($_POST['g-recaptcha-response']))
+			return false;
+		}
+
+		$which_var = 'dy_valid_recaptcha';
+		global $$which_var;
+
+		if(isset($$which_var))
+		{
+			return $$which_var;
+		}
+
+		$output = false;
+		$url = 'https://www.google.com/recaptcha/api/siteverify';
+
+		$ip = (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) 
+			? $_SERVER['HTTP_CF_CONNECTING_IP'] : 
+			$_SERVER['REMOTE_ADDR'];
+
+		$params = array(
+			'secret' => $secret_key,
+			'remoteip' => $ip,
+			'response' => sanitize_text_field($_POST['g-recaptcha-response']),
+		);
+
+		$resp = wp_remote_post($url, array(
+			'body' => $params
+		));
+
+		if ( is_array( $resp ) && ! is_wp_error( $resp ) )
+		{
+			if($resp['response']['code'] === 200)
 			{
-				$secret_key = get_option('dy_recaptcha_secret_key');
+				$data = json_decode($resp['body'], true);
 
-				if($secret_key)
+				if($data['success'] === true)
 				{
-					$url = 'https://www.google.com/recaptcha/api/siteverify';
+					$output = true;
+				}
+				else
+				{
+					$GLOBALS['dy_request_invalids'] = array(__('Invalid Recaptcha', 'dynamicpackages'));
 
-					$ip = (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) 
-						? $_SERVER['HTTP_CF_CONNECTING_IP'] : 
-						$_SERVER['REMOTE_ADDR'];
-
-					$params = array(
-						'secret' => $secret_key,
-						'remoteip' => $ip,
-						'response' => sanitize_text_field($_POST['g-recaptcha-response']),
-					);
-
-					$resp = wp_remote_post($url, array(
-						'body' => $params
-					));
-
-					if ( is_array( $resp ) && ! is_wp_error( $resp ) )
+					if(array_key_exists('error-codes', $data))
 					{
-						if($resp['response']['code'] === 200)
+						$errors = $data['error-codes'];
+
+						if(in_array('invalid-input-response', $errors))
 						{
-							$data = json_decode($resp['body'], true);
-
-							if($data['success'] === true)
-							{
-								$output = true;
-							}
-							else
-							{
-								$GLOBALS['dy_request_invalids'] = array(__('Invalid Recaptcha', 'dynamicpackages'));
-								$debug_output = array('recaptcha-error' => $data['error-codes']);
-
-								if(array_key_exists('error-codes', $data))
-								{
-									$errors = $data['error-codes'];
-
-									if(in_array('invalid-input-response', $errors))
-									{
-										write_log($errors);
-										//cloudflare_ban_ip_address();
-									}
-								}
-							}
+							cloudflare_ban_ip_address($errors);
 						}
 					}
 				}
 			}
-
-			$GLOBALS['dy_valid_recaptcha'] = $output;
 		}
+
+		$GLOBALS[$which_var] = $output;
 
 		return $output;
 	}
