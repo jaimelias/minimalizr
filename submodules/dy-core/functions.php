@@ -23,14 +23,14 @@ if(! function_exists('get_dy_id'))
 			$post_id = $post->ID;
 		}
 
-		if($req_id !== null && $req_id !== $post_id)
+		if($req_id !== null && $post_id !== null && $req_id !== $post_id)
 		{
-			throw new Exception("'req_id' is not equal to 'post_id'");
+			throw new Exception("'req_id: $req_id' is not equal to 'post_id: $post_id'");
 		}
 
 		if($post_id) return $post_id;
 		else if($req_id) return $req_id;
-		else throw new Error("req_id and post_id are not found");
+		else return null;
 	}
 }
 
