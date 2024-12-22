@@ -12,6 +12,7 @@ if(! function_exists('get_dy_id'))
 		global $post;
 		$req_id = null;
 		$post_id = null;
+		$admin_id = null;
 
 		if(isset($_REQUEST['dy_id']))
 		{
@@ -21,6 +22,13 @@ if(! function_exists('get_dy_id'))
 		if(isset($post))
 		{
 			$post_id = $post->ID;
+		}
+		else
+		{
+			if(is_admin() && isset($_GET['post']))
+			{
+				$post_id = intval(sanitize_text_field($_REQUEST['post']));
+			}
 		}
 
 		if($req_id !== null && $post_id !== null && $req_id !== $post_id)
