@@ -5,7 +5,6 @@ if ( !defined( 'WPINC' ) ) exit;
 #[AllowDynamicProperties]
 class Dynamic_Core_Providers {
 
-
 	private static $cache = [];
 
     function __construct()
@@ -185,10 +184,31 @@ class Dynamic_Core_Providers {
 		{
 			$terms = get_the_terms($post->ID, $this->name);
 
+			if(empty($terms) || is_wp_error($terms))
+			{
+				$terms = new stdClass();
+			}
+
+			if(property_exists($post, 'post_parent'))
+			{
+				if($post->post_parent > 0)
+				{
+					$parent_terms =  get_the_terms($post->post_parent, $this->name);
+					$terms = (object) array_merge((array) $terms, (array) $parent_terms);
+				}
+			}
+
+			$term_ids = [];
+
 			if ( ! empty( $terms ) && ! is_wp_error( $terms ) )
 			{
 				foreach ( $terms as $t )
 				{
+					if(in_array($t->term_id, $term_ids))
+					{
+						continue;
+					}
+
 					$language = get_term_meta($t->term_id, $this->name . '_language', true);
 					$emails_str = get_term_meta($t->term_id, $this->name . '_emails', true);
 					$emails = $this->email_str_row_to_array($emails_str);
@@ -200,9 +220,11 @@ class Dynamic_Core_Providers {
 						'emails' => $emails,
 					);
 
-					array_push($output, $row);
+					$output[] = $row;
+					$term_ids[] = $t->term_id;
 				}
 			}
+
 		}
 
         self::$cache[$cache_key] = $output;
