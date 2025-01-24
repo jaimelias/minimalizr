@@ -189,11 +189,12 @@ class Dynamic_Core_Providers {
 				$terms = new stdClass();
 			}
 
-			if(property_exists($post, 'post_parent'))
+			if(property_exists($post, 'post_parent') && $post->post_parent > 0)
 			{
-				if($post->post_parent > 0)
+				$parent_terms =  get_the_terms($post->post_parent, $this->name);
+
+				if (!empty($parent_terms) && !is_wp_error($parent_terms))
 				{
-					$parent_terms =  get_the_terms($post->post_parent, $this->name);
 					$terms = (object) array_merge((array) $terms, (array) $parent_terms);
 				}
 			}
