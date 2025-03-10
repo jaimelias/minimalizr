@@ -203,20 +203,20 @@ const renderCountryCodes = ({className, data}) => {
 }
 
 
-const isValidValue = ({ name, value }) => {
+const isValidValue = ({ name, value, thisForm }) => {
 	if (!value) {
 	  return false;
 	}
   
 	switch (name) {
 	  case 'CVV2':
-		return value.length === 3;
+		return isValidCVV(value, jQuery(thisForm).find('input[name="CCNum"]').val());
 	  case 'CCNum':
 		return isValidCard(value);
 	  case 'email':
 		return isEmail(value);
 	  case 'repeat_email':
-		return isEmail(value) && value === jQuery('#dy_package_request_form').find('input[name="email"]').val();
+		return isEmail(value) && value === jQuery(thisForm).find('input[name="email"]').val();
 		case 'country_calling_code':
 			return isNumber(value) && parseInt(value) >= 1;
 	  case 'inquiry':
@@ -226,6 +226,41 @@ const isValidValue = ({ name, value }) => {
 	}
   };
   
+  const isValidCVV = (value, ccValue) => {
+    if (!value || !ccValue) {
+        return false;
+    }
+
+    // Ensure CVV is numeric
+    if (!/^\d+$/.test(value)) {
+        return false;
+    }
+
+    // Determine card type based on first digit(s)
+    let cardType;
+    if (/^4/.test(ccValue)) {
+        cardType = 'visa';
+    } else if (/^5[1-5]/.test(ccValue) || /^2(2[2-9]|[3-6]\d|7[01])/.test(ccValue)) {
+        cardType = 'mastercard';
+    } else if (/^3[47]/.test(ccValue)) {
+        cardType = 'amex';
+    } else {
+        return false; // Invalid card type
+    }
+
+    // Validate CVV length based on card type
+    switch (cardType) {
+        case 'visa':
+        case 'mastercard':
+            return value.length === 3;
+        case 'amex':
+            return value.length === 4;
+        default:
+            return false;
+    }
+};
+
+
 
 const isValidCard = value => {
   
