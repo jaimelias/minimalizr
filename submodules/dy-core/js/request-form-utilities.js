@@ -248,6 +248,8 @@ const isValidValue = ({ name, value, thisForm }) => {
         return false; // Invalid card type
     }
 
+	console.log({cardType})
+
     // Validate CVV length based on card type
     switch (cardType) {
         case 'visa':

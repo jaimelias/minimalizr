@@ -604,7 +604,7 @@ if(!function_exists('is_valid_date'))
 
 		if(!empty($str))
 		{
-			$which_var = $str.'_is_valid_date';
+			$which_var = sanitize_key($str).'_is_valid_date';
 			global $$which_var;
 			
 			if(isset($$which_var))
