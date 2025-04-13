@@ -596,35 +596,41 @@ if(!function_exists('currency_name'))
 	}
 }
 
-if(!function_exists('is_valid_date'))
-{
-	function is_valid_date($str)
-	{
-		$output = false;
-
-		if(!empty($str))
-		{
-			$which_var = sanitize_key($str).'_is_valid_date';
-			global $$which_var;
-			
-			if(isset($$which_var))
-			{
-				$output = $$which_var;
-			}
-			else
-			{
-				if(DateTime::createFromFormat('Y-m-d', $str) !== false)
-				{
-					$output = true;
-				}
-
-				$GLOBALS[$which_var] = $output;
-			}
-		}
-				
-		return $output;
-	}
+if (!function_exists('is_valid_date')) {
+    function is_valid_date($str)
+    {
+        if (empty($str)) {
+            return false;
+        }
+        
+        // Generate a cache key from the sanitized input
+        $cacheKey = sanitize_key($str) . '_is_valid_date';
+        
+        // Check global cache
+        if (isset($GLOBALS[$cacheKey])) {
+            return $GLOBALS[$cacheKey];
+        }
+        
+        // List of allowed formats
+        $formats = ['Y-m-d', 'Y-m-d H:i:s'];
+        $valid = false;
+        
+        foreach ($formats as $format) {
+            $dateTime = DateTime::createFromFormat($format, $str);
+            // Check for valid parsing and exact match (to avoid partially valid strings)
+            if ($dateTime !== false && $dateTime->format($format) === $str) {
+                $valid = true;
+                break;
+            }
+        }
+        
+        // Cache the result globally
+        $GLOBALS[$cacheKey] = $valid;
+        
+        return $valid;
+    }
 }
+
 
 if(!function_exists('is_valid_time'))
 {
