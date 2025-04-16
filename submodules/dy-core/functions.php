@@ -762,6 +762,82 @@ if(!function_exists('html_to_plain_text'))
 	
 }
 
+if(!function_exists('dy_strtotime'))
+{
+	function dy_strtotime($str) {
+		// This function behaves a bit like PHP's StrToTime() function, but taking into account the Wordpress site's timezone
+		// CAUTION: It will throw an exception when it receives invalid input - please catch it accordingly
+		// From https://mediarealm.com.au/
+
+		$tz_string = get_option('timezone_string');
+		$tz_offset = get_option('gmt_offset', 0);
+
+		if (!empty($tz_string))
+		{
+			// If site timezone option string exists, use it
+			$timezone = $tz_string;
+		}
+		else if ($tz_offset == 0)
+		{
+			// get UTC offset, if it isn’t set then return UTC
+			$timezone = 'UTC';
+		}
+		else
+		{
+			$timezone = $tz_offset;
+
+			if(substr($tz_offset, 0, 1) != "-" && substr($tz_offset, 0, 1) != "+" && substr($tz_offset, 0, 1) != "U")
+			{
+				$timezone = "+" . $tz_offset;
+			}
+		}
+		
+		$datetime = new DateTime($str, new DateTimeZone($timezone));
+
+		return $datetime->format('U');
+	}
+}
+
+
+
+if(!function_exists('dy_date'))
+{
+	function dy_date($format, $timestamp = null) {
+		// This function behaves a bit like PHP's Date() function, but taking into account the Wordpress site's timezone
+		// CAUTION: It will throw an exception when it receives invalid input - please catch it accordingly
+		// From https://mediarealm.com.au/
+
+		$tz_string = get_option('timezone_string');
+		$tz_offset = get_option('gmt_offset', 0);
+
+		if (!empty($tz_string)) 
+		{
+			// If site timezone option string exists, use it
+			$timezone = $tz_string;
+		} 
+		elseif ($tz_offset == 0) 
+		{
+				// get UTC offset, if it isn’t set then return UTC
+				$timezone = 'UTC';
+		} else {
+			$timezone = $tz_offset;
+
+			if(substr($tz_offset, 0, 1) != "-" && substr($tz_offset, 0, 1) != "+" && substr($tz_offset, 0, 1) != "U") {
+				$timezone = "+" . $tz_offset;
+			}
+		}
+
+		if($timestamp === null) {
+			$timestamp = time();
+		}
+
+		$datetime = new DateTime();
+		$datetime->setTimestamp($timestamp);
+		$datetime->setTimezone(new DateTimeZone($timezone));
+		return $datetime->format($format);
+	}
+}
+
 
 
 
