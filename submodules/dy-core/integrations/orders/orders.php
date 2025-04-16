@@ -18,12 +18,13 @@ class Dynamic_Core_Orders {
 			'postponed', 
 			'cancelled'
 		);
+		
 		$valid_order_status_labels = array(
-			__('Pending', 'dynamicpackages'), 
-			__('Paid', 'dynamicpackages'), 
-			__('Confirmed', 'dynamicpackages'), 
-			__('Postponed', 'dynamicpackages'), 
-			__('Cancelled', 'dynamicpackages')
+			__('Pending'), 
+			__('Paid'), 
+			__('Confirmed'), 
+			__('Postponed'), 
+			__('Cancelled')
 		);
 
 
@@ -48,6 +49,8 @@ class Dynamic_Core_Orders {
 
 		require_once(plugin_dir_path( __FILE__ ) . 'orders-metaboxes.php');
 		new Dynamic_Core_Orders_Metaboxes($valid_order_status, $valid_order_status_labels);
+
+		
     }
 
 	public function package_post_type() {

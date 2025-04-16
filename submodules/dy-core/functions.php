@@ -798,8 +798,6 @@ if(!function_exists('dy_strtotime'))
 	}
 }
 
-
-
 if(!function_exists('dy_date'))
 {
 	function dy_date($format, $timestamp = null) {
