@@ -589,7 +589,7 @@ class Minimalizr {
 
 		load_theme_textdomain( 'minimalizr', $this->theme_directory . '/languages' );
 		add_theme_support( 'title-tag' );
-		register_nav_menus(array('primary' => esc_html__( 'Primary Menu', 'minimalizr' )));
+		register_nav_menus(array('primary' => 'Primary Menu'));
 		add_theme_support( 'custom-header', $this->get_custom_headers());
 		add_theme_support('post-thumbnails');
 		add_theme_support('html5', array('search-form', 'comment-form', 'comment-list', 'gallery', 'caption'));
