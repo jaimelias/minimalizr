@@ -91,15 +91,15 @@ class Dynamic_Core_Admin {
 	
 
         //section
-		add_settings_section($this->section_company, __('Company', 'dynamicpackages' ), '', $this->setting_id);
-		add_settings_section($this->section_security, __('Security', 'dynamicpackages' ), '', $this->setting_id);
-		add_settings_section($this->section_analytics, __('Analytics', 'dynamicpackages' ), '', $this->setting_id);
+		add_settings_section($this->section_company, __('Company'), '', $this->setting_id);
+		add_settings_section($this->section_security, __('Security'), '', $this->setting_id);
+		add_settings_section($this->section_analytics, __('Analytics'), '', $this->setting_id);
 
         //fields
 
 		add_settings_field( 
 			'dy_email', 
-			esc_html(__( 'Email', 'dynamicpackages' )), 
+			esc_html(__( 'Email')), 
 			array(&$this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_company,
@@ -108,7 +108,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field( 
 			'dy_phone', 
-			esc_html(__( 'Phone', 'dynamicpackages' )), 
+			esc_html(__('Phone')), 
 			array(&$this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_company,
@@ -128,7 +128,7 @@ class Dynamic_Core_Admin {
 
 			add_settings_field( 
 				'dy_whatsapp'.$prefix, 
-				esc_html(__( 'Whatsapp', 'dynamicpackages' ).' '. strtoupper($lang)), 
+				esc_html(__( 'Whatsapp').' '. strtoupper($lang)), 
 				array(&$this, 'settings_input'), 
 				$this->setting_id, 
 				$this->section_company,
@@ -140,21 +140,21 @@ class Dynamic_Core_Admin {
 
 			add_settings_field( 
 				'dy_site_alert'.$prefix, 
-				esc_html(__( 'Site Nofification', 'dynamicpackages' ).' '. strtoupper($lang)), 
+				esc_html(__( 'Site Nofification').' '. strtoupper($lang)), 
 				array(&$this, 'settings_textarea'), 
 				$this->setting_id, 
 				$this->section_company,
 				array(
 					'name' => 'dy_site_alert'.$prefix, 
 					'url' => 'https://onlinehtmleditor.dev/', 
-					'url_text' => __('Html Editor', 'dynamicpackages')
+					'url_text' => __('Html Editor')
 				)
 			);	
 		}
 
 		add_settings_field( 
 			'dy_address', 
-			esc_html(__( 'Address', 'dynamicpackages' )), 
+			esc_html(__( 'Address')), 
 			array(&$this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_company,
@@ -163,7 +163,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field( 
 			'dy_tax_id', 
-			esc_html(__( 'Tax Identification ID', 'dynamicpackages' )), 
+			esc_html(__( 'Tax Identification ID')), 
 			array(&$this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_company,
@@ -172,7 +172,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field( 
 			'dy_recaptcha_site_key', 
-			esc_html(__( 'Recaptcha Site Key', 'dynamicpackages' )), 
+			esc_html(__( 'Recaptcha Site Key')), 
 			array(&$this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_security,
@@ -181,7 +181,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field( 
 			'dy_recaptcha_secret_key', 
-			esc_html(__( 'Recaptcha Secret Key', 'dynamicpackages' )), 
+			esc_html(__( 'Recaptcha Secret Key')), 
 			array(&$this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_security,
@@ -190,7 +190,7 @@ class Dynamic_Core_Admin {
 		
 		add_settings_field( 
 			'dy_cloudflare_api_token', 
-			esc_html(__( 'Cloudflare API Token', 'dynamicpackages' )), 
+			esc_html(__( 'Cloudflare API Token')), 
 			array(&$this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_security,
@@ -198,7 +198,7 @@ class Dynamic_Core_Admin {
 		);
 		add_settings_field( 
 			'dy_sentry_api_key', 
-			esc_html(__( 'Sentry API Key', 'dynamicpackages' )), 
+			esc_html(__( 'Sentry API Key')), 
 			array(&$this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_security,
@@ -207,7 +207,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field( 
 			'dy_gtag_tracking_id', 
-			__( 'Google - Analytics GA4 (GTAG)', 'dynamicpackages' ), 
+			__( 'Google - Analytics GA4 (GTAG)'), 
 			array(&$this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_analytics,
@@ -216,7 +216,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field( 
 			'dy_gtm_tracking_id', 
-			__( 'Google - Global Tag Manager (GMT)', 'dynamicpackages' ), 
+			__( 'Google - Global Tag Manager (GMT)'), 
 			array(&$this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_analytics,
@@ -225,7 +225,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field( 
 			'dy_facebook_pixel_id', 
-			__( 'Facebook Pixel ID', 'dynamicpackages' ), 
+			__( 'Facebook Pixel ID'), 
 			array(&$this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_analytics,

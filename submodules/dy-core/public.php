@@ -257,7 +257,7 @@ class Dynamic_Core_Public {
                 <div id="dy-whatsapp-modal-content">
                     <span id="dy-whatsapp-modal-close">&times;</span>
                     <div id="dy-whatsapp-qrcode"></div>
-                    <div id="dy-whatsapp-link" class="pure-button small"><a href="#" target="_blank" rel="noopener noreferrer"><?php echo esc_html__('Open Web Whatsapp', 'dynamicpackages'); ?></a></div>
+                    <div id="dy-whatsapp-link" class="pure-button small"><a href="#" target="_blank" rel="noopener noreferrer"><?php echo esc_html__('Web Whatsapp'); ?></a></div>
                 </div>
             </div>
 

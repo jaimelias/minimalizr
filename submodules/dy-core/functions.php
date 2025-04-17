@@ -510,7 +510,7 @@ if(!function_exists('validate_recaptcha'))
 				}
 				else
 				{
-					$GLOBALS['dy_request_invalids'] = array(__('Invalid Recaptcha', 'dynamicpackages'));
+					$GLOBALS['dy_request_invalids'] = array(__('Invalid Recaptcha'));
 
 					if(array_key_exists('error-codes', $data))
 					{

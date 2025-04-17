@@ -32,8 +32,8 @@ class Dynamic_Core_Providers {
 
 		$taxonomies = array(
 			$this->name => array(
-				'name' => __( 'Providers', 'dynamicpackages'),
-				'singular_name' => __( 'Provider', 'dynamicpackages'),
+				'name' => __( 'Providers'),
+				'singular_name' => __( 'Provider'),
 				'emoji' => '🤖',
 				'public' => false
 			)
@@ -46,14 +46,14 @@ class Dynamic_Core_Providers {
 			$emoji = $value['emoji'];
 			$public = $value['public'];
 			$labels = $value;
-			$labels['search_items'] = sprintf(__('Search %s', 'dynamicpackages'), $plural);
-			$labels['all_items'] = sprintf(__('All %s', 'dynamicpackages'), $plural);
-			$labels['parent_item'] = sprintf(__('Parent %s', 'dynamicpackages'), $singular);
-			$labels['parent_item_colon'] = sprintf(__('Parent %s', 'dynamicpackages'), $singular);
-			$labels['edit_item'] = sprintf(__('Edit %s', 'dynamicpackages'), $singular);
-			$labels['update_item'] = sprintf(__('Update %s', 'dynamicpackages'), $singular);
-			$labels['add_new_item'] = sprintf(__('Add New %s', 'dynamicpackages'), $singular);
-			$labels['new_item_name'] = sprintf(__('New %s Name', 'dynamicpackages'), $singular);
+			$labels['search_items'] = sprintf(__('Search %s'), $plural);
+			$labels['all_items'] = sprintf(__('All %s'), $plural);
+			$labels['parent_item'] = sprintf(__('Parent %s'), $singular);
+			$labels['parent_item_colon'] = sprintf(__('Parent %s'), $singular);
+			$labels['edit_item'] = sprintf(__('Edit %s'), $singular);
+			$labels['update_item'] = sprintf(__('Update %s'), $singular);
+			$labels['add_new_item'] = sprintf(__('Add New %s'), $singular);
+			$labels['new_item_name'] = sprintf(__('New %s Name'), $singular);
 			$labels['menu_name'] = $emoji.' '.$plural;
 
 			$args = array(
@@ -151,8 +151,8 @@ class Dynamic_Core_Providers {
     {
 		$rows = '';
         $term_id = $term->term_id;
-		$rows .= $this->admin_taxonomy_form_row($this->name.'_language', __('Provider Language', 'dynamicpackages'), $this->language_select($term_id));
-		$rows .= $this->admin_taxonomy_form_row($this->name.'_emails', __('Provider Emails', 'dynamicpackages'), $this->textarea_items_per_line($term_id, 'sanitize_email'), __('1 email per line. Up to 10 emails maximum.', 'dynamicpackages'));
+		$rows .= $this->admin_taxonomy_form_row($this->name.'_language', __('Provider Language'), $this->language_select($term_id));
+		$rows .= $this->admin_taxonomy_form_row($this->name.'_emails', __('Provider Emails'), $this->textarea_items_per_line($term_id, 'sanitize_email'), __('1 email per line. Up to 10 emails maximum.'));
 		echo $rows;
     }
 
