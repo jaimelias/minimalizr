@@ -299,7 +299,7 @@ const storePopulate = () => {
             if(jQuery(thisForm).attr('data-action') &&  jQuery(thisForm).attr('data-method'))
             {
                 const formFields = formToArray(thisForm);
-
+                
                 formFields.forEach(i => {
                     const name = i.name;
                     const value = sessionStorage.getItem(name);
