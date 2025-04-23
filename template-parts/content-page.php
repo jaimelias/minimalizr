@@ -54,7 +54,7 @@
 	</header><!-- .entry-header -->
 	
 
-	<div class="entry-content">
+	<div class="<?php echo apply_filters('entry_content_class', 'entry-content'); ?>">
 		<?php echo apply_filters( 'the_content', get_the_content() ); ?>
 		<?php
 			wp_link_pages( array(

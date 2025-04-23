@@ -20,14 +20,14 @@
 				</div>		
 				<div class="pure-u-2-3">		
 					<?php the_title( sprintf( '<h3 class="entry-title"><a class="normal" href="%s">', esc_url( get_permalink() ) ), '</a></h3>' ); ?>
-					<div class="entry-content normal small">
+					<div class="<?php echo apply_filters('entry_content_class', 'entry-content'); ?> normal small">
 						<?php echo apply_filters('minimal_archive_excerpt', get_the_excerpt()); ?>
 					</div><!-- .entry-content -->
 				</div>
 			</div>
 		<?php else: ?>
 			<?php the_title( sprintf( '<h3 class="entry-title"><a class="normal" href="%s">', esc_url( get_permalink() ) ), '</a></h3>' ); ?>
-			<div class="entry-content normal small">
+			<div class="<?php echo apply_filters('entry_content_class', 'entry-content'); ?> normal small">
 				<?php echo apply_filters('minimal_archive_excerpt', get_the_excerpt()); ?>
 			</div><!-- .entry-content -->		
 		<?php endif; ?>
