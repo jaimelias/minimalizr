@@ -7,7 +7,7 @@ class Dynamic_Core_Public {
     
     public function __construct()
     {
-        $this->version = '0.1.1';
+        $this->version = '0.1.2';
         $this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
         $this->dirname_file = dirname( __FILE__ );
 

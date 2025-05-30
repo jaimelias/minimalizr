@@ -51,36 +51,38 @@ const fixInputSpecialTypes = () => {
 }; 
 
 const countryDropdown = () => {
-	
-	const {pluginUrl, lang} = dyCoreArgs;
+  const { pluginUrl, lang } = dyCoreArgs;
+  const available = ['de','en','es','fr','it','ja'];
+  const MAX_RETRIES = 5;
+  const base = pluginUrl.replace(/\/+$/, '') + '/';
 
-	if(jQuery('.countrylist, .countryCallingCode').length > 0)
-	{
-		return fetch(`${pluginUrl}json/countries/${lang}.json`).then(resp => {
-			if(resp.ok)
-			{
-				return resp.json();
-			}
-			else
-			{
-				return fetch(`${pluginUrl}json/countries/en.json`).then(resp2 => {
-					if(resp2.ok)
-					{
-						return resp.json();
-					}
-					else
-					{
-						throw Error('unable to find countries');
-					}
-				}).then(data2 => {
-					countryOptions(data2);
-				})
-			}
-		}).then(data => {
-			countryOptions(data);
-		});		
-	}
-}	
+  const fetchCountryCodes = (thisLang, step = 0) => {
+    return fetch(`${base}json/countries/${thisLang}.json`)
+      .then(resp => {
+        if (resp.ok) {
+          return resp.json();
+        }
+        if (step < MAX_RETRIES) {
+          // wait 2s, then retry with incremented step
+          return new Promise(resolve =>
+            setTimeout(
+              () => resolve(fetchCountryCodes(thisLang, step + 1)),
+              2000
+            )
+          );
+        }
+        throw new Error(`"${thisLang}.json" failed after ${step} retries`);
+      })
+      .then(data => countryOptions(data))
+      .catch(err => console.error('countryDropdown error:', err));
+  };
+
+  if (jQuery('.countrylist, .countryCallingCode').length > 0) {
+    const thisLang = available.includes(lang) ? lang : 'en';
+    fetchCountryCodes(thisLang);
+  }
+}
+	
 
 const countryOptions = data => {
 

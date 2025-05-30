@@ -10,7 +10,7 @@ class Dynamic_Core_Providers {
     function __construct()
     {
 		$this->name = 'dy-providers';
-        add_action('init', array(&$this, 'handle_create_edit'));
+        $this->handle_create_edit();
 		add_filter('dy_list_providers', array(&$this, 'get_providers'));
 		add_action('init', array(&$this, 'register_taxonomies'));
 		add_action( 'admin_head', array(&$this, 'admin_head') );
@@ -83,6 +83,10 @@ class Dynamic_Core_Providers {
 		
 		if(!current_user_can( 'edit_posts' )) return;
 		
+		if(isset($_POST[$this->name.'_outstanding_balance']))
+		{
+			update_term_meta($term_id, $this->name.'_outstanding_balance', sanitize_text_field($_POST[$this->name.'_outstanding_balance']));
+		}
 		if(isset($_POST[$this->name.'_language']))
 		{
 			update_term_meta($term_id, $this->name.'_language', sanitize_text_field($_POST[$this->name.'_language']));
@@ -90,6 +94,10 @@ class Dynamic_Core_Providers {
 		if(isset($_POST[$this->name.'_emails']))
 		{
 			update_term_meta($term_id, $this->name.'_emails', esc_textarea($this->sanitize_items_per_line('sanitize_email', $_POST[$this->name.'_emails'])));
+		}
+		if(isset($_POST[$this->name.'_whatsapp']))
+		{
+			update_term_meta($term_id, $this->name.'_whatsapp', sanitize_text_field($_POST[$this->name.'_whatsapp']));
 		}
 	}
 
@@ -108,32 +116,26 @@ class Dynamic_Core_Providers {
 		return '<textarea rows="10" name="'.esc_attr($this->name.'_emails').'">'.esc_textarea($this->sanitize_items_per_line($sanitize_func, $emails)).'</textarea>';
 	}
 
-	public function language_select($term_id)
+	public function input_field($term_id, $type = 'text')
 	{
-		$output = '';
-		$languages = get_languages();
-		$count_languages = count($languages);
-		$language = get_term_meta($term_id, $this->name.'_language', true);
-		$language = ($language) ? $language : current_language();
+		$name = $this->name.'_whatsapp';
+		$value = get_term_meta($term_id, $name, true);
+		return '<input type="'.esc_attr($type).'" name="'.esc_attr($name).'" value="'.esc_attr($value).'" />';
+	}
 
-		if($count_languages > 1)
-		{
-			$options = '';
+	public function input_select($term_id, $sufix, $optionsArr = ['0' => 'No', '1' => 'Yes'])
+	{
+		$options = '';
+		$name = $this->name.$sufix;
+		$term_value = get_term_meta($term_id, $name, true);
 
-			for($x = 0; $x < $count_languages; $x++)
-			{
-				$value = $languages[$x];
-				$selected = ($value === $language) ? ' selected ' : '';
-				$options .= '<option '.esc_attr($selected).' value="'.esc_attr($value).'">'.esc_html($value).'</option>';
-			}
-			
-			$output = '<select name="'.esc_attr($this->name.'_language').'">'.$options.'</select>';
-		}
-		else
+		foreach($optionsArr as $value => $text )
 		{
-			$value = $languages[0];
-			$output = '<input name="'.esc_attr($this->name.'_language').'" value="'.esc_attr($value).'" disabled/>';
+			$selected = (strval($value) === strval($term_value)) ? ' selected ' : '';
+			$options .= '<option '.esc_attr($selected).' value="'.esc_attr($value).'">'.esc_html($text).'</option>';
 		}
+		
+		$output = '<select name="'.esc_attr($name).'">'.$options.'</select>';
 
 		return $output;
 	}
@@ -151,7 +153,35 @@ class Dynamic_Core_Providers {
     {
 		$rows = '';
         $term_id = $term->term_id;
-		$rows .= $this->admin_taxonomy_form_row($this->name.'_language', __('Provider Language'), $this->language_select($term_id));
+
+		//outstanding balance start
+		$rows .= $this->admin_taxonomy_form_row(
+			$this->name.'_outstanding_balance', 
+			__('Charge balance directy to customer?'), 
+			$this->input_select($term_id, '_outstanding_balance', ['0' => __('No'), '1' => __('Yes')])
+		);
+		//outstanding balance end
+
+		//languages start
+		$languages = get_languages();
+		$language = get_term_meta($term_id, $this->name.'_language', true);
+		$language = ($language) ? $language : current_language();
+		$langArr = [];
+
+		for($x = 0; $x < count($languages); $x++)
+		{
+			$langArr[$languages[$x]] = $languages[$x];
+		}
+
+		$rows .= $this->admin_taxonomy_form_row(
+			$this->name.'_language', 
+			__('Provider Language'), 
+			$this->input_select($term_id, '_language', $langArr)
+		);
+		//languages end
+
+
+		$rows .= $this->admin_taxonomy_form_row($this->name.'_whatsapp', __('Whatsapp'), $this->input_field($term_id, 'number'));
 		$rows .= $this->admin_taxonomy_form_row($this->name.'_emails', __('Provider Emails'), $this->textarea_items_per_line($term_id, 'sanitize_email'), __('1 email per line. Up to 10 emails maximum.'));
 		echo $rows;
     }
@@ -210,15 +240,19 @@ class Dynamic_Core_Providers {
 						continue;
 					}
 
+					$outstanding_balance = get_term_meta($t->term_id, $this->name . '_outstanding_balance', true);
 					$language = get_term_meta($t->term_id, $this->name . '_language', true);
 					$emails_str = get_term_meta($t->term_id, $this->name . '_emails', true);
 					$emails = $this->email_str_row_to_array($emails_str);
+					$whatsapp = get_term_meta($t->term_id, $this->name . '_whatsapp', true);
 					
 					$row = array(
 						'id' => $t->term_id,
 						'name' => $t->name,
+						'outstanding_balance' => $outstanding_balance,
 						'language' => $language,
 						'emails' => $emails,
+						'whatsapp' => $whatsapp
 					);
 
 					$output[] = $row;
