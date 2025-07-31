@@ -1,6 +1,7 @@
 /**	SMALL **/
 @media (min-width: 1px) and (max-width: 782px)
 {
+
 	.admin-bar #minimal-header, .admin-bar .minimal-navigator
 	{
 		margin-top: 46px;
@@ -35,28 +36,22 @@
 	body.toggled #minimal-wrapper .minimal-navigator {
 		right: 0;
 	}
-	.minimal-navigator
-	{
-		position: fixed;
-		top: 0;
-		bottom: 0;
-		z-index: 9999;
-		right: -290px;
-		width: 290px;
-		overflow-y: auto;
-		overflow-x: hidden;
-	}
-	.minimal-top-menu {
-		width: 290px;
-		margin: 0;
-		padding: 0;
-		list-style: none;
-	}
 	.minimal-top-menu li a {
 		display: block;
 		padding: 15px 30px 15px 30px;
 	}
-	.minimal-top-menu >.minimal-side-brand
+	.minimal-top-menu > li > a
+	{
+		color: #444;
+	}
+	.minimal-top-menu > li.dropdown > ul.dropdown-menu li {
+		background-color: #444;
+		
+	}
+	.minimal-top-menu > li.dropdown > ul.dropdown-menu li > a {
+		color: #fff;
+	}
+	.minimal-top-menu > .minimal-side-brand
 	{
 		display: inline-block;
 	}	
@@ -106,11 +101,57 @@
 /**	SMALL TO MEDIUM **/
 @media (min-width: 1px ) and (max-width: 1024px)
 {
+	.minimal-navigator
+	{
+		background-color: #444;
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		z-index: 9999;
+		right: -290px;
+		width: 290px;
+		overflow-y: auto;
+		overflow-x: hidden;
+	}
+	.minimal-top-menu {
+		width: 290px;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	
+	.minimal-top-menu > li > a {
+		color: #fff;
+	}
 	.minimal-top-menu .dropdown-menu > li > a::before{
 		content: "\00a0\00a0\00BB\00a0";
 		font-size: 110%;
 		opacity: 0.7;
 	}	
+
+	#minimal-wrapper {
+		padding-right: 0;
+		-webkit-transition: all 0.5s ease;
+		-moz-transition: all 0.5s ease;
+		-o-transition: all 0.5s ease;
+		transition: all 0.5s ease;
+		margin-left: 0;
+		margin-right: 0;
+	}
+
+	body.toggled #minimal-wrapper {
+		margin-left: -290px;
+		margin-right: -290px;
+	}
+
+	#page-content-wrapper{
+		width: 100%;
+		max-width: 100vw;
+		-webkit-transition: all 0.5s ease;
+		-moz-transition: all 0.5s ease;
+		-o-transition: all 0.5s ease;
+		transition: all 0.5s ease;
+	}
 }
 
 /**	MEDIUM **/

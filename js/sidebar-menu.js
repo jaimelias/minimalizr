@@ -26,6 +26,10 @@ const toggleMinimalModal = () => {
 		jQuery('body').toggleClass('toggled');
 		jQuery('.overlay').toggle();
 		jQuery('.minimal-menu-bar > .dashicons').toggleClass('dashicons-menu dashicons-no')
+
+		//closes dropdown menu
+		jQuery('.minimal-top-menu > li.dropdown').find('.dropdown-menu').addClass('hidden')
+
 	});
 };
 
