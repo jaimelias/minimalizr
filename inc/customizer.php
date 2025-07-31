@@ -129,7 +129,7 @@ class MyTheme_Customize {
 		<?php self::generate_css('#minimal-header', 'background-color', 'topBg'); ?>
 		<?php self::generate_css('#minimal-header .site-title > a, #minimal-header .site-title > a:visited, #minimal-header, .minimal-top-menu > li > a, .minimal-top-menu > li > a:visited', 'color', 'topFont'); ?>
 		<?php self::generate_css('.minimal-top-menu > li.dropdown > ul.dropdown-menu li, body.toggled .minimal-navigator', 'background-color', 'sidebarBg'); ?>
-		<?php self::generate_css('.minimal-top-menu > li.dropdown > ul.dropdown-menu, .minimal-top-menu > li.dropdown > ul.dropdown-menu a, body.toggled .minimal-navigator a', 'color', 'sidebarFont'); ?>
+		<?php self::generate_css('.minimal-top-menu > li.dropdown > ul.dropdown-menu, .minimal-top-menu > li.dropdown > ul.dropdown-menu li > a, body.toggled .minimal-navigator a', 'color', 'sidebarFont'); ?>
 		<?php self::generate_css('#footer', 'background-color', 'footerBg'); ?>	   		   
 		<?php self::generate_css('#footer', 'color', 'footerFont'); ?>	   		   
 		<?php self::generate_css('#footer a:not(.pure-button)', 'color', 'footerLink'); ?>
