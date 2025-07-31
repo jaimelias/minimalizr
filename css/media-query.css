@@ -107,7 +107,7 @@
 		position: fixed;
 		top: 0;
 		bottom: 0;
-		z-index: 9 !important;
+		z-index: 9999;
 		right: -290px;
 		width: 290px;
 		overflow-y: auto;
