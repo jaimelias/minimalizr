@@ -135,13 +135,14 @@
 		-moz-transition: all 0.5s ease;
 		-o-transition: all 0.5s ease;
 		transition: all 0.5s ease;
-		margin-left: 0;
-		margin-right: 0;
+		position: relative;
+		left: 0;
+		right: 0;
 	}
 
 	body.toggled #minimal-wrapper {
-		margin-left: -290px;
-		margin-right: -290px;
+		left: -290px;
+		right: -290px;
 	}
 
 	body.toggled #page-content-wrapper{
