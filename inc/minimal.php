@@ -182,7 +182,7 @@ class Minimal_Classes
 	
 	public function minimal()
 	{
-		return '<div class="minimal-menu-bar pull-right is-closed pointer" data-toggle="offcanvas"><span class="dashicons dashicons-menu"></span></div>';
+		return '<div class="minimal-menu-bar pull-right is-closed pointer text-center" data-toggle="offcanvas" tabindex="0" role="button"><span class="dashicons dashicons-menu"></span></div>';
 	}
 
 	public  function responsive()

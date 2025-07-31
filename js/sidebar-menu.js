@@ -8,13 +8,13 @@ jQuery(() => {
 const handleScrollPaddingTop = () => {
 
 	const headerHeight = (jQuery('#minimal-header').length > 0) 
-	? jQuery('#minimal-header').height() 
-	: 0;
+		? jQuery('#minimal-header').height() 
+		: 0;
 	const adminBarHeight = (jQuery('#wpadminbar').length > 0) 
-	? jQuery('#wpadminbar').height()
-	: 0;
+		? jQuery('#wpadminbar').height()
+		: 0;
 
-	const padding = headerHeight+adminBarHeight;
+	const padding = headerHeight + adminBarHeight;
 
 	jQuery('html').css({'scroll-padding-top' : `${padding}px`});
 };
@@ -24,7 +24,6 @@ const toggleMinimalModal = () => {
 	jQuery('[data-toggle="offcanvas"], .overlay').click(() => {
 
 		jQuery('body').toggleClass('toggled');
-		jQuery('.overlay').toggle();
 		jQuery('.minimal-menu-bar > .dashicons').toggleClass('dashicons-menu dashicons-no')
 
 		//closes dropdown menu
