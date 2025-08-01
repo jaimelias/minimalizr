@@ -114,7 +114,7 @@ class Minimal_Classes
 							margin-top: <?php echo $sidebarheight; ?>px;
 						}
 					}
-					@media screen and (min-width: 1024px)
+					@media screen and (min-width: 1025px)
 					{
 						.minimal-navigator
 						{

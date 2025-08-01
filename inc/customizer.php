@@ -130,11 +130,15 @@ class MyTheme_Customize {
 			<?php self::generate_css('.minimal-navigator', 'background-color', 'sidebarBg'); ?>
 			<?php self::generate_css('.minimal-top-menu > li > a', 'color', 'sidebarFont'); ?>
 		}
+		@media  (min-width: 1025px)
+		{
+			<?php self::generate_css('.minimal-top-menu > li > a', 'color', 'topFont'); ?>
+		}
 
 		<?php self::generate_css('#content a:not(.pure-button), #content a:visited:not(.pure-button), #content .linkcolor', 'color', 'link_textcolor'); ?>
 		<?php self::generate_css('#content', 'color', 'contentFont'); ?>   
 		<?php self::generate_css('#minimal-header', 'background-color', 'topBg'); ?>
-		<?php self::generate_css('#minimal-header .site-title > a, #minimal-header .site-title > a:visited, #minimal-header, .minimal-top-menu > li > a, .minimal-top-menu > li > a:visited', 'color', 'topFont'); ?>
+		<?php self::generate_css('#minimal-header .site-title > a, #minimal-header .site-title > a:visited, #minimal-header', 'color', 'topFont'); ?>
 		<?php self::generate_css('.minimal-top-menu > li.dropdown > ul.dropdown-menu li', 'background-color', 'sidebarBg'); ?>
 		
 		
