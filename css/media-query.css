@@ -138,11 +138,13 @@
 		position: relative;
 		left: 0;
 		right: 0;
+		width: 100vw;
 	}
 
 	body.toggled #minimal-wrapper {
 		left: -290px;
 		right: -290px;
+		width: calc(100vw + 290px);
 	}
 
 	body.toggled #page-content-wrapper{
