@@ -124,6 +124,13 @@ class MyTheme_Customize {
       ?>
       <!--Customizer CSS--> 
       <style type="text/css">
+
+		/**	SMALL TO MEDIUM **/
+		@media (min-width: 1px ) and (max-width: 1024px) {
+			<?php self::generate_css('.minimal-navigator', 'background-color', 'sidebarBg'); ?>
+			<?php self::generate_css('.minimal-navigator a', 'color', 'sidebarFont'); ?>
+		}
+
 		<?php self::generate_css('#content a:not(.pure-button), #content a:visited:not(.pure-button), #content .linkcolor', 'color', 'link_textcolor'); ?>
 		<?php self::generate_css('#content', 'color', 'contentFont'); ?>   
 		<?php self::generate_css('#minimal-header', 'background-color', 'topBg'); ?>
@@ -149,11 +156,7 @@ class MyTheme_Customize {
 
 		<?php self::generate_css('input[type=text],input[type=password],input[type=email],input[type=url],input[type=date],input[type=month],input[type=time],input[type=datetime],input[type=datetime-local],input[type=week],input[type=number],input[type=search],input[type=tel],input[type=color],select,textarea, input[type=text], select', 'border-color', 'inputBorder'); ?>		
 		
-		/**	SMALL TO MEDIUM **/
-		@media (min-width: 1px ) and (max-width: 1024px) {
-			<?php self::generate_css('.minimal-navigator', 'background-color', 'sidebarBg'); ?>
-			<?php self::generate_css('.minimal-navigator a', 'color', 'sidebarFont'); ?>
-		}
+
 
       </style> 
       <!--/Customizer CSS-->
