@@ -28,7 +28,6 @@ const toggleMinimalModal = () => {
 
 		//closes dropdown menu
 		jQuery('.minimal-top-menu > li.dropdown').find('.dropdown-menu').addClass('hidden')
-		jQuery('[data-toggle="offcanvas"]').focus()
 
 	});
 };
