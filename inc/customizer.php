@@ -128,8 +128,13 @@ class MyTheme_Customize {
 		<?php self::generate_css('#content', 'color', 'contentFont'); ?>   
 		<?php self::generate_css('#minimal-header', 'background-color', 'topBg'); ?>
 		<?php self::generate_css('#minimal-header .site-title > a, #minimal-header .site-title > a:visited, #minimal-header, .minimal-top-menu > li > a, .minimal-top-menu > li > a:visited', 'color', 'topFont'); ?>
-		<?php self::generate_css('.minimal-top-menu > li.dropdown > ul.dropdown-menu li, body.toggled .minimal-navigator', 'background-color', 'sidebarBg'); ?>
-		<?php self::generate_css('.minimal-top-menu > li.dropdown > ul.dropdown-menu, .minimal-top-menu > li.dropdown > ul.dropdown-menu li > a, body.toggled .minimal-navigator a', 'color', 'sidebarFont'); ?>
+		<?php self::generate_css('.minimal-top-menu > li.dropdown > ul.dropdown-menu li', 'background-color', 'sidebarBg'); ?>
+		
+		
+
+
+		<?php self::generate_css('.minimal-top-menu > li.dropdown > ul.dropdown-menu, .minimal-top-menu > li.dropdown > ul.dropdown-menu li > a', 'color', 'sidebarFont'); ?>
+		
 		<?php self::generate_css('#footer', 'background-color', 'footerBg'); ?>	   		   
 		<?php self::generate_css('#footer', 'color', 'footerFont'); ?>	   		   
 		<?php self::generate_css('#footer a:not(.pure-button)', 'color', 'footerLink'); ?>
@@ -144,6 +149,11 @@ class MyTheme_Customize {
 
 		<?php self::generate_css('input[type=text],input[type=password],input[type=email],input[type=url],input[type=date],input[type=month],input[type=time],input[type=datetime],input[type=datetime-local],input[type=week],input[type=number],input[type=search],input[type=tel],input[type=color],select,textarea, input[type=text], select', 'border-color', 'inputBorder'); ?>		
 		
+		/**	SMALL TO MEDIUM **/
+		@media (min-width: 1px ) and (max-width: 1024px) {
+			<?php self::generate_css('.minimal-navigator', 'background-color', 'sidebarBg'); ?>
+			<?php self::generate_css('.minimal-navigator a', 'color', 'sidebarFont'); ?>
+		}
 
       </style> 
       <!--/Customizer CSS-->

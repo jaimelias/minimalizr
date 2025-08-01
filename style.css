@@ -843,10 +843,7 @@ a.button-whatsapp
 	list-style: none;
 }
 
-body.toggled .minimal-top-menu li:not(:first-child)
-{
-	border-top: 1px solid rgba(125,125,125,0.1);
-}
+
 
 .overflow_x
 {
