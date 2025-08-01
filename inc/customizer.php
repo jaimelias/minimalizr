@@ -128,7 +128,7 @@ class MyTheme_Customize {
 		/**	SMALL TO MEDIUM **/
 		@media (min-width: 1px ) and (max-width: 1024px) {
 			<?php self::generate_css('.minimal-navigator', 'background-color', 'sidebarBg'); ?>
-			<?php self::generate_css('.minimal-navigator a', 'color', 'sidebarFont'); ?>
+			<?php self::generate_css('.minimal-top-menu > li > a', 'color', 'sidebarFont'); ?>
 		}
 
 		<?php self::generate_css('#content a:not(.pure-button), #content a:visited:not(.pure-button), #content .linkcolor', 'color', 'link_textcolor'); ?>
