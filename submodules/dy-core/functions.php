@@ -719,48 +719,77 @@ if(!function_exists('get_site_time'))
 	}
 }
 
-if(!function_exists('html_to_plain_text'))
-{
+
+if(!function_exists('html_to_plain_text')) {
 	function html_to_plain_text($html) {
-		// Array of patterns and replacements
-	
 		$html = strip_shortcodes($html);
-	
+
+		// --- Convert <table> to Markdown before other replacements ---
+		$html = preg_replace_callback('/<table.*?>(.*?)<\/table>/is', function($matches) {
+			$tableHtml = $matches[1];
+
+			// Find all rows
+			preg_match_all('/<tr.*?>(.*?)<\/tr>/is', $tableHtml, $rowMatches);
+			$rows = [];
+			foreach ($rowMatches[1] as $rowHtml) {
+				// Find all cells (th or td)
+				preg_match_all('/<(td|th)[^>]*>(.*?)<\/\1>/is', $rowHtml, $cellMatches);
+				$cells = array_map(function($c) {
+					return trim(strip_tags($c));
+				}, $cellMatches[2]);
+				if (!empty($cells)) {
+					$rows[] = $cells;
+				}
+			}
+
+			if (empty($rows)) return '';
+
+			// First row is header
+			$header = array_shift($rows);
+			$colCount = count($header);
+
+			// Markdown table
+			$md  = '| ' . implode(' | ', $header) . " |\n";
+			$md .= '| ' . implode(' | ', array_fill(0, $colCount, '---')) . " |\n";
+			foreach ($rows as $r) {
+				$r = array_pad($r, $colCount, '');
+				$md .= '| ' . implode(' | ', $r) . " |\n";
+			}
+
+			return "\n" . $md . "\n";
+		}, $html);
+
+		// --- Your existing rules ---
 		$search = [
 			'/\[javascript protected email address\]/i',
-			'/<br\s*\/?>/i',                   // <br> tags
-			'/<\/?p>/i',                       // <p> and </p> tags
-			'/<li>/i',                         // <li> tags
-			'/<\/li>/i',                       // </li> tags
-			'/<\/?ol[^>]*>/i',                 // <ol> and </ol> tags
-			'/<\/?ul[^>]*>/i',                 // <ul> and </ul> tags
-			'/<h[1-6][^>]*>(.*?)<\/h[1-6]>/i', // <h1> to <h6> tags
-			'/\n+/'                            // multiple new lines
+			'/<br\s*\/?>/i',
+			'/<\/?p[^>]*>/i',
+			'/<li[^>]*>/i',
+			'/<\/li>/i',
+			'/<\/?ol[^>]*>/i',
+			'/<\/?ul[^>]*>/i',
+			'/<h[1-6][^>]*>(.*?)<\/h[1-6]>/is',
+			'/\n{3,}/',
 		];
-	
 		$replace = [
-			"\n",                  // replace [javascript protected email address] with newline
-			"\n",                  // replace <br> with newline
-			"\n",                  // replace <p> and </p> with newline
-			"\n* ",                // replace <li> with newline and bullet
-			"",                    // replace </li> with nothing
-			"\n",                  // replace <ol> and </ol> with newline
-			"\n",                  // replace <ul> and </ul> with newline
-			"$1: ",                // replace <h1> to <h6> with title followed by ":"
-			"\n"                   // replace multiple new lines with single newline
+			"\n",
+			"\n",
+			"\n",
+			"\n* ",
+			"",
+			"\n",
+			"\n",
+			"$1:\n",
+			"\n\n",
 		];
-	
-		// Perform replacements
+
 		$text = preg_replace($search, $replace, $html);
-	
-		// Strip any remaining HTML tags
 		$text = wp_strip_all_tags($text);
-	
-		// Trim leading/trailing whitespace and return
+
 		return trim($text);
 	}
-	
 }
+
 
 if(!function_exists('dy_strtotime'))
 {
