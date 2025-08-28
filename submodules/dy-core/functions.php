@@ -230,11 +230,23 @@ if(!function_exists('get_languages'))
 
 if(!function_exists('current_language'))
 {
-	function current_language($value = '')
+	function current_language($post_name = '')
 	{
 		global $polylang;
+		global $post;
 		$output = '';
 		$which_var = 'wp_core_current_language';
+
+		if(!empty($post_name))
+		{
+			$which_var .= '_' . $post_name;
+		} else {
+			if(isset($post) && property_exists($post, 'post_name'))
+			{
+				$which_var .= '_' . $post->post_name;
+			}
+		}
+
 		global $$which_var;
 
 		if($$which_var)
@@ -245,8 +257,8 @@ if(!function_exists('current_language'))
 		{
 			if(isset($polylang))
 			{
-				//$value === name, locale or slug
-				$lang = (empty($value)) ? pll_current_language() : pll_current_language($value);
+				//$post_name === name, locale or slug
+				$lang = (empty($post_name)) ? pll_current_language() : pll_current_language($post_name);
 
 				if($lang)
 				{

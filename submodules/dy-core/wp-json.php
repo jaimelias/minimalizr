@@ -96,6 +96,7 @@ class Dynamic_Core_WP_JSON
                 $this_post = array(
                     'ID' => $post->ID,
                     'title' => $post->post_title,
+                    'post_name' => $post->post_name,
                     'post_content' => html_to_plain_text(apply_filters('the_content', $post->post_content)),
                     'post_excerpt' => $post->post_excerpt,
                     'date' => $post->post_date,
