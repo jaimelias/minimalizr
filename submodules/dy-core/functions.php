@@ -735,7 +735,10 @@ if(!function_exists('html_to_plain_text')) {
 				// Find all cells (th or td)
 				preg_match_all('/<(td|th)[^>]*>(.*?)<\/\1>/is', $rowHtml, $cellMatches);
 				$cells = array_map(function($c) {
-					return trim(strip_tags($c));
+					$text = trim(strip_tags($c));
+					// Replace | and - with /
+					$text = str_replace(['|','-'], '/', $text);
+					return $text;
 				}, $cellMatches[2]);
 				if (!empty($cells)) {
 					$rows[] = $cells;
@@ -789,6 +792,7 @@ if(!function_exists('html_to_plain_text')) {
 		return trim($text);
 	}
 }
+
 
 
 if(!function_exists('dy_strtotime'))
