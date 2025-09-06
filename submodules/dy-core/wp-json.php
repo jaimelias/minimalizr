@@ -90,7 +90,7 @@ class Dynamic_Core_WP_JSON
 
                 $query->the_post();
                 $post = get_post();
-                $current_language = current_language($post->post_name);
+                $current_language = current_language($post->ID);
  
                 $this_post = (object) array(
                     'ID' => $post->ID,
