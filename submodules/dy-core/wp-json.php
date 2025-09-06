@@ -75,15 +75,26 @@ class Dynamic_Core_WP_JSON
             return new WP_REST_Response($output, 400);
         }
 
+        $default_language = (string) default_language();
+        $languages = (array) get_languages();
+
+        $filter_lang = (string) ( isset($_GET['lang']) &&  in_array(sanitize_text_field($_GET['lang']), $languages)) 
+            ? sanitize_text_field($_GET['lang'])
+            : default_language();
+
         $args = array(
             'post_type' => $post_type,
             'posts_per_page' => -1
         );
 
+        if(isset($polylang))
+        {
+            $args['lang'] = [$filter_lang];
+        }
+
         $query = new WP_Query($args);
         $posts = array();
-        $default_language = default_language();
-        $languages = get_languages();
+
 
         if ($query->have_posts()) {
             while ($query->have_posts()) {
