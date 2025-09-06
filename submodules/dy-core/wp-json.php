@@ -114,8 +114,6 @@ class Dynamic_Core_WP_JSON
                     'author' => $post->post_author,
                     'status' => $post->post_status,
                     'type' => $post->post_type,
-                    'current_language' => $current_language,
-                    'default_language' => $default_language,
                     'post_parent' => $post->post_parent,
                     'links' => array()
                 );
