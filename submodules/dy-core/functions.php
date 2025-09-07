@@ -773,7 +773,6 @@ if(!function_exists('html_to_plain_text')) {
 			'/<\/?ol[^>]*>/i',
 			'/<\/?ul[^>]*>/i',
 			'/<h[1-6][^>]*>(.*?)<\/h[1-6]>/is',
-			'/\n{3,}/',
 		];
 		$replace = [
 			"\n",
@@ -783,12 +782,15 @@ if(!function_exists('html_to_plain_text')) {
 			"",
 			"\n",
 			"\n",
-			"$1:\n",
-			"\n\n",
+			"$1:\n"
 		];
 
 		$text = preg_replace($search, $replace, $html);
 		$text = wp_strip_all_tags($text);
+
+		while (strpos($text, "\n\n\n") !== false) {
+			$text = str_replace("\n\n\n", "\n\n", $text);
+		}
 
 		return trim($text);
 	}
