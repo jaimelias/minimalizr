@@ -720,6 +720,19 @@ if(!function_exists('get_site_time'))
 	}
 }
 
+if(!function_exists('wp_blocks_to_html')) {
+	function wp_blocks_to_html($string_blocks) {
+
+		$html = '';
+		$blocks = parse_blocks($string_blocks);
+
+		foreach ( $blocks as $block ) {
+			$html .= render_block( $block );
+		}
+
+		return $html;
+	}
+}
 
 if(!function_exists('html_to_plain_text')) {
 	function html_to_plain_text($html) {
