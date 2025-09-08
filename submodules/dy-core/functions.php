@@ -720,25 +720,45 @@ if(!function_exists('get_site_time'))
 	}
 }
 
-if(!function_exists('dy_format_blocks')) {
-	function dy_format_blocks($raw_blocks = '', $format = 'html') {
+if ( ! function_exists( 'dy_format_blocks' ) ) {
+	function dy_format_blocks( $raw_blocks = '', $format = 'html' ) {
+
+		// Valid formats
+		$valid_formats = [ 'html', 'text' ];
+
+		// Check format
+		if ( ! in_array( $format, $valid_formats, true ) ) {
+			wp_die(
+				sprintf(
+					'Invalid format "%s". Valid formats are: %s',
+					esc_html( $format ),
+					implode( ', ', $valid_formats )
+				)
+			);
+		}
+
+		// If no blocks passed, return empty string
+		if ( empty( $raw_blocks ) ) {
+			return '';
+		}
 
 		$output = '';
-		$blocks = parse_blocks($raw_blocks);
-		$Parsedown = new Parsedown();
+		$blocks = parse_blocks( $raw_blocks );
 
 		foreach ( $blocks as $block ) {
+			$parsed_block = render_block( $block );
 
-			if($format === 'html') $output .= render_block( $block );
-			if($format === 'markdown') {
-				$output .= $Parsedown->text(render_block( $block ));
+			if ( $format === 'html' ) {
+				$output .= $parsed_block;
+			} elseif ( $format === 'text' ) {
+				$output .= html_to_plain_text( $parsed_block );
 			}
-			
 		}
 
 		return $output;
 	}
 }
+
 
 if(!function_exists('html_to_plain_text')) {
 	function html_to_plain_text($html) {
