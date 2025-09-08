@@ -720,17 +720,23 @@ if(!function_exists('get_site_time'))
 	}
 }
 
-if(!function_exists('wp_blocks_to_html')) {
-	function wp_blocks_to_html($string_blocks) {
+if(!function_exists('dy_format_blocks')) {
+	function dy_format_blocks($raw_blocks = '', $format = 'html') {
 
-		$html = '';
-		$blocks = parse_blocks($string_blocks);
+		$output = '';
+		$blocks = parse_blocks($raw_blocks);
+		$Parsedown = new Parsedown();
 
 		foreach ( $blocks as $block ) {
-			$html .= render_block( $block );
+
+			if($format === 'html') $output .= render_block( $block );
+			if($format === 'markdown') {
+				$output .= $Parsedown->text(render_block( $block ));
+			}
+			
 		}
 
-		return $html;
+		return $output;
 	}
 }
 
