@@ -742,20 +742,20 @@ if ( ! function_exists( 'dy_format_blocks' ) ) {
 			return '';
 		}
 
-		$output = '';
+		$output = [];
 		$blocks = parse_blocks( $raw_blocks );
 
 		foreach ( $blocks as $block ) {
-			$parsed_block = render_block( $block );
+			$parsed_block = do_shortcode(render_block( $block ));
 
 			if ( $format === 'html' ) {
-				$output .= $parsed_block;
+				$output[] = $parsed_block;
 			} elseif ( $format === 'text' ) {
-				$output .= html_to_plain_text( $parsed_block );
+				$output[] = html_to_plain_text( $parsed_block );
 			}
 		}
 
-		return $output;
+		return implode("\n\n", $output);
 	}
 }
 
