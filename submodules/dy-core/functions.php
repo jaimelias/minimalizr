@@ -746,12 +746,18 @@ if ( ! function_exists( 'dy_format_blocks' ) ) {
 		$blocks = parse_blocks( $raw_blocks );
 
 		foreach ( $blocks as $block ) {
-			$parsed_block = do_shortcode(render_block( $block ));
+			$parsed_block = trim(do_shortcode(render_block( $block )));
+
+			if(empty($parsed_block)) continue;
 
 			if ( $format === 'html' ) {
 				$output[] = $parsed_block;
 			} elseif ( $format === 'text' ) {
-				$output[] = html_to_plain_text( $parsed_block );
+				$parsed_text = html_to_plain_text( $parsed_block );
+
+				if(empty($parsed_text)) continue;
+
+				$output[] = $parsed_text;
 			}
 		}
 
