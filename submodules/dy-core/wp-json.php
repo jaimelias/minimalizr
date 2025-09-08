@@ -104,7 +104,7 @@ class Dynamic_Core_WP_JSON
                 $current_language = current_language($post->ID);
  
                 $this_service = (object) array(
-                    'title' => $post->post_title,
+                    'TITLE' => $post->post_title,
                 );
 
                 if(isset($polylang))
@@ -113,7 +113,7 @@ class Dynamic_Core_WP_JSON
                         $lang_post_id = pll_get_post($post->ID, $language);
                     
                         if ($language === $default_language || $lang_post_id > 0) {
-                            $link_key = "reservation_links_by_language[{$language}]";
+                            $link_key = strtoupper("reservation_links_by_language[{$language}]");
                             $this_service->$link_key = get_permalink($lang_post_id);
                         }
                     }
