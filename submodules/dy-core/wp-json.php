@@ -113,7 +113,7 @@ class Dynamic_Core_WP_JSON
                         $lang_post_id = pll_get_post($post->ID, $language);
                     
                         if ($language === $default_language || $lang_post_id > 0) {
-                            $link_key = strtoupper("reservation_links_by_language[{$language}]");
+                            $link_key = strtoupper("LINK[{$language}]");
                             $this_service->$link_key = get_permalink($lang_post_id);
                         }
                     }
