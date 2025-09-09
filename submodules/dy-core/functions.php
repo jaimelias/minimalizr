@@ -818,16 +818,21 @@ if(!function_exists('html_to_plain_text')) {
 			'/<\/?ol[^>]*>/i',
 			'/<\/?ul[^>]*>/i',
 			'/<h[1-6][^>]*>(.*?)<\/h[1-6]>/is',
+			'/<b[^>]*>(.*?)<\/b>/is',
+    		'/<strong[^>]*>(.*?)<\/strong>/is',
 		];
+
 		$replace = [
-			"\n",
-			"\n",
-			"\n",
-			"\n* ",
-			"",
-			"\n",
-			"\n",
-			"$1:\n"
+			"\n",           // [javascript protected email address]
+			"\n",           // <br> → salto de línea
+			"\n",           // <p> o </p> → salto de línea
+			"\n- ",         // <li>
+			"",             // </li>
+			"\n",           // <ol> o </ol>
+			"\n",           // <ul> o </ul>
+			"**$1**:\n",    // <h1>…</h1> → **…**:
+			"**$1**",       // <b>…</b> → **…**
+			"**$1**",       // <strong>…</strong> → **…**
 		];
 
 		$text = preg_replace($search, $replace, $html);
