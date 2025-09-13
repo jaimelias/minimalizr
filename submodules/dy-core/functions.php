@@ -575,8 +575,9 @@ if(!function_exists('load_picker_styles'))
 
 if(!function_exists('money'))
 {
-	function money($amount)
+	function money($amount, $show_symbol = false, $show_name = false)
 	{
+
 		return number_format(floatval($amount), 2, '.', ',');
 	}
 }
