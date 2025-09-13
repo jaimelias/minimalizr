@@ -15,6 +15,7 @@ if(!class_exists('Dy_Core_Init'))
         }
         public function load_dependencies()
         {
+            require_once $this->plugin_dir_path . 'training-data.php';
             require_once $this->plugin_dir_path . 'functions.php';
             require_once $this->plugin_dir_path . 'mailer.php';
             require_once $this->plugin_dir_path . 'admin.php';
