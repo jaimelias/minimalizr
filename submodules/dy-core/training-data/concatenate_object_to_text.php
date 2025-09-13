@@ -1,8 +1,8 @@
 <?php 
 
-if(!function_exists('concatenate_object')) {
+if(!function_exists('concatenate_object_to_text')) {
 	
-    function concatenate_object($obj, $top_prefix = '* ', $child_prefix = '- ', $top_level_separator = "\n") {
+    function concatenate_object_to_text($obj, $top_prefix = '* ', $child_prefix = '- ', $top_level_separator = "\n") {
         // --- helpers ------------------------------------------------------------
         $isAssoc = function(array $a): bool {
             return array_keys($a) !== range(0, count($a) - 1);
