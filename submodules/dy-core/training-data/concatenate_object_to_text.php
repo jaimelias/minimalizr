@@ -53,11 +53,16 @@ if(!function_exists('concatenate_object_to_text')) {
                     $lines[] = "{$indent}{$prefix}{$keyStr}: []";
                     return;
                 }
+                // ⬇️ CHANGED: non-assoc array of scalars → one-per-line with $child_prefix
                 if (!$isAssoc($value) && $allScalars($value)) {
-                    $inline = array_map($stringify, $value);
-                    $lines[] = "{$indent}{$prefix}{$keyStr}: [" . implode(', ', $inline) . "]";
+                    $lines[] = "{$indent}{$prefix}{$keyStr}:";
+                    $elemIndent = $indent . "\t"; // one extra level
+                    foreach ($value as $item) {
+                        $lines[] = "{$elemIndent}{$child_prefix}" . $stringify($item);
+                    }
                     return;
                 }
+                // ⬆️ CHANGED
                 $lines[] = "{$indent}{$prefix}{$keyStr}:";
                 foreach ($value as $k => $v) {
                     $emit($k, $v, $level + 1);
