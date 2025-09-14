@@ -35,7 +35,18 @@ if (!function_exists('concatenate_object_to_html')) {
         $seen = new SplObjectStorage();
 
         // Render nested (children) as <ul><li>...</li></ul>
-        $renderChildren = function ($value) use (&$renderChildren, $esc, $stringify, $isAssoc, $child_keyname_start, $child_keyname_end, $seen): string {
+        // + add alongside helpers
+        $allScalars = function (array $a): bool {
+            foreach ($a as $v) {
+                if (!(is_scalar($v) || $v === null)) return false;
+            }
+            return true;
+        };
+
+        $renderChildren = function ($value) use (
+            &$renderChildren, $esc, $stringify, $isAssoc, $allScalars,
+            $child_keyname_start, $child_keyname_end, $seen
+        ): string {
             if (is_scalar($value) || $value === null) {
                 return $stringify($value);
             }
@@ -45,12 +56,9 @@ if (!function_exists('concatenate_object_to_html')) {
                     return '<ul><li><em>*RECURSION*</em></li></ul>';
                 }
                 $seen->attach($value);
-
                 $props = get_object_vars($value);
                 if (empty($props)) {
-                    if (method_exists($value, '__toString')) {
-                        return $esc((string)$value);
-                    }
+                    if (method_exists($value, '__toString')) return $esc((string)$value);
                     return '<ul><li><em>{}</em></li></ul>';
                 }
                 $items = $props;
@@ -63,29 +71,39 @@ if (!function_exists('concatenate_object_to_html')) {
                 return '<ul><li><em>[unprintable]</em></li></ul>';
             }
 
+            // Start list
             $html = '<ul>';
+
+            // NEW: flat list (numeric keys & scalar/null values) → no index labels
+            if (!$isAssoc($items) && $allScalars($items)) {
+                foreach ($items as $v) {
+                    $html .= '<li>' . $stringify($v) . '</li>';
+                }
+                $html .= '</ul>';
+                return $html;
+            }
+
+            // Existing behavior:
             if ($isAssoc($items)) {
                 foreach ($items as $k => $v) {
                     $k = $esc((string)$k);
-                    if (is_scalar($v) || $v === null) {
-                        $html .= '<li>' . $child_keyname_start . $k . ':' . $child_keyname_end . $stringify($v) . '</li>';
-                    } else {
-                        $html .= '<li>' . $child_keyname_start . $k . ':' . $child_keyname_end . $renderChildren($v) . '</li>';
-                    }
+                    $html .= '<li>' . $child_keyname_start . $k . ':' . $child_keyname_end
+                        . (is_scalar($v) || $v === null ? $stringify($v) : $renderChildren($v))
+                        . '</li>';
                 }
             } else {
                 foreach ($items as $idx => $v) {
                     $idxLabel = $esc((string)$idx);
-                    if (is_scalar($v) || $v === null) {
-                        $html .= '<li>' . $child_keyname_start . $idxLabel . ':' . $child_keyname_end . $stringify($v) . '</li>';
-                    } else {
-                        $html .= '<li>' . $child_keyname_start . $idxLabel . ':' . $child_keyname_end . $renderChildren($v) . '</li>';
-                    }
+                    $html .= '<li>' . $child_keyname_start . $idxLabel . ':' . $child_keyname_end
+                        . (is_scalar($v) || $v === null ? $stringify($v) : $renderChildren($v))
+                        . '</li>';
                 }
             }
+
             $html .= '</ul>';
             return $html;
         };
+
 
         // ---------- top-level emit (now UPPERCASES the key) ----------
         $emitTop = function ($key, $value) use ($esc, $stringify, $renderChildren, $top_keyname_start, $top_keyname_end, $toUpper): string {
