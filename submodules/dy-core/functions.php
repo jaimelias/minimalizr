@@ -573,6 +573,31 @@ if(!function_exists('load_picker_styles'))
 	}
 }
 
+if(!function_exists('wrapMoney')) {
+	function wrapMoney($data) {
+
+		$curr_symbol = currency_symbol();
+		$curr_name = currency_name();
+
+		$apply = function ($v) use ($curr_symbol, $curr_name){
+			return $curr_symbol . money($v) . ' ' . $curr_name;
+		};
+ 
+		foreach ($data as $key => $value) {
+			if (is_array($value) || is_object($value)) {
+				foreach ($value as $subKey => $subValue) {
+					if (is_numeric($subValue)) {
+						$data[$key][$subKey] = $apply($subValue);
+					}
+				}
+			} elseif (is_numeric($value)) {
+				$data[$key] = $apply($value);
+			}
+		}
+		return $data;
+	}
+}
+
 if(!function_exists('money'))
 {
 	function money($amount, $show_symbol = false, $show_name = false)
