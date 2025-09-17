@@ -573,14 +573,21 @@ if(!function_exists('load_picker_styles'))
 	}
 }
 
-if(!function_exists('wrapMoney'))
+if(!function_exists('wrap_money_full'))
 {
-	function wrapMoney($amount, $decimal = '.', $thousands = ',')
+	function wrap_money_full($amount, $decimal = '.', $thousands = ',')
 	{
 		return currency_symbol() . money($amount, $decimal, $thousands) . ' ' . currency_name();
 	}
 }
 
+if(!function_exists('wrap_money'))
+{
+	function wrap_money($amount, $decimal = '.', $thousands = ',')
+	{
+		return currency_symbol() . money($amount, $decimal, $thousands);
+	}
+}
 
 if(!function_exists('money'))
 {
