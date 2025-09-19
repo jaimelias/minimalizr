@@ -31,6 +31,7 @@ class Minimalizr {
 		//page defaults
 		add_filter('the_content', array(&$this, 'modify_content'));
 		add_filter('the_title', array(&$this, 'modify_the_title'));
+		add_filter('get_the_excerpt', array(&$this, 'modify_get_the_excerpt'));
 
 		//scripts
 		add_filter( 'script_loader_tag', array(&$this, 'async_defer_js'), 10, 3 );
@@ -194,6 +195,21 @@ class Minimalizr {
 			$title = get_the_archive_title();
 		}
 		return $title;
+	}
+
+	function modify_get_the_excerpt($excerpt) {
+
+		if(is_single() && is_main_query()) {
+
+			global $post;
+
+			if(empty($post->post_excerpt)) {
+				 $excerpt = '';
+			}
+		}
+		
+
+		return $excerpt;
 	}
 
 
