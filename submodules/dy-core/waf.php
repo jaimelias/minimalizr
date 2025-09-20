@@ -136,7 +136,7 @@ class Dy_WAF {
     public function default_get_params($arr) {
         $arr = [
             // Search
-            's' => ['max_lenght' => 256,  'sanitizer' => 'sanitize_text_field'],
+            's' => ['max_lenght' => 128,  'sanitizer' => 'sanitize_text_field'],
 
             // Pagination
             'paged' => ['max_lenght' => 6,    'sanitizer' => 'sanitize_text_field'],
