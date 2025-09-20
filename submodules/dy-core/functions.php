@@ -288,97 +288,87 @@ if(!function_exists('get_ip_address'))
 }
 
 
-if(!function_exists('cloudflare_ban_ip_address'))
-{
-	function cloudflare_ban_ip_address($ban_message = ''){
+if (!function_exists('cloudflare_ban_ip_address')) {
+    function cloudflare_ban_ip_address($ban_message = '') {
 
-		$output = false;
-		$dy_cloudflare_api_token = get_option('dy_cloudflare_api_token');
-		
-		if(!empty($dy_cloudflare_api_token))
-		{
-			
-			$url = 'https://api.cloudflare.com/client/v4/user/firewall/access_rules/rules';
-			
-			$ip = get_ip_address();
-			
-			if(!isset($_SERVER['HTTP_CF_CONNECTING_IP']))
-			{
-				if($_SERVER['SERVER_NAME'] !== 'localhost')
-				{
-					$admin_email = get_option('admin_email');
-					$email_message = 'Cloudflare WAF is not Enabled in: ' . get_bloginfo('name');
-					$headers = array('Content-Type: text/html; charset=UTF-8');
+        $output = false;
+        $dy_cloudflare_api_token = get_option('dy_cloudflare_api_token');
 
-					wp_mail($admin_email, $email_message, $email_message, $headers);
-				}
-			}
+        if (!empty($dy_cloudflare_api_token)) {
 
-			$headers = array(
-				'Authorization' => 'Bearer ' . sanitize_text_field($dy_cloudflare_api_token),
-				'Content-Type' => 'application/json'
-			);
+            $url = 'https://api.cloudflare.com/client/v4/user/firewall/access_rules/rules';
+            $ip  = get_ip_address();
 
-			$data = array(
-				'mode' => 'block',
-				'configuration' => array('target' => 'ip', 'value' => $ip),
-				'notes' => 'Banned on '.date('Y-m-d H:i:s').' by PHP-script'
-			);
+            if (!isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+                if (($_SERVER['SERVER_NAME'] ?? '') !== 'localhost') {
+                    $admin_email   = get_option('admin_email');
+                    $email_message = 'Cloudflare WAF is not Enabled in: ' . get_bloginfo('name');
+                    $headers       = array('Content-Type: text/html; charset=UTF-8');
+                    wp_mail($admin_email, $email_message, $email_message, $headers);
+                }
+            }
 
-			if(!empty($ban_message))
-			{
-				$data['notes'] .= ' | ' . is_array($ban_message) ? implode(', ', $ban_message): $ban_message;
-			}
+            $headers = array(
+                'Authorization' => 'Bearer ' . sanitize_text_field($dy_cloudflare_api_token),
+                'Content-Type'  => 'application/json',
+            );
 
+            $data = array(
+                'mode'           => 'block',
+                'configuration'  => array('target' => 'ip', 'value' => $ip),
+                'notes'          => 'Banned on ' . date('Y-m-d H:i:s') . ' by PHP-script',
+            );
 
-			$resp = wp_remote_post($url, array(
-				'headers' => $headers,
-				'body' => json_encode($data),
-				'data_format' => 'body'
-			));
-			
-			if ( is_array( $resp ) && ! is_wp_error( $resp ) )
-			{
-				$code = $resp['response']['code'];
-				$data = json_decode($resp['body'], true);
-				$messages = (array_key_exists('messages', $data)) ? $data['messages'] : null;
-				$errors = (array_key_exists('error', $data)) ? $data['errors'] : null;
+            // ✅ FIX: paréntesis + normalización defensiva
+            if (!empty($ban_message)) {
+                // Acepta string, CSV o array
+                if (is_string($ban_message) && strpos($ban_message, ',') !== false) {
+                    $ban_message = array_map('trim', explode(',', $ban_message));
+                }
+                $data['notes'] .= ' | ' . (is_array($ban_message) ? implode(', ', $ban_message) : (string) $ban_message);
+            }
 
-				$log = array(
-					'messages' => $messages,
-					'errors' => $errors,
-					'ip' => $ip,
-					'ban_message' => $ban_message
-				);
+            $resp = wp_remote_post($url, array(
+                'headers'     => $headers,
+                'body'        => wp_json_encode($data),
+                'data_format' => 'body',
+                'timeout'     => 15,
+            ));
 
-				$log = json_encode($log);
+            if (is_array($resp) && !is_wp_error($resp)) {
 
-				if($code === 200)
-				{
-					if($data['success'])
-					{
-						write_log('Cloudflare WAF Banned IP: '. $log);
-						$output = true;
-					}
-					else
-					{
-						write_log('Cloudflare WAF Error: '. $log);
-					}
-				}
-				else
-				{
-					write_log('Cloudflare WAF Error: ' . $log);
-				}
-			}
-			else
-			{
-				write_log('Unknown Cloudflare Error');
-			}
-		}
+                $code     = (int) ($resp['response']['code'] ?? 0);
+                $decoded  = json_decode($resp['body'] ?? '', true);
 
-		return $output;
-	}	
+                // ✅ FIX: la clave correcta es 'errors'
+                $messages = (is_array($decoded) && array_key_exists('messages', $decoded)) ? $decoded['messages'] : null;
+                $errors   = (is_array($decoded) && array_key_exists('errors',   $decoded)) ? $decoded['errors']   : null;
+
+                $log = wp_json_encode(array(
+                    'status_code' => $code,
+                    'success'     => $decoded['success'] ?? null,
+                    'messages'    => $messages,
+                    'errors'      => $errors,
+                    'ip'          => $ip,
+                    'ban_message' => $ban_message,
+                ));
+
+                if ($code === 200 && !empty($decoded['success'])) {
+                    write_log('Cloudflare WAF Banned IP: ' . $log);
+                    $output = true;
+                } else {
+                    write_log('Cloudflare WAF Error: ' . $log);
+                }
+
+            } else {
+                write_log('Unknown Cloudflare Error: ' . (is_wp_error($resp) ? $resp->get_error_message() : 'no response'));
+            }
+        }
+
+        return $output;
+    }
 }
+
 
 
 
