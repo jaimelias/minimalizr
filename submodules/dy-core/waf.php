@@ -12,6 +12,8 @@ class Dy_WAF {
 
     public function validate_params() {
 
+        if(is_admin() && is_user_logged_in()) return;
+
         // Helper: safe "starts with" for PHP 7+
         $starts_with = static function($haystack, $prefix) {
             return $prefix !== '' && strncmp($haystack, $prefix, strlen($prefix)) === 0;

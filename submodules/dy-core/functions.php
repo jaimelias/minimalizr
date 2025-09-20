@@ -357,7 +357,7 @@ if (!function_exists('cloudflare_ban_ip_address')) {
                     write_log('Cloudflare WAF Banned IP: ' . $log);
                     $output = true;
                 } else {
-                    write_log('Cloudflare WAF Error: ' . $log);
+                    write_log("Cloudflare WAF Error:\n{$log}\n{$ban_message}");
                 }
 
             } else {
