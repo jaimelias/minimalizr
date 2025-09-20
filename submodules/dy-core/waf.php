@@ -135,53 +135,99 @@ class Dy_WAF {
 
 
     public function default_get_params($arr = []) {
-        return array_merge([
+        // 1) Pull known public query vars (include 3rd-party via filter)
+        global $wp;
+        $public_vars = [];
+        if (isset($wp) && is_array($wp->public_query_vars)) {
+            // Apply the same filter core uses so plugins that add query vars are included
+            $public_vars = (array) apply_filters('query_vars', $wp->public_query_vars);
+        }
+
+        // 2) Include taxonomy query vars (public taxonomies only)
+        $tax_objects = get_taxonomies(['public' => true], 'objects');
+        foreach ($tax_objects as $tax) {
+            if (!empty($tax->query_var)) {
+                $public_vars[] = $tax->query_var;
+            }
+        }
+
+        // Deduplicate while preserving order
+        $public_vars = array_values(array_unique($public_vars));
+
+        // 3) Start with a sane default spec for every public var
+        $defaults = [];
+        foreach ($public_vars as $var) {
+            // default sanitizer is conservative text
+            $defaults[$var] = [
+                'max_length' => 300,
+                'sanitizer'  => 'sanitize_text_field',
+            ];
+        }
+
+        // 4) Targeted, stricter overrides for well-known vars
+        $overrides = [
             // Search
-            's' => ['max_length' => 128,  'sanitizer' => 'sanitize_text_field'],
+            's'             => ['max_length' => 128,  'sanitizer' => 'sanitize_text_field'],
 
             // Pagination
-            'paged' => ['max_length' => 6,    'sanitizer' => 'sanitize_text_field'],
-            'page' => ['max_length' => 6,    'sanitizer' => 'sanitize_text_field'],
+            'paged'         => ['max_length' => 6,    'sanitizer' => 'sanitize_text_field'],
+            'page'          => ['max_length' => 6,    'sanitizer' => 'sanitize_text_field'],
+            'cpage'         => ['max_length' => 6,    'sanitizer' => 'sanitize_text_field'],
 
-            // Categories, Tags & Taxonomies
-            'cat' => ['max_length' => 11,   'sanitizer' => 'sanitize_text_field'],
-            'category_name' => ['max_length' => 200,  'sanitizer' => 'sanitize_text_field'],
-            'tag' => ['max_length' => 200,  'sanitizer' => 'sanitize_text_field'],
-            'tag_id' => ['max_length' => 11,   'sanitizer' => 'sanitize_text_field'],
-            'taxonomy' => ['max_length' => 64,   'sanitizer' => 'sanitize_text_field'],
-            'term' => ['max_length' => 200,  'sanitizer' => 'sanitize_text_field'],
-
-            // Authors
-            'author' => ['max_length' => 11,   'sanitizer' => 'sanitize_text_field'],
-            'author_name' => ['max_length' => 60,   'sanitizer' => 'sanitize_text_field'],
-
-            // Dates
-            'year' => ['max_length' => 4,    'sanitizer' => 'sanitize_text_field'],
-            'monthnum' => ['max_length' => 2,    'sanitizer' => 'sanitize_text_field'],
-            'day' => ['max_length' => 2,    'sanitizer' => 'sanitize_text_field'],
-            'm' => ['max_length' => 6,    'sanitizer' => 'sanitize_text_field'], // yyyymm
+            // Dates / time
+            'year'          => ['max_length' => 4,    'sanitizer' => 'sanitize_text_field'],
+            'monthnum'      => ['max_length' => 2,    'sanitizer' => 'sanitize_text_field'],
+            'day'           => ['max_length' => 2,    'sanitizer' => 'sanitize_text_field'],
+            'm'             => ['max_length' => 6,    'sanitizer' => 'sanitize_text_field'], // yyyymm
 
             // Posts & Pages
-            'p' => ['max_length' => 11,   'sanitizer' => 'sanitize_text_field'],
-            'name' => ['max_length' => 200,  'sanitizer' => 'sanitize_text_field'],
-            'pagename' => ['max_length' => 200,  'sanitizer' => 'sanitize_text_field'],
-            'page_id' => ['max_length' => 11,   'sanitizer' => 'sanitize_text_field'],
+            'p'             => ['max_length' => 11,   'sanitizer' => 'sanitize_text_field'],
+            'name'          => ['max_length' => 200,  'sanitizer' => 'sanitize_text_field'],
+            'pagename'      => ['max_length' => 200,  'sanitizer' => 'sanitize_text_field'],
+            'page_id'       => ['max_length' => 11,   'sanitizer' => 'sanitize_text_field'],
             'attachment_id' => ['max_length' => 11,   'sanitizer' => 'sanitize_text_field'],
-            'attachment' => ['max_length' => 200,  'sanitizer' => 'sanitize_text_field'],
+            'attachment'    => ['max_length' => 200,  'sanitizer' => 'sanitize_text_field'],
+
+            // Taxonomies
+            'cat'           => ['max_length' => 11,   'sanitizer' => 'sanitize_text_field'],
+            'category_name' => ['max_length' => 200,  'sanitizer' => 'sanitize_text_field'],
+            'tag'           => ['max_length' => 200,  'sanitizer' => 'sanitize_text_field'],
+            'tag_id'        => ['max_length' => 11,   'sanitizer' => 'sanitize_text_field'],
+            'taxonomy'      => ['max_length' => 64,   'sanitizer' => 'sanitize_text_field'],
+            'term'          => ['max_length' => 200,  'sanitizer' => 'sanitize_text_field'],
+
+            // Authors
+            'author'        => ['max_length' => 11,   'sanitizer' => 'sanitize_text_field'],
+            'author_name'   => ['max_length' => 60,   'sanitizer' => 'sanitize_text_field'],
 
             // Ordering
-            'orderby' => ['max_length' => 50,   'sanitizer' => 'sanitize_text_field'],
-            'order' => ['max_length' => 4,    'sanitizer' => 'sanitize_text_field'], // asc|desc
+            'orderby'       => ['max_length' => 50,   'sanitizer' => 'sanitize_text_field'],
+            'order'         => ['max_length' => 4,    'sanitizer' => 'sanitize_text_field'], // asc|desc
 
-            // Feeds & Formats
-            'feed' => ['max_length' => 16,   'sanitizer' => 'sanitize_text_field'],
-            'withcomments' => ['max_length' => 8,    'sanitizer' => 'sanitize_text_field'],
-            'cpage' => ['max_length' => 6,    'sanitizer' => 'sanitize_text_field'],
+            // Feeds & formats
+            'feed'          => ['max_length' => 16,   'sanitizer' => 'sanitize_text_field'],
+            'withcomments'  => ['max_length' => 8,    'sanitizer' => 'sanitize_text_field'],
 
-            // Special
-            'error' => ['max_length' => 32,   'sanitizer' => 'sanitize_text_field'],
-        ], $arr);
+            // Misc
+            'error'         => ['max_length' => 32,   'sanitizer' => 'sanitize_text_field'],
+            // If you expose URLs via query vars (rare), you can force URL sanitizer:
+            // 'redirect_to' => ['max_length' => 2048, 'sanitizer' => 'esc_url_raw'],
+        ];
+
+        // Apply overrides for any var we know about
+        foreach ($overrides as $k => $spec) {
+            if (isset($defaults[$k])) {
+                $defaults[$k] = array_replace($defaults[$k], $spec);
+            } else {
+                // If the var isn't in public_vars but you still want to allow it:
+                $defaults[$k] = $spec;
+            }
+        }
+
+        // 5) Let caller-provided $arr win (your established pattern)
+        return array_replace($defaults, $arr);
     }
+
 
     public function default_post_params($arr) {
         return array_replace([
