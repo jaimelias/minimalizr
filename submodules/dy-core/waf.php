@@ -98,7 +98,9 @@ class Dy_WAF {
 
                 // Reject non-scalars (arrays/objects/resources)
                 if (!is_scalar($value)) {
-                    wp_die("Invalid {$param_key} param is array or object: {$key}");
+                    $message = "Invalid {$param_key} param is array or object: {$key}";
+                    cloudflare_ban_ip_address($message);
+                    wp_die($message);
                 }
 
                 // Find spec: exact first, then prefix
@@ -119,7 +121,9 @@ class Dy_WAF {
                 $limit = isset($spec['max_length']) ? (int) $spec['max_length'] : 300;
                 $len   = function_exists('mb_strlen') ? mb_strlen($clean, 'UTF-8') : strlen($clean);
                 if ($len > $limit) {
-                    wp_die("Invalid {$param_key} param length: {$key} ({$len} > {$limit})");
+                    $message = "Invalid {$param_key} param length: {$key} ({$len} > {$limit})";
+                    cloudflare_ban_ip_address($message);
+                    wp_die($message);
                 }
 
                 $dy_params->{$param_key}[$key] = (string) $clean;
