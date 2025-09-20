@@ -15,6 +15,7 @@ if(!class_exists('Dy_Core_Init'))
         }
         public function load_dependencies()
         {
+            require_once $this->plugin_dir_path . 'waf.php';
             require_once $this->plugin_dir_path . 'training-data/concatenate_object_to_text.php';
             require_once $this->plugin_dir_path . 'training-data/concatenate_object_to_html.php';
             require_once $this->plugin_dir_path . 'functions.php';
@@ -27,6 +28,7 @@ if(!class_exists('Dy_Core_Init'))
         }
         public function init()
         {
+            new Dy_WAF();
             new Dy_Mailer();
             new Dynamic_Core_Admin();
             new Dynamic_Core_Public();
