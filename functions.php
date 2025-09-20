@@ -13,7 +13,7 @@ class Minimalizr {
 
 	public function __construct()
 	{
-		$this->version = ($_SERVER['SERVER_NAME'] === 'localhost') ? time() : '1.5.6';
+		$this->version = (is_array($_SERVER) && array_key_exists('SERVER_NAME', $_SERVER) && $_SERVER['SERVER_NAME'] === 'localhost') ? time() : '1.5.6';
 		$this->theme_name = 'minimalizr';
 		$this->theme_directory = get_template_directory();
 		add_action('init', array(&$this, 'init'));
