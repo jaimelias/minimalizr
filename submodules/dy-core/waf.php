@@ -122,7 +122,7 @@ class Dy_WAF {
                 $limit = isset($spec['max_lenght']) ? (int) $spec['max_lenght'] : 300;
                 $len   = function_exists('mb_strlen') ? mb_strlen($clean, 'UTF-8') : strlen($clean);
                 if ($len > $limit) {
-                    wp_die("Invalid {$param_key} param length: {$key}");
+                    wp_die("Invalid {$param_key} param length: {$key} ({$len} > {$limit})");
                 }
 
                 $dy_params->{$param_key}[$key] = (string) $clean;
@@ -241,8 +241,8 @@ class Dy_WAF {
             'comment_author_url_' => ['max_lenght' => 2048,  'sanitizer' => 'esc_url_raw',          'prefix' => true],
 
             // User preferences (prefix; user id appended)
-            'wp-settings-' => ['max_lenght' => 16,    'sanitizer' => 'sanitize_text_field', 'prefix' => true],
-            'wp-settings-time-' => ['max_lenght' => 16,    'sanitizer' => 'sanitize_text_field', 'prefix' => true],
+            'wp-settings-' => ['max_lenght' => 128,    'sanitizer' => 'sanitize_text_field', 'prefix' => true],
+            'wp-settings-time-' => ['max_lenght' => 128,    'sanitizer' => 'sanitize_text_field', 'prefix' => true],
 
             // Logged-in / auth (prefix; hash appended)
             'wordpress_logged_in' => ['max_lenght' => 255,   'sanitizer' => 'sanitize_text_field', 'prefix' => true],
