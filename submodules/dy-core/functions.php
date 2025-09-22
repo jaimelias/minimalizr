@@ -928,6 +928,11 @@ if(!function_exists('dy_date'))
 	}
 }
 
+if(!function_exists('normalize_url')) {
+	function normalize_url($url) {
+		return preg_replace('#(?<!:)/{2,}#', '/', $url);
+	}
+}
 
 
 
