@@ -934,6 +934,33 @@ if(!function_exists('normalize_url')) {
 	}
 }
 
+if(!function_exists('implode_last')) {
+	//Join values with commas, except use a custom separator before the last value.
+	
+	function implode_last(array $arr, string $last_separator = 'and'): string
+	{
+		$values = array_map('strval', array_values($arr));
+		$count  = count($values);
+
+		if ($count === 0) {
+			return '';
+		}
+
+		if ($count === 1) {
+			return $values[0];
+		}
+
+		if ($count === 2) {
+			return $values[0] . ' ' . $last_separator . ' ' . $values[1];
+		}
+
+		$last  = array_pop($values);
+		$front = implode(', ', $values);
+
+		return $front . ' ' . $last_separator . ' ' . $last;
+	}
+}
+
 
 
 
