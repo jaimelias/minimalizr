@@ -937,7 +937,7 @@ if(!function_exists('normalize_url')) {
 if(!function_exists('implode_last')) {
 	//Join values with commas, except use a custom separator before the last value.
 	
-	function implode_last(array $arr, string $last_separator = 'and', string $item_prefix = '▶'): string
+	function implode_last(array $arr, string $last_separator = 'and', string $item_prefix = ''): string
 	{
 		$values = array_map(function($val) use ($item_prefix){
 			$val = strval($val);
