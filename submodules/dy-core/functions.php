@@ -962,6 +962,60 @@ if(!function_exists('implode_last')) {
 }
 
 
+if(!function_exists('current_url_full')) {
+	function current_url_full(): string
+	{
+		// Detect scheme (https/http), considering reverse proxies.
+		$isHttps = (
+			(!empty($_SERVER['HTTPS']) && strtolower((string)$_SERVER['HTTPS']) !== 'off')
+			|| (isset($_SERVER['SERVER_PORT']) && (int)$_SERVER['SERVER_PORT'] === 443)
+			|| (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+		);
+		$scheme = $isHttps ? 'https' : 'http';
+
+		// Determine host (prefer proxy header if present; take the first value).
+		$host = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? 'localhost';
+		if (!empty($_SERVER['HTTP_X_FORWARDED_HOST'])) {
+			$xfh  = explode(',', $_SERVER['HTTP_X_FORWARDED_HOST']);
+			$host = trim($xfh[0]); // Use the left-most host
+		}
+
+		// Extract hostname and port if HTTP_HOST already includes a port.
+		$hostname = $host;
+		$hostPort = null;
+		if (strpos($host, ':') !== false) {
+			[$hostname, $maybePort] = explode(':', $host, 2);
+			if (ctype_digit($maybePort)) {
+				$hostPort = (int)$maybePort;
+			}
+		}
+
+		// Prefer forwarded port if supplied.
+		if (!empty($_SERVER['HTTP_X_FORWARDED_PORT']) && ctype_digit($_SERVER['HTTP_X_FORWARDED_PORT'])) {
+			$hostPort = (int)$_SERVER['HTTP_X_FORWARDED_PORT'];
+		} elseif (empty($hostPort) && !empty($_SERVER['SERVER_PORT']) && ctype_digit((string)$_SERVER['SERVER_PORT'])) {
+			$hostPort = (int)$_SERVER['SERVER_PORT'];
+		}
+
+		// Omit default ports.
+		$defaultPort = $isHttps ? 443 : 80;
+		$portPart    = ($hostPort && $hostPort !== $defaultPort) ? ':' . $hostPort : '';
+
+		// Request URI (path + query + fragment if present).
+		$requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+
+		$url = $scheme . '://' . $hostname . $portPart . $requestUri;
+
+		// If WordPress is loaded, return an escaped version.
+		if (function_exists('esc_url_raw')) {
+			return esc_url_raw($url);
+		}
+
+		// Plain PHP: lightly validate/sanitize.
+		return filter_var($url, FILTER_SANITIZE_URL) ?: $url;
+	}
+}
+
 
 
 ?>
