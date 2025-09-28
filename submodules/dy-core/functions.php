@@ -33,7 +33,9 @@ if(! function_exists('get_dy_id'))
 
 		if($req_id !== null && $post_id !== null && $req_id !== $post_id)
 		{
-			throw new Exception("'req_id: $req_id' is not equal to 'post_id: $post_id'");
+			$err = "req_id={$req_id}' is not equal to 'post_id={$post_id}";
+			write_log($err);
+			wp_die($err);
 		}
 
 		if($post_id) return $post_id;
