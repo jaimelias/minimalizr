@@ -1,9 +1,9 @@
 <?php
 
-if ( !defined( 'WPINC' ) || !class_exists('minimal_sitemap')) exit;
+if ( !defined( 'WPINC' ) || !class_exists('Dynamic_Sitemap')) exit;
 
 #[AllowDynamicProperties]
-class minimal_sitemap
+class Dynamic_Sitemap
 {
     /** @var string|null */
     private $query_param = null;
@@ -21,9 +21,9 @@ class minimal_sitemap
         add_action('init',        [$this, 'add_rewrites']);
         add_filter('query_vars',  [$this, 'register_query_vars']);
 
-        // DO NOT call get_query_var() here (too early). Only honor raw ?minimal-sitemap=... if present.
-        if (isset($_GET['minimal-sitemap'])) {
-            $this->query_param = sanitize_text_field($_GET['minimal-sitemap']);
+        // DO NOT call get_query_var() here (too early). Only honor raw ?dy-sitemap=... if present.
+        if (isset($_GET['dy-sitemap'])) {
+            $this->query_param = sanitize_text_field($_GET['dy-sitemap']);
         }
         if (isset($_GET['changefreq'])) {
             $_GET['changefreq'] = sanitize_text_field($_GET['changefreq']);
@@ -43,7 +43,7 @@ class minimal_sitemap
         }
 
         // If pretty URLs were used, these will be populated now.
-        $qp = $q->get('minimal-sitemap');
+        $qp = $q->get('dy-sitemap');
         if (!empty($qp)) {
             $this->query_param = sanitize_text_field($qp);
         }
@@ -58,21 +58,21 @@ class minimal_sitemap
 
     /**
      * Add rewrite rules for:
-     *  /minimal-sitemap/{post_type}.xml
-     *  /minimal-sitemap/{post_type}-{changefreq}.xml
+     *  /dy-sitemap/{post_type}.xml
+     *  /dy-sitemap/{post_type}-{changefreq}.xml
      */
     public function add_rewrites() {
         $allowed = '(always|hourly|daily|weekly|monthly|yearly|never)';
         // With changefreq suffix
         add_rewrite_rule(
-            '^minimal-sitemap/([^/]+)-' . $allowed . '\.xml/?$',
-            'index.php?minimal-sitemap=$matches[1]&changefreq=$matches[2]',
+            '^dy-sitemap/([^/]+)-' . $allowed . '\.xml/?$',
+            'index.php?dy-sitemap=$matches[1]&changefreq=$matches[2]',
             'top'
         );
         // Without changefreq suffix
         add_rewrite_rule(
-            '^minimal-sitemap/([^/]+)\.xml/?$',
-            'index.php?minimal-sitemap=$matches[1]',
+            '^dy-sitemap/([^/]+)\.xml/?$',
+            'index.php?dy-sitemap=$matches[1]',
             'top'
         );
     }
@@ -81,7 +81,7 @@ class minimal_sitemap
      * Register query vars so WP routes them through to index.php.
      */
     public function register_query_vars($vars) {
-        $vars[] = 'minimal-sitemap';
+        $vars[] = 'dy-sitemap';
         $vars[] = 'changefreq';
         return $vars;
     }

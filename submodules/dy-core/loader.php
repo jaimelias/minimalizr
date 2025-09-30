@@ -32,7 +32,7 @@ if(!class_exists('Dy_Core_Init'))
         {
             new Dy_WAF();
             new Dy_Mailer();
-            new minimal_sitemap();
+            new Dynamic_Sitemap();
             new Dynamic_Core_Admin();
             new Dynamic_Core_Public();
             new Dynamic_Core_WP_JSON();
