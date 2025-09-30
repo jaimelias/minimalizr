@@ -91,7 +91,7 @@ function cloudflare_ban_ip_address($ban_message = '') {
         )));
         return true;
     } else {
-        write_log('Cloudflare WAF Error: ' . wp_json_encode($decoded));
+        write_log("Cloudflare WAF Error {$code}: " . wp_json_encode($decoded));
         return false;
     }
 }

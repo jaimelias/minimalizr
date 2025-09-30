@@ -123,7 +123,7 @@ class Dy_WAF {
                 $limit = isset($spec['max_length']) ? (int) $spec['max_length'] : 300;
                 $len   = function_exists('mb_strlen') ? mb_strlen($clean, 'UTF-8') : strlen($clean);
                 if ($len > $limit) {
-                    $message = "Invalid {$param_key} param length: {$key} ({$len} > {$limit})";
+                    $message = "Invalid {$param_key} param length: {$key} ({$len} greater than {$limit})";
                     cloudflare_ban_ip_address($message);
                     wp_die($message);
                 }
