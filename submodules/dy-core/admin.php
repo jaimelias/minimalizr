@@ -81,6 +81,7 @@ class Dynamic_Core_Admin {
 		register_setting($this->setting_id, 'dy_recaptcha_site_key', 'esc_html');
 		register_setting($this->setting_id, 'dy_recaptcha_secret_key', 'esc_html');
         register_setting($this->setting_id, 'dy_cloudflare_api_token', 'esc_html');
+        register_setting($this->setting_id, 'dy_cloudflare_account_id', 'esc_html');
         register_setting($this->setting_id, 'dy_sentry_api_key', 'sanitize_user');
 
 		//settings - analytics
@@ -196,6 +197,15 @@ class Dynamic_Core_Admin {
 			$this->section_security,
 			array('name' => 'dy_cloudflare_api_token') 
 		);
+		add_settings_field( 
+			'dy_cloudflare_account_id', 
+			esc_html(__( 'Cloudflare Account ID')), 
+			array(&$this, 'settings_input'), 
+			$this->setting_id, 
+			$this->section_security,
+			array('name' => 'dy_cloudflare_account_id') 
+		);
+
 		add_settings_field( 
 			'dy_sentry_api_key', 
 			esc_html(__( 'Sentry API Key')), 
