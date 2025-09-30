@@ -167,7 +167,7 @@ class Dynamic_Sitemap
         wp_reset_query();
 
         // Preserve filter + sanitization + ent2ncr + exit flow
-        exit(ent2ncr($this->sanitize_output(apply_filters('minimal_sitemap', $output))));
+        exit(ent2ncr($this->sanitize_output(apply_filters('dy_sitemap', $output))));
     }
 
     public function sanitize_output($buffer) {
