@@ -90,8 +90,6 @@ class Minimalizr {
 
 		require $this->theme_directory . '/inc/minimal.php';
 
-		require_once $this->theme_directory . '/inc/minimal_sitemap/sitemap.php';	
-
 		require_once $this->theme_directory . '/inc/minimal-class.php';
 
 		if(!defined('DY_CORE_FUNCTIONS'))

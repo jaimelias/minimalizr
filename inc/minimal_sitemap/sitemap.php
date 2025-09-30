@@ -14,11 +14,63 @@ if (!class_exists('minimal_sitemap')) {
 		}
 
 		public function init() {
-			if (isset($_GET['minimal-sitemap'])) {
-				$this->query_param = sanitize_text_field($_GET['minimal-sitemap']);
+			/**
+			 * 1) Pretty URL support (rewrite + query vars)
+			 */
+			add_action('init',        [$this, 'add_rewrites']);
+			add_filter('query_vars',  [$this, 'register_query_vars']);
+
+			/**
+			 * 2) Preserve existing GET-based behavior
+			 *    but also read from query vars populated by the rewrites.
+			 */
+			$qp = isset($_GET['minimal-sitemap']) ? sanitize_text_field($_GET['minimal-sitemap']) : get_query_var('minimal-sitemap', null);
+			if (!empty($qp)) {
+				$this->query_param = sanitize_text_field($qp);
 			}
+
+			// If rewrite provided changefreq, mirror it into $_GET so downstream logic remains identical.
+			$cf = isset($_GET['changefreq']) ? sanitize_text_field($_GET['changefreq']) : get_query_var('changefreq', null);
+			if (!empty($cf)) {
+				$_GET['changefreq'] = sanitize_text_field($cf);
+			}
+
 			add_filter('template_include', [$this, 'run'], 100);
 			add_filter('wp_headers',       [$this, 'headers'], 100);
+
+			// (Optional) keep rewrites fresh if code changes without activation.
+			// remove the next line in production if you prefer manual flushing.
+			// flush_rewrite_rules(false);
+		}
+
+		/**
+		 * Add rewrite rules for:
+		 *  /minimal-sitemap/{post_type}.xml
+		 *  /minimal-sitemap/{post_type}-{changefreq}.xml
+		 */
+		public function add_rewrites() {
+			$allowed = '(always|hourly|daily|weekly|monthly|yearly|never)';
+			// With changefreq suffix
+			add_rewrite_rule(
+				'^minimal-sitemap/([^/]+)-' . $allowed . '\.xml/?$',
+				'index.php?minimal-sitemap=$matches[1]&changefreq=$matches[2]',
+				'top'
+			);
+			// Without changefreq suffix
+			add_rewrite_rule(
+				'^minimal-sitemap/([^/]+)\.xml/?$',
+				'index.php?minimal-sitemap=$matches[1]',
+				'top'
+			);
+		}
+
+		/**
+		 * Register query vars so WP routes them through to index.php.
+		 */
+		public function register_query_vars($vars) {
+			$vars[] = 'minimal-sitemap';
+			$vars[] = 'changefreq';
+			return $vars;
 		}
 
 		public function headers($headers) {
@@ -178,5 +230,21 @@ if (!class_exists('minimal_sitemap')) {
 	}
 
 	$sitemap = new minimal_sitemap();
+
+	/**
+	 * Activation hook to flush rules once when (if) used as a standalone plugin.
+	 * If this lives in a theme, just re-save permalinks after adding the class.
+	 */
+	if (function_exists('register_activation_hook')) {
+		register_activation_hook(__FILE__, function () {
+			// Ensure rules are present before flushing
+			$instance = new minimal_sitemap();
+			$instance->add_rewrites();
+			flush_rewrite_rules(false);
+		});
+		register_deactivation_hook(__FILE__, function () {
+			flush_rewrite_rules(false);
+		});
+	}
 }
 ?>
