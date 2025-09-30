@@ -15,6 +15,7 @@ if(!class_exists('Dy_Core_Init'))
         }
         public function load_dependencies()
         {
+            require_once $this->plugin_dir_path . 'cloudflare.php';
             require_once $this->plugin_dir_path . 'waf.php';
             require_once $this->plugin_dir_path . 'sitemap.php';
             require_once $this->plugin_dir_path . 'queries.php';
