@@ -367,7 +367,10 @@ if(!function_exists('validate_recaptcha'))
 {
 	function validate_recaptcha()
 	{
-		if(!isset($_POST['g-recaptcha-response']))
+
+		$g_recaptcha_response = secure_post('g-recaptcha-response');
+
+		if(empty($g_recaptcha_response))
 		{
 			return false;
 		}
@@ -397,7 +400,7 @@ if(!function_exists('validate_recaptcha'))
 		$params = array(
 			'secret' => $secret_key,
 			'remoteip' => $ip,
-			'response' => sanitize_text_field($_POST['g-recaptcha-response']),
+			'response' => $g_recaptcha_response,
 		);
 
 		$resp = wp_remote_post($url, array(
