@@ -25,6 +25,7 @@ if (!class_exists('minimal_sitemap')) {
 			if (!is_admin() && isset($this->query_param)) {
 				// Keep header behavior; value kept identical to avoid changing behavior.
 				$headers['Content-Type'] = 'application/xml; charset=UTF-8';
+				$headers['Access-Control-Allow-Origin']  = '*';
 			}
 			return $headers;
 		}
