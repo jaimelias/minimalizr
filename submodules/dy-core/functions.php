@@ -14,9 +14,9 @@ if(! function_exists('get_dy_id'))
 		$post_id = null;
 		$admin_id = null;
 
-		if(isset($_REQUEST['dy_id']))
+		if(!empty(secure_request('dy_id')))
 		{
-			$req_id = intval(sanitize_text_field($_REQUEST['dy_id']));
+			$req_id = (int) secure_request('dy_id');
 		}
 
 		if(isset($post))
@@ -25,10 +25,7 @@ if(! function_exists('get_dy_id'))
 		}
 		else
 		{
-			if(is_admin() && isset($_GET['post']))
-			{
-				$post_id = intval(sanitize_text_field($_REQUEST['post']));
-			}
+			$post_id = (is_admin() && !empty(secure_request('post'))) ? (int) secure_request('post') : $post_id;
 		}
 
 		if($req_id !== null && $post_id !== null && $req_id !== $post_id)
@@ -43,6 +40,7 @@ if(! function_exists('get_dy_id'))
 		else return null;
 	}
 }
+
 
 if ( ! function_exists('current_page_number')) {
 
