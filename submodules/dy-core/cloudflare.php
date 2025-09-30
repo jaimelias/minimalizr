@@ -21,13 +21,15 @@ function cloudflare_ban_ip_address($ban_message = '') {
     );
 
     $intel_resp = wp_remote_get($intel_url, array('headers' => $headers, 'timeout' => 12));
+    $intel_code    = (int) wp_remote_retrieve_response_code($intel_resp);
+
     if (is_wp_error($intel_resp)) {
         write_log('Cloudflare Intel error: ' . $intel_resp->get_error_message());
         return false; // fail safe: don’t ban if we can’t classify
     }
     $intel_body = json_decode(wp_remote_retrieve_body($intel_resp), true);
     if (empty($intel_body['success']) || empty($intel_body['result'][0])) {
-        write_log('Cloudflare Intel: unexpected response');
+        write_log("Cloudflare Intel Error {$intel_code}: " . wp_json_encode($intel_body));
         return false;
     }
 
