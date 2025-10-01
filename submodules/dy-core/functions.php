@@ -17,6 +17,10 @@ if(! function_exists('get_dy_id'))
 		if(!empty(secure_request('dy_id')))
 		{
 			$req_id = (int) secure_request('dy_id');
+		} else {
+			if(!empty(secure_request('post_id'))) {
+				$req_id = (int) secure_request('post_id');
+			}
 		}
 
 		if(isset($post))
@@ -77,7 +81,7 @@ if ( ! function_exists('write_log')) {
 		}
 	}
 	
-	function write_log ( $log )  {
+	function write_log ( $log = '')  {
 		
 		$separator = "**************************";
 		$separator_start = "\n\n" .$separator . 'WRITE_LOG_START' . $separator . "\n";

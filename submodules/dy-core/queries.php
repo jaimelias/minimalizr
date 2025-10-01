@@ -36,8 +36,21 @@ if ( ! function_exists( '_secure_input' ) ) {
 			'GET'     => [],
 			'REQUEST' => [],
 			'COOKIE'  => [],
-			'QVAR'    => [], // add cache bucket for query vars
+			'QVAR'    => [],
 		];
+
+		// Handle "exists" special sanitizer first.
+		if ( $sanitize_cb === 'exists' ) {
+			switch ( $source_name ) {
+				case 'POST':    return array_key_exists( $key, $_POST );
+				case 'GET':     return array_key_exists( $key, $_GET )
+					|| ( did_action( 'parse_request' ) && isset( $GLOBALS['wp'] ) && $GLOBALS['wp'] instanceof WP && array_key_exists( $key, $GLOBALS['wp']->query_vars ) )
+					|| ( function_exists( 'get_query_var' ) && ( did_action( 'parse_query' ) || did_action( 'wp' ) ) && get_query_var( $key, null ) !== null );
+				case 'REQUEST': return array_key_exists( $key, $_REQUEST );
+				case 'COOKIE':  return array_key_exists( $key, $_COOKIE );
+			}
+			return false;
+		}
 
 		// Resolve superglobal by name.
 		switch ( $source_name ) {
@@ -64,17 +77,8 @@ if ( ! function_exists( '_secure_input' ) ) {
 			return $sanitized;
 		}
 
-		/**
-		 * Fallback: safely read from get_query_var($key) if the query is ready.
-		 * We only do this for GET lookups, to mimic "merge get_query_var into secure_get".
-		 */
-		// inside _secure_input(), in the "if ($source_name === 'GET')" fallback block:
+		// Fallback: safely read from get_query_var($key) if the query is ready (only for GET).
 		if ( $source_name === 'GET' ) {
-			$sanitizer = _secure_prepare_sanitizer( $sanitize_cb );
-			$san_id    = is_string( $sanitize_cb ) ? $sanitize_cb : 'callable';
-			$cache_id  = $key . '|' . $san_id;
-
-			// 1) Earliest safe option: after parse_request use $wp->query_vars
 			if ( did_action( 'parse_request' ) && isset( $GLOBALS['wp'] ) && $GLOBALS['wp'] instanceof WP && is_array( $GLOBALS['wp']->query_vars ) ) {
 				if ( array_key_exists( $key, $GLOBALS['wp']->query_vars ) ) {
 					if ( array_key_exists( $cache_id, $cache['QVAR'] ) ) {
@@ -87,7 +91,6 @@ if ( ! function_exists( '_secure_input' ) ) {
 				}
 			}
 
-			// 2) Later (preferred): after parse_query safely call get_query_var()
 			if (
 				function_exists( 'get_query_var' ) &&
 				( did_action( 'parse_query' ) || did_action( 'wp' ) || ( isset( $GLOBALS['wp_query'] ) && $GLOBALS['wp_query'] instanceof WP_Query ) )
@@ -104,11 +107,11 @@ if ( ! function_exists( '_secure_input' ) ) {
 			}
 		}
 
-
-		// Miss across both layers -> return explicit default (un-sanitized, by design).
+		// Miss -> return default.
 		return $default;
 	}
 }
+
 
 if ( ! function_exists( 'secure_post' ) ) {
 	function secure_post( $key, $default = '', $sanitize_cb = 'sanitize_text_field' ) {
