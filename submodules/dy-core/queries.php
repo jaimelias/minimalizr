@@ -137,3 +137,24 @@ if ( ! function_exists( 'secure_cookie' ) ) {
 		return _secure_input( 'COOKIE', $key, $default, $sanitize_cb );
 	}
 }
+
+if ( ! function_exists( 'get_has' ) ) {
+	function get_has( $key ) {
+		return _secure_input( 'GET', $key, '', 'exists' );
+	}
+}
+if ( ! function_exists( 'post_has' ) ) {
+	function post_has( $key ) {
+		return _secure_input( 'POST', $key, '', 'exists' );
+	}
+}
+if ( ! function_exists( 'request_has' ) ) {
+	function request_has( $key ) {
+		return _secure_input( 'REQUEST', $key, '', 'exists' );
+	}
+}
+if ( ! function_exists( 'cookie_has' ) ) {
+	function cookie_has( $key ) {
+		return _secure_input( 'COOKIE', $key, '', 'exists' );
+	}
+}
