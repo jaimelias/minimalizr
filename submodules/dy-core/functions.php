@@ -23,7 +23,7 @@ if(! function_exists('get_dy_id'))
 			}
 		}
 
-		if(isset($post))
+		if($post instanceof WP_Post)
 		{
 			$post_id = $post->ID;
 		}
@@ -184,7 +184,7 @@ if(!function_exists('get_languages'))
 	function get_languages()
 	{
 		global $polylang;
-		$output = array();
+		$output = [];
 		$which_var = 'wp_core_get_languages';
 		global $$which_var;
 

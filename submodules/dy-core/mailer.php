@@ -205,7 +205,7 @@ class Dy_Mailer
 
 			if(!array_key_exists('to', $personalizations[0]))
 			{
-				$personalizations[0]["to"] = array();
+				$personalizations[0]["to"] = [];
 			}
 
 			$personalizations[0]["to"][] = array("email" => $address[0]);
@@ -216,7 +216,7 @@ class Dy_Mailer
 
 			if(!array_key_exists('cc', $personalizations[0]))
 			{
-				$personalizations[0]["cc"] = array();
+				$personalizations[0]["cc"] = [];
 			}
 
 			$personalizations[0]["cc"][] = array("email" => $address[0]);
@@ -227,7 +227,7 @@ class Dy_Mailer
 
 			if(!array_key_exists('bcc', $personalizations[0]))
 			{
-				$personalizations[0]["bcc"] = array();
+				$personalizations[0]["bcc"] = [];
 			}
 
 			$personalizations[0]["bcc"][] = array("email" => $address[0]);
@@ -243,7 +243,7 @@ class Dy_Mailer
 
 			if(!array_key_exists('to', $personalizations[0]))
 			{
-				$personalizations[0]["to"] = array();
+				$personalizations[0]["to"] = [];
 			}
 
 			$personalizations[0]["to"][] = array("email" => $email);
@@ -254,7 +254,7 @@ class Dy_Mailer
 
 			if(!array_key_exists('cc', $personalizations[0]))
 			{
-				$personalizations[0]["cc"] = array();
+				$personalizations[0]["cc"] = [];
 			}
 		
 			$personalizations[0]["cc"][] = array("email" => $email);
@@ -265,7 +265,7 @@ class Dy_Mailer
 
 			if(!array_key_exists('bcc', $personalizations[0]))
 			{
-				$personalizations[0]["bcc"] = array();
+				$personalizations[0]["bcc"] = [];
 			}
 
 			$personalizations[0]["bcc"][] = array("email" => $email);
@@ -273,7 +273,7 @@ class Dy_Mailer
 		
 		// Attachments
 		$attachments = $phpmailer->getAttachments();
-		$formatted_attachments = array();
+		$formatted_attachments = [];
 		
 		foreach ($attachments as $arr) {
 			$pathname = $arr[0];
@@ -393,7 +393,7 @@ class Dy_Mailer
 
 	public function email_str_row_to_array($str)
 	{
-		$output = array();
+		$output = [];
 
 		if($str)
 		{

@@ -121,7 +121,7 @@ class Dynamic_Core_Public {
         }
 
 
-        if(isset($post))
+        if($post instanceof WP_Post)
         {
             $args['post_id'] = $post->ID;
             $args['post_title'] = $post->post_title;

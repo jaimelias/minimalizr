@@ -188,7 +188,7 @@ class Dynamic_Core_Providers {
 
 	public function email_str_row_to_array($str)
 	{
-		$output = array();
+		$output = [];
 
 		if($str)
 		{
@@ -210,7 +210,7 @@ class Dynamic_Core_Providers {
 
 		global $post;
 
-		if(isset($post))
+		if($post instanceof WP_Post)
 		{
 			$terms = get_the_terms($post->ID, $this->name);
 

@@ -168,7 +168,7 @@ class Dynamic_Core_Orders {
 	public function get_booking_query($data)
 	{
 
-		$query = array();
+		$query = [];
 
 		for($x = 0; $x < count($this->booking_fields); $x++)
 		{
