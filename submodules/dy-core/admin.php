@@ -71,7 +71,7 @@ class Dynamic_Core_Admin {
 		$languages = get_languages();
 
         //settings - company
-		register_setting($this->setting_id, 'dy_country_code', [$this, 'sanitize_country_code']);
+		register_setting($this->setting_id, 'dy_merchant_return_link', [$this, 'esc_url']);
 		register_setting($this->setting_id, 'dy_email', 'sanitize_email');
 		register_setting($this->setting_id, 'dy_phone', 'esc_html');
 		register_setting($this->setting_id, 'dy_address', 'esc_html');
@@ -99,14 +99,7 @@ class Dynamic_Core_Admin {
 
         //fields
 
-		add_settings_field( 
-			'dy_country_code', 
-			esc_html(__( 'Country Code (2-digits)')), 
-			array(&$this, 'settings_input'), 
-			$this->setting_id, 
-			$this->section_company,
-			array('name' => 'dy_country_code', 'type' => 'text')
-		);
+
 
 		add_settings_field( 
 			'dy_email', 
@@ -124,6 +117,15 @@ class Dynamic_Core_Admin {
 			$this->setting_id, 
 			$this->section_company,
 			array('name' => 'dy_phone', 'type' => 'text')
+		);
+
+		add_settings_field( 
+			'dy_merchant_return_link', 
+			esc_html(__( 'Country Code (2-digits)')), 
+			array(&$this, 'settings_input'), 
+			$this->setting_id, 
+			$this->section_company,
+			array('name' => 'dy_merchant_return_link', 'type' => 'text')
 		);
 		
 
@@ -303,18 +305,6 @@ class Dynamic_Core_Admin {
 		</form>
 		
 		<?php
-	}
-
-	public function sanitize_country_code( $code ) {
-		// Remove spaces and force uppercase
-		$code = strtoupper( trim( $code ) );
-
-		// Allow only A-Z, exactly 2 characters
-		if ( preg_match( '/^[A-Z]{2}$/', $code ) ) {
-			return $code;
-		}
-
-		return null; // Return null if invalid
 	}
 
 }
