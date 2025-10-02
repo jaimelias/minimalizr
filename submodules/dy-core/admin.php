@@ -121,7 +121,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field( 
 			'dy_merchant_return_link', 
-			esc_html(__( 'Country Code (2-digits)')), 
+			esc_html(__( 'Merchant Return Link')), 
 			array(&$this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_company,
