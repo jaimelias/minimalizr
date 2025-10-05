@@ -246,60 +246,59 @@ class Minimalizr {
 		}
 	}
 
-	function ld_json_cb($json)
+	function ld_json_cb($json = [])
 	{
-		if(is_front_page())
+		$contactPoint = [];
+		$contactPoint['@type'] = 'ContactPoint';
+		$contactPoint['contactType'] = 'customer service';
+		$contactPoint['url'] = get_the_permalink();
+		$contactPoint['sameAs'] = [];
+		$media = array("facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google");
+		
+		for($x = 0; $x < count($media); $x++)
 		{
-			
-			$contactPoint = array();
-			$contactPoint['@type'] = 'ContactPoint';
-			$contactPoint['contactType'] = 'customer service';
-			$contactPoint['url'] = esc_url(get_the_permalink());
-			$contactPoint['sameAs'] = array();
-			
-			$media = array("facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google");
-			
-			for($x = 0; $x < count($media); $x++)
-			{
-					if(get_theme_mod($media[$x]) != null)
+				if(get_theme_mod($media[$x]) != null)
+				{
+					if(!filter_var(get_theme_mod($media[$x]), FILTER_VALIDATE_URL) === false)
 					{
-						if(!filter_var(get_theme_mod($media[$x]), FILTER_VALIDATE_URL) === false)
-						{
-							array_push($contactPoint['sameAs'], get_theme_mod($media[$x]));
-						}
-					}	
-			}		
-			
-			if(get_theme_mod('min_tel') != null)
-			{
-				$contactPoint['telephone'] = esc_html(get_theme_mod('min_tel'));
-			}
-			
-			$json = array();
-			$json['@context'] = 'http://schema.org';
-			$json['@type'] = 'Organization';
-			$json['url'] = esc_url(home_url());
-			$json['name'] = esc_html(get_bloginfo('name'));
-			
-			if(get_theme_mod('minimalizr_large_icon'))
-			{
-				$json['logo'] = get_theme_mod('minimalizr_large_icon');
-			}
-			if(get_theme_mod('min_address') != null)
-			{
-				$json['address'] = get_theme_mod('min_address');
-			}			
-			
-			$json['contactPoint'] = $contactPoint;
-		}
-		elseif(is_singular('post'))
+						array_push($contactPoint['sameAs'], get_theme_mod($media[$x]));
+					}
+				}	
+		}		
+		
+		if(get_theme_mod('min_tel') != null)
 		{
-			$mainEntityOfPage = array();
+			$contactPoint['telephone'] = esc_html(get_theme_mod('min_tel'));
+		}
+
+		$organization = [
+			'@context' => 'http://schema.org',
+			'@type'    => 'Organization',
+			'url'      => home_url(),
+			'name'     => get_bloginfo('name'),
+		];
+
+		
+		if(get_theme_mod('minimalizr_large_icon'))
+		{
+			$organization['logo'] = get_theme_mod('minimalizr_large_icon');
+		}
+		if(get_theme_mod('min_address') != null)
+		{
+			$organization['address'] = get_theme_mod('min_address');
+		}			
+		
+		$organization['contactPoint'] = $contactPoint;
+		$json[] = $organization;
+		
+		if(is_singular('post'))
+		{
+			$mainEntityOfPage = [];
 			$mainEntityOfPage['@type'] = 'WebPage';
 			$mainEntityOfPage['@id'] = esc_url(get_the_permalink());
 			$mainEntityOfPage['url'] = esc_url(get_the_permalink());
 			
-			$author = array();
+			$author = [];
 			$author['@type'] = 'Person';
 			
 			while ( have_posts() )
@@ -310,11 +309,11 @@ class Minimalizr {
 			}
 			wp_reset_query(); 
 			
-			$publisher = array();
+			$publisher = [];
 			
 			if(get_theme_mod('minimalizr_large_icon'))
 			{
-				$logo = array();
+				$logo = [];
 				$logo['@type'] = 'ImageObject';
 				$logo['url'] = esc_url(get_theme_mod('minimalizr_large_icon'));
 				$json['logo'] = $logo;
@@ -323,7 +322,7 @@ class Minimalizr {
 				$publisher['logo'] = $logo;			
 			}
 			
-			$image = array();
+			$image = [];
 			if(has_post_thumbnail())
 			{
 				$image_data = wp_get_attachment_image_src( get_post_thumbnail_id( get_the_ID() ), 'full');
@@ -334,46 +333,60 @@ class Minimalizr {
 			}
 
 			
-			$json = array();
-			$json['@context'] = 'http://schema.org';
-			$json['@type'] = 'Article';
-			$json['headline'] = esc_html(get_the_title());
-			$json['datePublished'] = esc_html(get_the_date('c'));
-			$json['dateModified'] = esc_html(get_the_modified_date('c'));
-			$json['mainEntityOfPage'] = $mainEntityOfPage;
-			$json['author'] = $author;
+			$article = [
+				'@context'         => 'http://schema.org',
+				'@type'            => 'Article',
+				'headline'         => esc_html(get_the_title()),
+				'datePublished'    => esc_html(get_the_date('c')),
+				'dateModified'     => esc_html(get_the_modified_date('c')),
+				'mainEntityOfPage' => $mainEntityOfPage,
+				'author'           => $author,
+			];
+
 			
 			if(array_key_exists('name', $publisher))
 			{
-				$json['publisher'] = $publisher;
+				$article['publisher'] = $publisher;
 			}
 			
-			$json['description'] = esc_html(get_the_excerpt());
+			$article['description'] = esc_html(get_the_excerpt());
 			
 			if(has_post_thumbnail())	
 			{
-				$json['image'] = $image;
-			}		
+				$article['image'] = $image;
+			}
+
+			$json[] = $article;
 		}
+
 		return $json;
 	}
 
 
+	function ld_json_script() {
+		$ld = apply_filters('minimal_ld_json', []);
 
-	function ld_json_script()
-	{
-
-		$ld = apply_filters('minimal_ld_json', array());
-
-		if(is_array($ld))
-		{
-			if(count($ld) !== 0)
-			{
-				echo '<script type="application/ld+json">'.json_encode($ld).'</script>';
-			}
+		if (empty($ld) || !is_array($ld)) {
+			return;
 		}
-		
+
+		$scripts = ["\n"];
+		foreach (array_values($ld) as $i => $entry) {
+			if (!is_array($entry)) {
+				continue;
+			}
+			$scripts[] = sprintf(
+				'<script type="application/ld+json" id="json_ld_%d">%s</script>',
+				$i + 1,
+				wp_json_encode($entry, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+			);
+		}
+
+		if ($scripts) {
+			echo implode("\n", $scripts);
+		}
 	}
+
 
 
 

@@ -38,7 +38,7 @@ class Parsedown
     protected function textElements($text)
     {
         # make sure no definitions are set
-        $this->DefinitionData = array();
+        $this->DefinitionData = [];
 
         # standardize line breaks
         $text = str_replace(array("\r\n", "\r"), "\n", $text);
@@ -167,7 +167,7 @@ class Parsedown
 
     protected function linesElements(array $lines)
     {
-        $Elements = array();
+        $Elements = [];
         $CurrentBlock = null;
 
         foreach ($lines as $line)
@@ -327,7 +327,7 @@ class Parsedown
             }
             elseif (isset($Component['hidden']))
             {
-                $Component['element'] = array();
+                $Component['element'] = [];
             }
         }
 
@@ -916,7 +916,7 @@ class Parsedown
             return;
         }
 
-        $alignments = array();
+        $alignments = [];
 
         $divider = $Line['text'];
 
@@ -951,7 +951,7 @@ class Parsedown
 
         # ~
 
-        $HeaderElements = array();
+        $HeaderElements = [];
 
         $header = $Block['element']['handler']['argument'];
 
@@ -1027,7 +1027,7 @@ class Parsedown
 
         if (count($Block['alignments']) === 1 or $Line['text'][0] === '|' or strpos($Line['text'], '|'))
         {
-            $Elements = array();
+            $Elements = [];
 
             $row = $Line['text'];
 
@@ -1138,7 +1138,7 @@ class Parsedown
         # standardize line breaks
         $text = str_replace(array("\r\n", "\r"), "\n", $text);
 
-        $Elements = array();
+        $Elements = [];
 
         $nonNestables = (empty($nonNestables)
             ? array()
@@ -1595,7 +1595,7 @@ class Parsedown
         {
             if (!isset($Element['nonNestables']))
             {
-                $Element['nonNestables'] = array();
+                $Element['nonNestables'] = [];
             }
 
             if (is_string($Element['handler']))
@@ -1825,7 +1825,7 @@ class Parsedown
      */
     protected static function pregReplaceElements($regexp, $Elements, $text)
     {
-        $newElements = array();
+        $newElements = [];
 
         while (preg_match($regexp, $text, $matches, PREG_OFFSET_CAPTURE))
         {
@@ -1950,7 +1950,7 @@ class Parsedown
         return $instance;
     }
 
-    private static $instances = array();
+    private static $instances = [];
 
     #
     # Fields
