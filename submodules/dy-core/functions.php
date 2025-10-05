@@ -112,7 +112,7 @@ if ( ! function_exists('write_log')) {
 
 		// ---- NEW TRACE SECTION ----
 		$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-		$subset = array_slice($trace, 1, 5);
+		$subset = array_slice($trace, 1, 7);
 
 		$lines = [];
 		foreach ($subset as $i => $t) {
