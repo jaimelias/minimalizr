@@ -112,7 +112,7 @@ if ( ! function_exists('write_log')) {
 
 		// ---- NEW TRACE SECTION ----
 		$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-		$subset = array_slice($trace, 1, 3); // skip #0 and take 3 frames
+		$subset = array_slice($trace, 0, 3); // skip #0 and take 3 frames
 		$lines = [];
 
 		foreach ($subset as $i => $t) {
