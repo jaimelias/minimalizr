@@ -112,8 +112,10 @@ if ( ! function_exists('write_log')) {
 
 		// ---- NEW TRACE SECTION ----
 		$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+		$subset = array_slice($trace, 1, 5);
+
 		$lines = [];
-		foreach ($trace as $i => $t) {
+		foreach ($subset as $i => $t) {
 			$func = ($t['class'] ?? '') . ($t['type'] ?? '') . ($t['function'] ?? '');
 			$file = $t['file'] ?? '(no-file)';
 			$line = $t['line'] ?? 0;
