@@ -81,51 +81,54 @@ if ( ! function_exists('write_log')) {
 		}
 	}
 	
-function write_log($log = '') {
-    $separator = "**************************";
-    $separator_start = "\n\n" . $separator . 'WRITE_LOG_START' . $separator . "\n";
-    $separator_end = "\n" . $separator . 'WRITE_LOG_END' . $separator . "\n\n";
+	function write_log($log = '') {
+		$separator = "**************************";
+		$separator_start = "\n\n" . $separator . 'WRITE_LOG_START' . $separator . "\n";
+		$separator_end = "\n" . $separator . 'WRITE_LOG_END' . $separator . "\n\n";
 
-    $output = $separator_start
-        . "URI = " . ($_SERVER['REQUEST_URI'] ?? '') 
-        . "\nUSER_AGENT = " . ($_SERVER['HTTP_USER_AGENT'] ?? '')
-        . "\nIP_ADDRESS = " . (function_exists('get_ip_address') ? get_ip_address() : '(unknown)')
-        . "\nTYPE = " . gettype($log);
+		$output = $separator_start
+			. "URI = " . ($_SERVER['REQUEST_URI'] ?? '') 
+			. "\nUSER_AGENT = " . ($_SERVER['HTTP_USER_AGENT'] ?? '')
+			. "\nIP_ADDRESS = " . (function_exists('get_ip_address') ? get_ip_address() : '(unknown)')
+			. "\nTYPE = " . gettype($log);
 
-    if (isset($_POST) && is_array($_POST) && !empty($_POST)) {
-        // remove sensitive fields
-        foreach (['CCNum', 'ExpMonth', 'ExpYear', 'CVV2'] as $sensitive) {
-            if (isset($_POST[$sensitive])) {
-                unset($_POST[$sensitive]);
-            }
-        }
-        $output .= "\nPOST = " . json_encode($_POST);
-    }
+		if (isset($_POST) && is_array($_POST) && !empty($_POST)) {
+			// remove sensitive fields
+			foreach (['CCNum', 'ExpMonth', 'ExpYear', 'CVV2'] as $sensitive) {
+				if (isset($_POST[$sensitive])) {
+					unset($_POST[$sensitive]);
+				}
+			}
+			$output .= "\nPOST = " . json_encode($_POST);
+		}
 
-    $output .= "\nLOG = ";
+		$output .= "\nLOG = ";
 
-    if (is_array($log) || is_object($log)) {
-        $log = print_r(var_error_log($log), true);
-    }
+		if (is_array($log) || is_object($log)) {
+			$log = print_r(var_error_log($log), true);
+		}
 
-    $output .= "\n\n" . $log;
+		$output .= "\n\n" . $log;
 
-    // ---- NEW TRACE SECTION ----
-    $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-    $lines = [];
-    foreach ($trace as $i => $t) {
-        $func = ($t['class'] ?? '') . ($t['type'] ?? '') . ($t['function'] ?? '');
-        $file = $t['file'] ?? '(no-file)';
-        $line = $t['line'] ?? 0;
-        $lines[] = sprintf('#%d %s() @ %s:%d', $i, $func, $file, $line);
-    }
-    $output .= "\nTRACE:\n" . implode("\n", $lines);
-    // ---- END TRACE SECTION ----
+		// ---- NEW TRACE SECTION ----
+		$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+		$lines = [];
+		foreach ($trace as $i => $t) {
+			$func = ($t['class'] ?? '') . ($t['type'] ?? '') . ($t['function'] ?? '');
+			$file = $t['file'] ?? '(no-file)';
+			$line = $t['line'] ?? 0;
+			$lines[] = sprintf('#%d %s() @ %s:%d', $i, $func, $file, $line);
+		}
+		$output .= "\nTRACE:\n" . implode("\n", $lines);
+		// ---- END TRACE SECTION ----
 
-    $output .= $separator_end;
+		$output .= $separator_end;
 
-    error_log($output);
+		error_log($output);
+	}
+
 }
+
 
 
 
