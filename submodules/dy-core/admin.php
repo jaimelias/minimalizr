@@ -71,7 +71,6 @@ class Dynamic_Core_Admin {
 		$languages = get_languages();
 
         //settings - company
-		register_setting($this->setting_id, 'dy_merchant_return_link', [$this, 'esc_url']);
 		register_setting($this->setting_id, 'dy_email', 'sanitize_email');
 		register_setting($this->setting_id, 'dy_phone', 'esc_html');
 		register_setting($this->setting_id, 'dy_address', 'esc_html');
@@ -118,16 +117,6 @@ class Dynamic_Core_Admin {
 			$this->section_company,
 			array('name' => 'dy_phone', 'type' => 'text')
 		);
-
-		add_settings_field( 
-			'dy_merchant_return_link', 
-			esc_html(__( 'Merchant Return Link')), 
-			array(&$this, 'settings_input'), 
-			$this->setting_id, 
-			$this->section_company,
-			array('name' => 'dy_merchant_return_link', 'type' => 'text')
-		);
-		
 
 
 		for($x = 0; $x < count($languages); $x++)

@@ -331,6 +331,9 @@ if(!function_exists('home_lang'))
                     . (isset($parsed_url['query']) ? '?' . $parsed_url['query'] : '')
                     . (isset($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : '');
 
+
+				$output = normalize_url($output);
+
             }
             else
             {
