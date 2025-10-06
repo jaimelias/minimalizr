@@ -505,6 +505,20 @@ if(!function_exists('money'))
 	}
 }
 
+// New version that shows NO decimals
+if (!function_exists('money_rounded')) {
+	function money_rounded($amount, $thousands = ',') {
+		return number_format(round((float) $amount), 0, '', $thousands);
+	}
+}
+
+// Optionally, you can wrap it too:
+if (!function_exists('wrap_money_rounded')) {
+	function wrap_money_rounded($amount, $thousands = ',') {
+		return currency_symbol() . money_rounded($amount, $thousands);
+	}
+}
+
 if(!function_exists('currency_symbol'))
 {
 	function currency_symbol()
