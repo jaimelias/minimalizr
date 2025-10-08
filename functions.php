@@ -265,31 +265,22 @@ class Minimalizr {
 						array_push($contactPoint['sameAs'], get_theme_mod($media[$x]));
 					}
 				}	
-		}		
-		
-		if(get_theme_mod('min_tel') != null)
-		{
-			$contactPoint['telephone'] = esc_html(get_theme_mod('min_tel'));
 		}
 
 		$organization = [
 			'@context' => 'http://schema.org',
-			'@type'    => 'Organization',
-			'url'      => $home_url,
-			'name'     => get_bloginfo('name'),
+			'@type' => 'Organization',
+			'url' => $home_url,
+			'name' => get_bloginfo('name'),
+			'@id' => $home_url . '#org',
 		];
 
-		
 		$site_icon = get_site_icon_url();
 
 		if(!empty($site_icon))
 		{
 			$organization['logo'] = $site_icon;
-		}
-		if(get_theme_mod('min_address') != null)
-		{
-			$organization['address'] = get_theme_mod('min_address');
-		}			
+		}		
 		
 		$organization['contactPoint'] = $contactPoint;
 		$json[] = $organization;
@@ -298,48 +289,51 @@ class Minimalizr {
 		{
 			// --- begin modified block ---
 
-			$mainEntityOfPage = [];
-			$mainEntityOfPage['@type'] = 'WebPage';
-			$mainEntityOfPage['@id'] = $home_url;
-			$mainEntityOfPage['url'] = $home_url;
+			$post_id = get_queried_object_id();
+			$post = get_post($post_id);
+
+			$mainEntityOfPage = [
+				'@type' => 'WebPage',
+				'@id' => $home_url . '#webpage',
+				'url' => $home_url,
+			];
 			
-			$author = [];
-			$author['@type'] = 'Person';
+			$author_name = get_the_author_meta( 'display_name', get_post_field( 'post_author', $post_id ) );
+			$author = [
+				'@type' => 'Person',
+				'name' => $author_name ?: ''
+			];
 			
-			while ( have_posts() )
-			{
-				the_post(); 
-				global $post;
-				$author['name'] = get_the_author();
-			}
-			wp_reset_query(); 
-			
-			$publisher = [];
+			$publisher = [
+				'@type' => 'Organization',
+				'name' => get_bloginfo('name'),
+				'@id' => $home_url . '#org',
+			];
 			
 			if(!empty($site_icon))
 			{
-				$logo = [];
-				$logo['@type'] = 'ImageObject';
-				$logo['url'] = $site_icon;
-				$publisher['@type'] = 'Organization';
-				$publisher['name'] = esc_html(get_bloginfo('name'));
-				$publisher['logo'] = $logo;			
+				$publisher['logo'] = [
+					'@type' => 'ImageObject',
+					'url' => $site_icon
+				];
 			}
 			
 			$image = [];
 			if(has_post_thumbnail())
 			{
 				$image_data = wp_get_attachment_image_src( get_post_thumbnail_id( get_the_ID() ), 'full');
-				$image['@type'] = 'ImageObject';
-				$image['url'] = esc_url(get_the_post_thumbnail_url());		
-				$image['width'] = esc_html($image_data[1]);		
-				$image['height'] = esc_html($image_data[2]);		
+
+				$image = [
+					'@type' => 'ImageObject',
+					'url' => get_the_post_thumbnail_url(),
+					'width' => $image_data[1],
+					'height' => $image_data[2],
+				];	
 			}
 
 			// Extra helpful fields for an Article
-			$post_id        = get_the_ID();
-			$post_lang      = function_exists('get_locale') ? get_locale() : '';
-			$post_content   = wp_strip_all_tags( get_post_field('post_content', $post_id) );
+			$post_lang = function_exists('get_locale') ? get_locale() : '';
+			$post_content = wp_strip_all_tags( get_post_field('post_content', $post_id) );
 			$post_wordcount = str_word_count( $post_content );
 
 			// Category -> articleSection (first category name if available)
@@ -351,19 +345,24 @@ class Minimalizr {
 			$keywords = !empty($tags) ? implode(', ', array_map('esc_html', $tags)) : null;
 
 			$article = [
-				'@context'         => 'http://schema.org',
-				'@type'            => 'Article',
-				'headline'         => esc_html(get_the_title()),
-				'url'              => esc_url(get_the_permalink()),
-				'datePublished'    => esc_html(get_the_date('c')),
-				'dateModified'     => esc_html(get_the_modified_date('c')),
+				'@context' => 'http://schema.org',
+				'@type'  => 'BlogPosting',
+				'headline' => get_the_title(),
+				'url'    => get_the_permalink(),
+				'datePublished' => get_the_date('c'),
+				'dateModified' => get_the_modified_date('c'),
 				'mainEntityOfPage' => $mainEntityOfPage,
-				'author'           => $author,
-				'inLanguage'       => $post_lang ?: null,
-				'articleBody'      => mb_substr( $post_content, 0, 5000 ), // keep payload sane
-				'wordCount'        => $post_wordcount,
-				'description'      => esc_html(get_the_excerpt()),
+				'author' => $author,
+				'inLanguage' => $post_lang ?: null,
+				'articleBody' => mb_substr( $post_content, 0, 5000 ), // keep payload sane
+				'wordCount' => $post_wordcount
 			];
+
+
+			if(property_exists($post, 'post_excerpt')) {
+				$article['description'] = $post->post_excerpt;
+			}
+
 
 			if($article_section){
 				$article['articleSection'] = esc_html($article_section);
@@ -616,13 +615,13 @@ class Minimalizr {
 		for($x = 0; $x < count($sidebarLabel); $x++)
 		{
 			register_sidebar( array(
-				'name'          => esc_html($sidebarLabel[$x]),
-				'id'            => esc_attr('sidebar-' . ($x+1)),
-				'description'   => '',
+				'name' => esc_html($sidebarLabel[$x]),
+				'id'  => esc_attr('sidebar-' . ($x+1)),
+				'description' => '',
 				'before_widget' => '<aside id="%1$s" class="widget %2$s">',
-				'after_widget'  => '</aside>',
-				'before_title'  => '<div class="widget-title">',
-				'after_title'   => '</div>',
+				'after_widget' => '</aside>',
+				'before_title' => '<div class="widget-title">',
+				'after_title' => '</div>',
 			));	
 		}
 	}
@@ -725,7 +724,7 @@ class Minimalizr {
 
 		if($blog_page_id === 0) return;
 
-		$target_id    = $blog_page_id > 0 ? $blog_page_id : 0;
+		$target_id = $blog_page_id > 0 ? $blog_page_id : 0;
 
 		global $polylang;
 
