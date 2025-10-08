@@ -279,9 +279,11 @@ class Minimalizr {
 		];
 
 		
-		if(get_theme_mod('minimalizr_large_icon'))
+		$site_icon = get_site_icon_url();
+
+		if(!empty($site_icon))
 		{
-			$organization['logo'] = get_theme_mod('minimalizr_large_icon');
+			$organization['logo'] = $site_icon;
 		}
 		if(get_theme_mod('min_address') != null)
 		{
