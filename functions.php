@@ -248,6 +248,7 @@ class Minimalizr {
 
 	function ld_json_cb($json = [])
 	{
+		$home_url = home_url();
 		$contactPoint = [];
 		$contactPoint['@type'] = 'ContactPoint';
 		$contactPoint['contactType'] = 'customer service';
@@ -274,7 +275,7 @@ class Minimalizr {
 		$organization = [
 			'@context' => 'http://schema.org',
 			'@type'    => 'Organization',
-			'url'      => home_url(),
+			'url'      => $home_url,
 			'name'     => get_bloginfo('name'),
 		];
 
@@ -295,10 +296,12 @@ class Minimalizr {
 		
 		if(is_singular('post'))
 		{
+			// --- begin modified block ---
+
 			$mainEntityOfPage = [];
 			$mainEntityOfPage['@type'] = 'WebPage';
-			$mainEntityOfPage['@id'] = esc_url(get_the_permalink());
-			$mainEntityOfPage['url'] = esc_url(get_the_permalink());
+			$mainEntityOfPage['@id'] = $home_url;
+			$mainEntityOfPage['url'] = $home_url;
 			
 			$author = [];
 			$author['@type'] = 'Person';
@@ -313,12 +316,11 @@ class Minimalizr {
 			
 			$publisher = [];
 			
-			if(get_theme_mod('minimalizr_large_icon'))
+			if(!empty($site_icon))
 			{
 				$logo = [];
 				$logo['@type'] = 'ImageObject';
-				$logo['url'] = esc_url(get_theme_mod('minimalizr_large_icon'));
-				$json['logo'] = $logo;
+				$logo['url'] = $site_icon;
 				$publisher['@type'] = 'Organization';
 				$publisher['name'] = esc_html(get_bloginfo('name'));
 				$publisher['logo'] = $logo;			
@@ -334,24 +336,46 @@ class Minimalizr {
 				$image['height'] = esc_html($image_data[2]);		
 			}
 
-			
+			// Extra helpful fields for an Article
+			$post_id        = get_the_ID();
+			$post_lang      = function_exists('get_locale') ? get_locale() : '';
+			$post_content   = wp_strip_all_tags( get_post_field('post_content', $post_id) );
+			$post_wordcount = str_word_count( $post_content );
+
+			// Category -> articleSection (first category name if available)
+			$cats = get_the_category($post_id);
+			$article_section = (!empty($cats) && isset($cats[0]->name)) ? $cats[0]->name : null;
+
+			// Tags -> keywords (comma-separated)
+			$tags = wp_get_post_tags($post_id, ['fields' => 'names']);
+			$keywords = !empty($tags) ? implode(', ', array_map('esc_html', $tags)) : null;
+
 			$article = [
 				'@context'         => 'http://schema.org',
 				'@type'            => 'Article',
 				'headline'         => esc_html(get_the_title()),
+				'url'              => esc_url(get_the_permalink()),
 				'datePublished'    => esc_html(get_the_date('c')),
 				'dateModified'     => esc_html(get_the_modified_date('c')),
 				'mainEntityOfPage' => $mainEntityOfPage,
 				'author'           => $author,
+				'inLanguage'       => $post_lang ?: null,
+				'articleBody'      => mb_substr( $post_content, 0, 5000 ), // keep payload sane
+				'wordCount'        => $post_wordcount,
+				'description'      => esc_html(get_the_excerpt()),
 			];
 
+			if($article_section){
+				$article['articleSection'] = esc_html($article_section);
+			}
+			if($keywords){
+				$article['keywords'] = $keywords;
+			}
 			
 			if(array_key_exists('name', $publisher))
 			{
 				$article['publisher'] = $publisher;
 			}
-			
-			$article['description'] = esc_html(get_the_excerpt());
 			
 			if(has_post_thumbnail())	
 			{
@@ -359,10 +383,13 @@ class Minimalizr {
 			}
 
 			$json[] = $article;
+
+			// --- end modified block ---
 		}
 
 		return $json;
 	}
+
 
 
 	function ld_json_script() {
