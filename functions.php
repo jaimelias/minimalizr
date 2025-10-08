@@ -283,7 +283,7 @@ class Minimalizr {
 		}		
 		
 		$organization['contactPoint'] = $contactPoint;
-		$json[] = $organization;
+		$json['organization'] = $organization;
 		
 		if(is_singular('post'))
 		{
@@ -381,7 +381,7 @@ class Minimalizr {
 				$article['image'] = $image;
 			}
 
-			$json[] = $article;
+			$json['article'] = $article;
 
 			// --- end modified block ---
 		}
@@ -399,13 +399,14 @@ class Minimalizr {
 		}
 
 		$scripts = ["\n"];
-		foreach (array_values($ld) as $i => $entry) {
+
+		foreach ($ld as $key => $entry) {
 			if (!is_array($entry)) {
 				continue;
 			}
 			$scripts[] = sprintf(
-				'<script type="application/ld+json" id="json_ld_%d">%s</script>',
-				$i + 1,
+				'<script type="application/ld+json" id="json_ld_%s">%s</script>',
+				$key,
 				wp_json_encode($entry, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
 			);
 		}
