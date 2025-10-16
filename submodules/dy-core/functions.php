@@ -515,7 +515,7 @@ if (!function_exists('money_rounded')) {
 // Optionally, you can wrap it too:
 if (!function_exists('wrap_money_rounded')) {
 	function wrap_money_rounded($amount, $thousands = ',') {
-		return currency_symbol() . money_rounded($amount, $thousands);
+		return currency_symbol() . money_rounded($amount, $thousands) . ' ' . currency_name();
 	}
 }
 
