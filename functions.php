@@ -557,10 +557,11 @@ class Minimalizr {
 			wp_deregister_script('jquery');
 			wp_register_script('jquery', $theme_url.'/js/jquery-3.6.1.slim.min.js', false, null, true);
 			wp_enqueue_script('jquery');
+
+			//temp jquery slim fixes and $ fixes
+			wp_add_inline_script('jquery', $this->js_temp_fixes(), 'after');
 		}
 
-		//temp jquery slim fixes and $ fixes
-		wp_add_inline_script('jquery', $this->js_temp_fixes(), 'after');
 
 		wp_enqueue_script( 'minimalizr-sidebar-menuJS', esc_url($theme_url . '/js/sidebar-menu.js?async_defer=true'), array('jquery'), $this->version, true );
 		
