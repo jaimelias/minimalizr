@@ -3,7 +3,7 @@
 
 #[AllowDynamicProperties]
 class Dy_WAF {
-    function __construct() {
+    public function __construct() {
         $this->valid_arrays_or_objects = ['has_published_posts'];
         add_filter('dy_default_get_params', [$this, 'default_get_params']); //new params will be send from different wp plugins
         add_filter('dy_default_post_params', [$this, 'default_post_params']);
