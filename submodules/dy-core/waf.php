@@ -1,9 +1,12 @@
 <?php 
 
-$valid_arrays_or_objects = ['has_published_posts'];
+
 
 class Dy_WAF {
     function __construct() {
+
+        $this->valid_arrays_or_objects = ['has_published_posts'];
+
         add_filter('dy_default_get_params', [$this, 'default_get_params']); //new params will be send from different wp plugins
         add_filter('dy_default_post_params', [$this, 'default_post_params']);
         add_filter('dy_default_request_params', [$this, 'default_request_params']);
@@ -100,7 +103,7 @@ class Dy_WAF {
                 }
 
                 // Reject non-scalars (arrays/objects/resources)
-                if (!is_scalar($value) && !in_array($key, $valid_arrays_or_objects)) {
+                if (!is_scalar($value) && !in_array($key, $this->valid_arrays_or_objects)) {
                     $message = "Invalid {$param_key} param is array or object: {$key}";
                     cloudflare_ban_ip_address($message);
                     wp_die($message);
