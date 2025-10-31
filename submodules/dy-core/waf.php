@@ -1,7 +1,7 @@
 <?php 
 
 
-
+#[AllowDynamicProperties]
 class Dy_WAF {
     function __construct() {
         $this->valid_arrays_or_objects = ['has_published_posts'];
