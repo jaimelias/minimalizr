@@ -105,8 +105,8 @@ class Dy_WAF {
                 // Reject non-scalars (arrays/objects/resources)
                 if (!is_scalar($value) && !in_array($key, $this->valid_arrays_or_objects)) {
                     $message = "Invalid {$param_key} param is array or object: {$key}";
-                    cloudflare_ban_ip_address($message);
-                    wp_die($message);
+                    //cloudflare_ban_ip_address($message);
+                    //wp_die($message);
                 }
 
                 // Find spec: exact first, then prefix
