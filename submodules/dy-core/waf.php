@@ -1,7 +1,7 @@
 <?php 
 
 
-
+#[AllowDynamicProperties]
 class Dy_WAF {
     function __construct() {
 
