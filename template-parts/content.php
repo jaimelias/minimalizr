@@ -33,14 +33,4 @@
 		<?php endif; ?>
 	</header><!-- .entry-header -->
 
-
-	<hr />
-		
-	<?php if((comments_open() || get_comments_number()) && get_theme_mod('disqus') != null): ?>
-	<footer class="entry-footer">
-		<div class="large">
-			<span class="inline-block"><span class="disqus-comment-count" data-disqus-url="<?php the_permalink(); ?>">0</span></span> <span class="dashicons dashicons-admin-comments"></span>
-		</div>
-	</footer><!-- .entry-footer -->
-	<?php endif; ?>
 </article><!-- #post-## -->

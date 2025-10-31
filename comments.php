@@ -18,8 +18,4 @@ if ( post_password_required() ) {
 }
 ?>
 
-<div id="comments" class="comments-area">
-
-	<div id="disqus_thread"></div>
-
-</div>
+<div id="comments" class="comments-area"></div>

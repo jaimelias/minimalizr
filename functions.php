@@ -563,21 +563,7 @@ class Minimalizr {
 		}
 
 
-		wp_enqueue_script( 'minimalizr-sidebar-menuJS', esc_url($theme_url . '/js/sidebar-menu.js?async_defer=true'), array('jquery'), $this->version, true );
-		
-		$disqus = get_theme_mod('disqus');
-
-		if (!empty($disqus)) {
-			
-			if(is_singular('post'))
-			{
-				wp_add_inline_script('jquery', $this->disqus_script());
-			}
-			else if(is_home())
-			{
-				wp_enqueue_script( 'dsq-count-scr', 'https://'.$disqus.'.disqus.com/count.js', '', 'async_defer', true);			
-			}
-		}		
+		wp_enqueue_script( 'minimalizr-sidebar-menuJS', esc_url($theme_url . '/js/sidebar-menu.js?async_defer=true'), array('jquery'), $this->version, true );	
 	}
 	
 
@@ -662,27 +648,6 @@ class Minimalizr {
 	{
 		ob_start();
 		require_once($this->theme_directory . '/js/temp-fixes.js');
-		$output = ob_get_contents();
-		ob_end_clean();
-		return $output;
-	}
-
-	function disqus_script()
-	{
-		ob_start();
-		?>
-		var disqus_config = function () {
-			this.page.url = '<?php the_permalink(); ?>'; 
-			this.page.identifier = '<?php echo get_the_ID(); ?>';
-		};
-	
-		(function() {
-			var d = document, s = d.createElement('script');
-			s.src = 'https://<?php echo esc_html(get_theme_mod('disqus')); ?>.disqus.com/embed.js';
-			s.setAttribute('data-timestamp', +new Date());
-			(d.head || d.body).appendChild(s);
-		})();
-		<?php
 		$output = ob_get_contents();
 		ob_end_clean();
 		return $output;

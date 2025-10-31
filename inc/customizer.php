@@ -98,10 +98,10 @@ class MyTheme_Customize {
 	public static function social_media($wp_customize)
 	{
 		// social media links
-		$settingId = array("disqus", "facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google", "tiktok");
-		$settingLabel = array("Disqus Username", "Facebook URL", "Twitter URL", "LinkedIn URL", "Youtube URL", "Instagram URL", "Pinterest URL", "Google My Business URL", "TikTok URL");
-		$settingDefault = array("", "https://", "https://", "https://", "https://", "https://", "https://", "https://", "https://");
-		$settingSanitize = array("esc_html", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url");
+		$settingId = array("facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google", "tiktok");
+		$settingLabel = array("Facebook URL", "Twitter URL", "LinkedIn URL", "Youtube URL", "Instagram URL", "Pinterest URL", "Google My Business URL", "TikTok URL");
+		$settingDefault = array("https://", "https://", "https://", "https://", "https://", "https://", "https://", "https://");
+		$settingSanitize = array("esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url");
 		
 		for($x = 0; $x < count($settingId); $x++)
 		{
