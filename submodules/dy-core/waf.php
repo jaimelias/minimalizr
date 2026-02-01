@@ -323,7 +323,7 @@ class Dy_WAF {
         // Add extra public tokens/selectors common in AJAX/forms
         $extras = [
             '_ajax_nonce' => ['max_length' => 12,    'sanitizer' => 'sanitize_text_field'],
-            'g-recaptcha-response' => ['max_length' => 2048,  'sanitizer' => 'sanitize_text_field'],
+            'g-recaptcha-response' => ['max_length' => 3072,  'sanitizer' => 'sanitize_text_field'],
             'action' => ['max_length' => 64,    'sanitizer' => 'sanitize_text_field'],
             'submit' => ['max_length' => 32,    'sanitizer' => 'sanitize_text_field'],
         ];
