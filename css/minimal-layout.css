@@ -1,6 +1,9 @@
 /*--------------------------------------------------------------
 >>> PURE CSS:
 --------------------------------------------------------------*/
+.pure-button.width-100 {
+    box-sizing: border-box;
+}
 .pure-button.rounded{
 	border-radius: 25px !important;
 }
