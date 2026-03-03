@@ -7,7 +7,7 @@ class Dynamic_Core_Public {
     
     public function __construct()
     {
-        $this->version = '0.1.2';
+        $this->version = '0.1.3';
         $this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
         $this->dirname_file = dirname( __FILE__ );
 
@@ -109,7 +109,7 @@ class Dynamic_Core_Public {
         $site_time = get_site_time();
 
         $args = array(
-            'homeUrl' => home_url(),
+            'homeUrl' => (function_exists('pll_home_url')) ? pll_home_url() : home_url(),
             'permalink' => get_the_permalink(),
             'pluginUrl' => $this->plugin_dir_url_file,
             'lang' => current_language()

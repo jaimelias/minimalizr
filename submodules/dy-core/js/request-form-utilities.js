@@ -50,10 +50,24 @@ const fixInputSpecialTypes = () => {
 
 }; 
 
+const replaceDomainIfDifferent = (sourceUrl, compareUrl) => {
+
+  const source = new URL(sourceUrl);
+  const compare = new URL(compareUrl);
+
+  if (source.origin !== compare.origin) {
+    source.protocol = compare.protocol;
+    source.host = compare.host;
+  }
+
+  return source.toString();
+};
+
 const countryDropdown = () => {
-  const { pluginUrl, lang } = dyCoreArgs;
+  const {lang, homeUrl } = dyCoreArgs;
   const available = ['de','en','es','fr','it','ja'];
   const MAX_RETRIES = 5;
+  const pluginUrl = replaceDomainIfDifferent(dyCoreArgs.pluginUrl, homeUrl)
   const base = pluginUrl.replace(/\/+$/, '') + '/';
 
   const fetchCountryCodes = (thisLang, step = 0) => {
