@@ -148,11 +148,25 @@ const formToArray = form => {
 
     try {
         const response = await fetch(url, init)
-        if (!response.ok) throw new Error('Unable to get nonce')
+
+        if (!response.ok) {
+            let errorBody = ''
+
+            try {
+            errorBody = await response.text()
+            } catch {
+            errorBody = '[unable to read response body]'
+            }
+
+            throw new Error(
+            `Unable to get nonce from ${url}: ${response.status} ${response.statusText}${errorBody ? ` - ${errorBody}` : ''}`
+            )
+        }
+
         const data = await response.json()
         return data
     } catch (error) {
-        console.error(error)
+        console.error('Nonce request failed:', error)
         throw error
     }
 }
