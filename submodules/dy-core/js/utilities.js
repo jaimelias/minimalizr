@@ -1,6 +1,8 @@
 
 const storeFieldNames = ['first_name', 'lastname', 'country_calling_code', 'phone', 'email', 'repeat_email', 'country', 'city', 'address'];
 
+const normalizeUrl = (url) => url.replace(/([^:]\/)\/+/g, '$1');
+
 //refresh page to removed disabled button
 window.addEventListener('pageshow', event =>  {
     const historyTraversal = event.persisted;
@@ -134,7 +136,7 @@ const formToArray = form => {
  const getNonce = async () => {
     const { homeUrl } = dyCoreArgs
     const now = Date.now()
-    const url = `${homeUrl}/wp-json/dy-core/args?timestamp=${now}`
+    const url = normalizeUrl(`${homeUrl}/wp-json/dy-core/args?timestamp=${now}`)
 
     const headers = new Headers({
         'pragma': 'no-cache',
