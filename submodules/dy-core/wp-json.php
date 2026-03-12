@@ -9,6 +9,9 @@ class Dynamic_Core_WP_JSON
     public function __construct()
     {
         add_action('rest_api_init', array(&$this, 'core_args'));
+
+        remove_filter('rest_pre_serve_request', 'rest_send_cors_headers');
+        add_filter('rest_pre_serve_request', [$this, 'send_cors_headers'], 10, 4);
     }
 
     public function core_args()
@@ -48,6 +51,20 @@ class Dynamic_Core_WP_JSON
         ));
 
         return $result;
+    }
+
+    public function send_cors_headers($served, $result, $request, $server)
+    {
+        if ($request->get_route() === '/dy-core/args') {
+            header('Access-Control-Allow-Origin: *');
+            header('Access-Control-Allow-Methods: GET, OPTIONS');
+            header('Access-Control-Allow-Headers: Content-Type');
+            header('Vary: Origin', false);
+
+            return $served;
+        }
+
+        return rest_send_cors_headers($served);
     }
 }
 
