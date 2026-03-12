@@ -109,7 +109,7 @@ class Dynamic_Core_Public {
         $site_time = get_site_time();
 
         $args = array(
-            'homeUrl' => (function_exists('pll_home_url')) ? pll_home_url() : home_url(),
+            'homeUrl' => home_url(),
             'permalink' => get_the_permalink(),
             'pluginUrl' => $this->plugin_dir_url_file,
             'lang' => current_language()
