@@ -161,7 +161,7 @@ const formToArray = form => {
             }
 
             throw new Error(
-            `Unable to get nonce from ${url}: ${response.status} ${response.statusText}${errorBody ? ` - ${errorBody}` : ''}`
+            `Unable to get nonce from ${url}: ${response.status} ${response.statusText}${errorBody ? ` - ${errorBody}` : ''}\n${url}`
             )
         }
 
