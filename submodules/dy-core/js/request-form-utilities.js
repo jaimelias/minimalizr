@@ -50,53 +50,58 @@ const fixInputSpecialTypes = () => {
 
 }; 
 
-const replaceDomainIfDifferent = (sourceUrl, compareUrl) => {
-
-  const source = new URL(sourceUrl);
-  const compare = new URL(compareUrl);
-
-  if (source.origin !== compare.origin) {
-    source.protocol = compare.protocol;
-    source.host = compare.host;
-  }
-
-  return source.toString();
-};
-
 const countryDropdown = () => {
-  const {lang, homeUrl } = dyCoreArgs;
-  const available = ['de','en','es','fr','it','ja'];
-  const MAX_RETRIES = 5;
-  const pluginUrl = replaceDomainIfDifferent(dyCoreArgs.pluginUrl, homeUrl)
-  const base = pluginUrl.replace(/\/+$/, '') + '/';
+  const { lang, pluginUrl } = dyCoreArgs;
 
-  const fetchCountryCodes = (thisLang, step = 0) => {
-    return fetch(`${base}json/countries/${thisLang}.json`)
-      .then(resp => {
-        if (resp.ok) {
-          return resp.json();
-        }
-        if (step < MAX_RETRIES) {
-          // wait 2s, then retry with incremented step
-          return new Promise(resolve =>
-            setTimeout(
-              () => resolve(fetchCountryCodes(thisLang, step + 1)),
-              2000
-            )
-          );
-        }
-        throw new Error(`"${thisLang}.json" failed after ${step} retries`);
-      })
-      .then(data => countryOptions(data))
-      .catch(err => console.error('countryDropdown error:', err));
+  const available = ['de', 'en', 'es', 'fr', 'it', 'ja'];
+  const MAX_RETRIES = 5;
+  const RETRY_DELAY = 2000;
+
+  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+  const getPluginBaseUrl = () => {
+    const url = new URL(pluginUrl);
+
+    // Important: makes new URL('json/...', base) resolve inside dy-core/
+    if (!url.pathname.endsWith('/')) {
+      url.pathname += '/';
+    }
+
+    return url;
+  };
+
+  const getCountriesUrl = thisLang => {
+    return new URL(
+      `json/countries/${encodeURIComponent(thisLang)}.json`,
+      getPluginBaseUrl()
+    );
+  };
+
+  const fetchCountryCodes = async (thisLang, step = 0) => {
+    const url = getCountriesUrl(thisLang);
+
+    const resp = await fetch(url);
+
+    if (resp.ok) {
+      return resp.json();
+    }
+
+    if (step < MAX_RETRIES) {
+      await delay(RETRY_DELAY);
+      return fetchCountryCodes(thisLang, step + 1);
+    }
+
+    throw new Error(`"${thisLang}.json" failed after ${MAX_RETRIES} retries`);
   };
 
   if (jQuery('.countrylist, .countryCallingCode').length > 0) {
     const thisLang = available.includes(lang) ? lang : 'en';
-    fetchCountryCodes(thisLang);
+
+    fetchCountryCodes(thisLang)
+      .then(data => countryOptions(data))
+      .catch(err => console.error('countryDropdown error:', err));
   }
-}
-	
+};
 
 const countryOptions = data => {
 

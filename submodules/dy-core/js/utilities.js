@@ -132,9 +132,12 @@ const formToArray = form => {
 
 
  const getNonce = async () => {
-    const { homeUrl } = dyCoreArgs
+    const { argsUrl } = dyCoreArgs
     const now = Date.now()
-    const url = `/wp-json/dy-core/args?timestamp=${now}`
+
+    const url = new URL(argsUrl)
+
+    url.searchParams.set('timestamp', now.toString())
 
     const headers = new Headers({
         'pragma': 'no-cache',

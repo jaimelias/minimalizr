@@ -7,7 +7,7 @@ class Dynamic_Core_Public {
     
     public function __construct()
     {
-        $this->version = '0.1.5';
+        $this->version = '0.1.7';
         $this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
         $this->dirname_file = dirname( __FILE__ );
 
@@ -112,6 +112,7 @@ class Dynamic_Core_Public {
             'homeUrl' => home_url(),
             'permalink' => get_the_permalink(),
             'pluginUrl' => $this->plugin_dir_url_file,
+            'argsUrl' => rest_url('dy-core/args'),
             'lang' => current_language()
         );
 
