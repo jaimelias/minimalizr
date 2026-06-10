@@ -81,7 +81,7 @@ if ( ! function_exists('write_log')) {
 		}
 	}
 	
-	function write_log($log = '') {
+	function write_log($log = '', $debug = false) {
 		$separator = "**************************";
 		$separator_start = "\n\n" . $separator . 'WRITE_LOG_START' . $separator . "\n";
 		$separator_end = "\n" . $separator . 'WRITE_LOG_END' . $separator . "\n\n";
@@ -110,19 +110,23 @@ if ( ! function_exists('write_log')) {
 
 		$output .= "\n\n" . $log;
 
-		// ---- NEW TRACE SECTION ----
-		$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-		$subset = array_slice($trace, 1, 7);
+		if($debug === true) {
+			// ---- NEW TRACE SECTION ----
+			$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+			$subset = array_slice($trace, 1, 7);
 
-		$lines = [];
-		foreach ($subset as $i => $t) {
-			$func = ($t['class'] ?? '') . ($t['type'] ?? '') . ($t['function'] ?? '');
-			$file = $t['file'] ?? '(no-file)';
-			$line = $t['line'] ?? 0;
-			$lines[] = sprintf('#%d %s() @ %s:%d', $i, $func, $file, $line);
+			$lines = [];
+			foreach ($subset as $i => $t) {
+				$func = ($t['class'] ?? '') . ($t['type'] ?? '') . ($t['function'] ?? '');
+				$file = $t['file'] ?? '(no-file)';
+				$line = $t['line'] ?? 0;
+				$lines[] = sprintf('#%d %s() @ %s:%d', $i, $func, $file, $line);
+			}
+			$output .= "\nTRACE:\n" . implode("\n", $lines);
+			// ---- END TRACE SECTION ----
 		}
-		$output .= "\nTRACE:\n" . implode("\n", $lines);
-		// ---- END TRACE SECTION ----
+
+
 
 		$output .= $separator_end;
 
