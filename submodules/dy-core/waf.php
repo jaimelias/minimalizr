@@ -382,7 +382,7 @@ class Dy_WAF {
 
             // CF / infra (often present)
             'cf_chl_' => ['max_length' => 512,   'sanitizer' => 'sanitize_text_field', 'prefix' => true],
-            'cf_clearance' => ['max_length' => 512,   'sanitizer' => 'sanitize_text_field'],
+            'cf_clearance' => ['max_length' => 768,   'sanitizer' => 'sanitize_text_field'],
 
             'PHPSESSID' => ['max_length' => 128,  'sanitizer' => 'sanitize_text_field'],
         ], $arr);
