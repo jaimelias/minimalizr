@@ -60,7 +60,7 @@ class Dynamic_Core_Public {
         {
             wp_enqueue_script(
                 'turnstile-compat',
-                'https://challenges.cloudflare.com/turnstile/v0/api.js',
+                'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',
                 array(),
                 null,
                 true
