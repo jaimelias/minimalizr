@@ -7,7 +7,7 @@ class Dynamic_Core_Public {
     
     public function __construct()
     {
-        $this->version = '0.1.7';
+        $this->version = '0.1.81';
         $this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
         $this->dirname_file = dirname( __FILE__ );
 
@@ -33,7 +33,7 @@ class Dynamic_Core_Public {
 
     public function enqueue_scripts()
     {
-        global $dy_load_recaptcha_scripts;
+        global $dy_load_turnstile_scripts;
         global $dy_load_picker_scripts;
         global $dy_load_request_form_utilities_scripts;
 
@@ -56,9 +56,15 @@ class Dynamic_Core_Public {
         wp_add_inline_script('dy-core-utilities', $this->args(), 'before');
         
 
-        if(isset($dy_load_recaptcha_scripts))
+        if(isset($dy_load_turnstile_scripts))
         {
-            wp_enqueue_script('recaptcha-v3', 'https://www.google.com/recaptcha/api.js', '', 'async_defer', true);
+            wp_enqueue_script(
+                'turnstile-compat',
+                'https://challenges.cloudflare.com/turnstile/v0/api.js',
+                array(),
+                null,
+                true
+            );
         }
 
         //picker start

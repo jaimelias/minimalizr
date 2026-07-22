@@ -77,11 +77,14 @@ class Dynamic_Core_Admin {
 		register_setting($this->setting_id, 'dy_tax_id', 'esc_html');
 
 
-		//settings - security
-		register_setting($this->setting_id, 'dy_recaptcha_site_key', 'esc_html');
-		register_setting($this->setting_id, 'dy_recaptcha_secret_key', 'esc_html');
+		//Cloudflare - Security
         register_setting($this->setting_id, 'dy_cloudflare_api_token', 'esc_html');
         register_setting($this->setting_id, 'dy_cloudflare_account_id', 'esc_html');
+
+		//Cloudflare - Turnstile
+		register_setting($this->setting_id, 'dy_cf_turnstile_site_key', 'esc_html');
+		register_setting($this->setting_id, 'dy_cf_turnstile_secret_key', 'esc_html');
+
         register_setting($this->setting_id, 'dy_sentry_api_key', 'sanitize_user');
 
 		//settings - analytics
@@ -172,22 +175,23 @@ class Dynamic_Core_Admin {
 			array('name' => 'dy_tax_id', 'type' => 'text')
 		);
 
+		
 		add_settings_field( 
-			'dy_recaptcha_site_key', 
-			esc_html(__( 'Recaptcha Site Key')), 
+			'dy_cf_turnstile_site_key', 
+			esc_html(__( 'Cloudflare Turnstile Site Key')), 
 			array(&$this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_security,
-			array('name' => 'dy_recaptcha_site_key', 'url' => 'https://www.google.com/recaptcha/admin') 
-		);	
+			array('name' => 'dy_cf_turnstile_site_key', 'url' => 'https://developers.cloudflare.com/turnstile/get-started/widget-management') 
+		);
 
 		add_settings_field( 
-			'dy_recaptcha_secret_key', 
-			esc_html(__( 'Recaptcha Secret Key')), 
+			'dy_cf_turnstile_secret_key', 
+			esc_html(__( 'Cloudflare Turnstile Secret Key')), 
 			array(&$this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_security,
-			array('name' => 'dy_recaptcha_secret_key', 'url' => 'https://www.google.com/recaptcha/admin') 
+			array('name' => 'dy_cf_turnstile_secret_key', 'url' => 'https://developers.cloudflare.com/turnstile/get-started/widget-management') 
 		);
 		
 		add_settings_field( 

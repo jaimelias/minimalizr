@@ -26,7 +26,6 @@ if(!class_exists('Dy_Core_Init'))
             require_once $this->plugin_dir_path . 'admin.php';
             require_once $this->plugin_dir_path . 'public.php';
             require_once $this->plugin_dir_path . 'wp-json.php';
-            require_once $this->plugin_dir_path . 'xml-to-r2.php';
             require_once $this->plugin_dir_path . 'integrations/providers/providers.php';
             //require_once $this->plugin_dir_path . 'integrations/orders/orders.php';
         }
@@ -39,8 +38,6 @@ if(!class_exists('Dy_Core_Init'))
             new Dynamic_Core_Public();
             new Dynamic_Core_WP_JSON();
             new Dynamic_Core_Providers();
-            new EXPORT_XML_BACKUP_TO_CLOUDFLARE_R2();
-
             //new Dynamic_Core_Orders();
         }
     }
