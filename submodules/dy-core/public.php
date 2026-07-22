@@ -7,7 +7,7 @@ class Dynamic_Core_Public {
     
     public function __construct()
     {
-        $this->version = '0.1.85';
+        $this->version = '0.1.86';
         $this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
         $this->dirname_file = dirname( __FILE__ );
 
@@ -62,7 +62,7 @@ class Dynamic_Core_Public {
                 'turnstile-compat',
                 'https://challenges.cloudflare.com/turnstile/v0/api.js',
                 array(),
-                null,
+                'async_defer',
                 true
             );
         }
