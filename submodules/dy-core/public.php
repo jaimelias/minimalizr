@@ -7,7 +7,7 @@ class Dynamic_Core_Public {
     
     public function __construct()
     {
-        $this->version = '0.1.81';
+        $this->version = '0.1.85';
         $this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
         $this->dirname_file = dirname( __FILE__ );
 
@@ -60,7 +60,7 @@ class Dynamic_Core_Public {
         {
             wp_enqueue_script(
                 'turnstile-compat',
-                'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',
+                'https://challenges.cloudflare.com/turnstile/v0/api.js',
                 array(),
                 null,
                 true
