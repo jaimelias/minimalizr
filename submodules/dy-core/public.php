@@ -29,6 +29,23 @@ class Dynamic_Core_Public {
         add_action('wp_enqueue_scripts', array(&$this, 'enqueue_styles'));
         add_action('minimal_site_alert', array(&$this, 'site_alert'));
         add_filter('dy_whatsapp_number', array(&$this, 'get_whatsapp_number'));
+
+        add_filter('wp_resource_hints', array(&$this, 'resource_hints'), 10, 2);
+    }
+
+    public function resource_hints($urls, $relation_type)
+    {
+        global $dy_load_turnstile_scripts;
+
+        if(
+            $relation_type === 'preconnect'
+            && isset($dy_load_turnstile_scripts)
+        )
+        {
+            $urls[] = 'https://challenges.cloudflare.com';
+        }
+
+        return $urls;
     }
 
     public function enqueue_scripts()
