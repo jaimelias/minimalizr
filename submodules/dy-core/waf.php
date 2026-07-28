@@ -10,6 +10,8 @@ class Dy_WAF {
         add_filter('dy_default_post_params', [$this, 'default_post_params']);
         add_filter('dy_default_request_params', [$this, 'default_request_params']);
         add_filter('dy_default_cookie_params', [$this, 'default_cookie_params']);
+
+        //Priority 20 provides better automatic custom post-type/taxonomy coverage. Priority 0 provides stricter “before every init callback” ordering.
         add_action('init', [$this, 'validate_params'], 20);
     }
 
