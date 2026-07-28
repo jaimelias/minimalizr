@@ -6,46 +6,93 @@ class Dy_WAF {
     public function __construct() {
         $this->valid_arrays_or_objects = ['has_published_posts'];
 
-
         add_filter('dy_default_get_params', [$this, 'default_get_params']); //new params will be send from different wp plugins
         add_filter('dy_default_post_params', [$this, 'default_post_params']);
         add_filter('dy_default_request_params', [$this, 'default_request_params']);
         add_filter('dy_default_cookie_params', [$this, 'default_cookie_params']);
-        add_action('init', [$this, 'validate_params'], 0);
+        add_action('init', [$this, 'validate_params'], 20);
     }
 
     private function should_skip_waf() {
-        if (is_admin()) return true;
+        if (is_admin()) {
+            return true;
+        }
 
-        if (function_exists('wp_doing_ajax') && wp_doing_ajax()) return true;
-        if (function_exists('wp_doing_cron') && wp_doing_cron()) return true;
+        if (function_exists('wp_doing_ajax') && wp_doing_ajax()) {
+            return true;
+        }
 
-        if (defined('REST_REQUEST') && REST_REQUEST) return true;
+        if (function_exists('wp_doing_cron') && wp_doing_cron()) {
+            return true;
+        }
 
-        //if (isset($_GET['rest_route'])) return true;
-        //if (function_exists('is_feed') && is_feed()) return true;
-        //if (function_exists('is_embed') && is_embed()) return true;
-        //if (function_exists('is_trackback') && is_trackback()) return true;
-        //if (function_exists('is_robots') && is_robots()) return true;
-        //if (function_exists('is_preview') && is_preview()) return true;
+        if (defined('WP_CLI') && WP_CLI) {
+            return true;
+        }
 
-        $uri  = $_SERVER['REQUEST_URI'] ?? '';
-        $path = parse_url($uri, PHP_URL_PATH);
+        if (defined('XMLRPC_REQUEST') && XMLRPC_REQUEST) {
+            return true;
+        }
+
+        if (defined('REST_REQUEST') && REST_REQUEST) {
+            return true;
+        }
+
+        // Alternate REST routing. Empty values must not bypass the WAF.
+        if (!empty($_GET['rest_route'])) {
+            return true;
+        }
+
+        $uri  = isset($_SERVER['REQUEST_URI']) && is_string($_SERVER['REQUEST_URI'])
+            ? $_SERVER['REQUEST_URI']
+            : '';
+
+        $path = wp_parse_url($uri, PHP_URL_PATH);
         $path = is_string($path) ? $path : '';
 
-        $excluded_paths = [
-            '/wp-admin/',
-            '/wp-json/',
-            '/wp-login.php',
-            '/wp-comments-post.php',
-            '/xmlrpc.php',
-            '/wp-cron.php',
-        ];
+        // Skip only actual directly executed WordPress endpoints.
+        $script = basename((string) ($_SERVER['SCRIPT_NAME'] ?? ''));
 
-        foreach ($excluded_paths as $excluded) {
-            if (strpos($path, $excluded) !== false) {
-                return true;
-            }
+        if (in_array($script, [
+            'wp-login.php',
+            'wp-comments-post.php',
+            'xmlrpc.php',
+            'wp-cron.php',
+        ], true)) {
+            return true;
+        }
+
+        /*
+        * Match the site's actual pretty REST base. This supports WordPress
+        * installations in subdirectories and index-based permalinks without
+        * treating arbitrary paths containing "wp-json" as REST requests.
+        */
+        $rest_url_path = wp_parse_url(rest_url(), PHP_URL_PATH);
+        $rest_url_path = is_string($rest_url_path)
+            ? untrailingslashit($rest_url_path)
+            : '';
+
+        $rest_prefix = '/' . trim(rest_get_url_prefix(), '/');
+
+        $has_pretty_rest_path = (
+            $rest_url_path !== '' &&
+            $rest_prefix !== '/' &&
+            strlen($rest_url_path) >= strlen($rest_prefix) &&
+            substr($rest_url_path, -strlen($rest_prefix)) === $rest_prefix
+        );
+
+        if (
+            $has_pretty_rest_path &&
+            (
+                $path === $rest_url_path ||
+                strncmp(
+                    $path,
+                    $rest_url_path . '/',
+                    strlen($rest_url_path) + 1
+                ) === 0
+            )
+        ) {
+            return true;
         }
 
         return false;
