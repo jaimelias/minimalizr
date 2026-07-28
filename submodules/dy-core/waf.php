@@ -182,6 +182,12 @@ class Dy_WAF {
             'cookie' => $sg_cookie,
         ];
 
+        $validated_sources = [
+            'post'   => [],
+            'get'    => [],
+            'cookie' => [],
+        ];
+
         foreach ($default_params as $param_key => $allowed_keys) {
 
             $allowed = $normalize_allowed($allowed_keys);
@@ -206,6 +212,7 @@ class Dy_WAF {
                 $clean = $sanitize_allowed_value($param_key, $key, $value, $spec);
                 if ($clean === null) { continue; }
 
+                $validated_sources[$param_key][$key] = true;
             }
         }
 
@@ -223,7 +230,17 @@ class Dy_WAF {
 
         foreach ((array) $request_view as $key => $value) {
 
+            // `$request_view` uses POST + GET, so POST is the winning source.
+            $request_source = array_key_exists($key, $sg_post) ? 'post' : 'get';
+
+            if (isset($validated_sources[$request_source][$key])) {
+                continue;
+            }
+
+
             $spec = $request_exact[$key] ?? null;
+
+            
             if ($spec === null && !empty($request_prefix)) {
                 foreach ($request_prefix as [$pfx, $pfxSpec]) {
                     if ($starts_with($key, $pfx)) { $spec = $pfxSpec; break; }
