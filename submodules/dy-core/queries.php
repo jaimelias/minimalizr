@@ -25,7 +25,8 @@ if ( ! function_exists( '_secure_prepare_sanitizer' ) ) {
 		if ( is_callable( $sanitize_cb ) ) {
 			return $sanitize_cb;
 		}
-		return static function( $v ) { return $v; }; // no-op fallback
+
+		return 'sanitize_text_field';
 	}
 }
 
@@ -62,18 +63,23 @@ if ( ! function_exists( '_secure_input' ) ) {
 		}
 
 		$sanitizer = _secure_prepare_sanitizer( $sanitize_cb );
-		$san_id    = is_string( $sanitize_cb ) ? $sanitize_cb : 'callable';
-		$cache_id  = $key . '|' . $san_id;
+		$cacheable = is_string( $sanitize_cb );
+		$cache_id  = $cacheable ? $key . '|' . $sanitize_cb : null;
 
 		// Fast path: superglobal hit
 		if ( array_key_exists( $key, $src ) ) {
-			if ( array_key_exists( $cache_id, $cache[ $source_name ] ) ) {
+
+			if ( $cacheable && array_key_exists( $cache_id, $cache[ $source_name ] ) ) {
 				return $cache[ $source_name ][ $cache_id ];
 			}
 
 			$value = wp_unslash( $src[ $key ] );
 			$sanitized = is_array( $value ) ? _secure_apply_recursive( $value, $sanitizer ) : $sanitizer( $value );
-			$cache[ $source_name ][ $cache_id ] = $sanitized;
+			
+			if ( $cacheable ) {
+				$cache[ $source_name ][ $cache_id ] = $sanitized;
+			}
+
 			return $sanitized;
 		}
 
@@ -81,12 +87,17 @@ if ( ! function_exists( '_secure_input' ) ) {
 		if ( $source_name === 'GET' ) {
 			if ( did_action( 'parse_request' ) && isset( $GLOBALS['wp'] ) && $GLOBALS['wp'] instanceof WP && is_array( $GLOBALS['wp']->query_vars ) ) {
 				if ( array_key_exists( $key, $GLOBALS['wp']->query_vars ) ) {
-					if ( array_key_exists( $cache_id, $cache['QVAR'] ) ) {
+					if ( $cacheable && array_key_exists( $cache_id, $cache['QVAR'] ) ) {
 						return $cache['QVAR'][ $cache_id ];
 					}
-					$qv = $GLOBALS['wp']->query_vars[ $key ];
+
+					$qv = wp_unslash( $GLOBALS['wp']->query_vars[ $key ] );
 					$sanitized = is_array( $qv ) ? _secure_apply_recursive( $qv, $sanitizer ) : $sanitizer( $qv );
-					$cache['QVAR'][ $cache_id ] = $sanitized;
+
+					if ( $cacheable ) {
+						$cache['QVAR'][ $cache_id ] = $sanitized;
+					}
+					
 					return $sanitized;
 				}
 			}
@@ -95,13 +106,18 @@ if ( ! function_exists( '_secure_input' ) ) {
 				function_exists( 'get_query_var' ) &&
 				( did_action( 'parse_query' ) || did_action( 'wp' ) || ( isset( $GLOBALS['wp_query'] ) && $GLOBALS['wp_query'] instanceof WP_Query ) )
 			) {
-				if ( array_key_exists( $cache_id, $cache['QVAR'] ) ) {
+				if ( $cacheable && array_key_exists( $cache_id, $cache['QVAR'] ) ) {
 					return $cache['QVAR'][ $cache_id ];
 				}
 				$qv = get_query_var( $key, null );
 				if ( $qv !== null ) {
+					$qv = wp_unslash( $qv );
 					$sanitized = is_array( $qv ) ? _secure_apply_recursive( $qv, $sanitizer ) : $sanitizer( $qv );
-					$cache['QVAR'][ $cache_id ] = $sanitized;
+
+					if ( $cacheable ) {
+						$cache['QVAR'][ $cache_id ] = $sanitized;
+					}
+					
 					return $sanitized;
 				}
 			}

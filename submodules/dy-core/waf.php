@@ -5,6 +5,8 @@
 class Dy_WAF {
     public function __construct() {
         $this->valid_arrays_or_objects = ['has_published_posts'];
+
+
         add_filter('dy_default_get_params', [$this, 'default_get_params']); //new params will be send from different wp plugins
         add_filter('dy_default_post_params', [$this, 'default_post_params']);
         add_filter('dy_default_request_params', [$this, 'default_request_params']);
@@ -19,13 +21,13 @@ class Dy_WAF {
         if (function_exists('wp_doing_cron') && wp_doing_cron()) return true;
 
         if (defined('REST_REQUEST') && REST_REQUEST) return true;
-        if (isset($_GET['rest_route'])) return true;
 
-        if (function_exists('is_feed') && is_feed()) return true;
-        if (function_exists('is_embed') && is_embed()) return true;
-        if (function_exists('is_trackback') && is_trackback()) return true;
-        if (function_exists('is_robots') && is_robots()) return true;
-        if (function_exists('is_preview') && is_preview()) return true;
+        //if (isset($_GET['rest_route'])) return true;
+        //if (function_exists('is_feed') && is_feed()) return true;
+        //if (function_exists('is_embed') && is_embed()) return true;
+        //if (function_exists('is_trackback') && is_trackback()) return true;
+        //if (function_exists('is_robots') && is_robots()) return true;
+        //if (function_exists('is_preview') && is_preview()) return true;
 
         $uri  = $_SERVER['REQUEST_URI'] ?? '';
         $path = parse_url($uri, PHP_URL_PATH);
@@ -94,50 +96,74 @@ class Dy_WAF {
             return ['EXACT' => $exact, 'PREFIX' => $prefix];
         };
 
-        $valid_arrays_or_objects = is_array($this->valid_arrays_or_objects ?? null) ? $this->valid_arrays_or_objects : [];
+        $valid_arrays_or_objects = is_array($this->valid_arrays_or_objects ?? null) 
+            ? $this->valid_arrays_or_objects
+        : [];
 
         $sanitize_allowed_value = function($param_key, $key, $value, $spec) use ($valid_arrays_or_objects) {
-            // Skip only true empties; keep "0"
-            if ($value === '' || $value === null) {
+            if ($value === null) {
                 return null;
             }
-
-            // Reject non-scalars (arrays/objects/resources) only after the param is known.
-            if (!is_scalar($value)) {
-                if (!in_array($key, $valid_arrays_or_objects, true)) {
-                    $message = "Invalid {$param_key} param is array or object: {$key}";
-                    //cloudflare_ban_ip_address($message);
-                    //wp_die($message);
-                }
-                return null;
-            }
-
-            // Sanitize first, then length-check
-            $sanitizer = (isset($spec['sanitizer']) && is_string($spec['sanitizer'])) ? $spec['sanitizer'] : 'sanitize_text_field';
-            if (!function_exists($sanitizer)) { $sanitizer = 'sanitize_text_field'; }
-
-            $clean = call_user_func($sanitizer, (string) $value);
 
             $limit = isset($spec['max_length']) ? (int) $spec['max_length'] : 300;
-            $len   = function_exists('mb_strlen') ? mb_strlen($clean, 'UTF-8') : strlen($clean);
-            if ($len > $limit) {
-                $message = "Invalid {$param_key} param length: {$key} ({$len} greater than {$limit})";
-                if (function_exists('cloudflare_ban_ip_address')) {
-                    cloudflare_ban_ip_address($message);
-                }
-                wp_die($message, 'Bad Request', ['response' => 400]);
+            $max_items = max(1, (int) ($spec['max_items'] ?? 100));
+
+            $sanitizer = isset($spec['sanitizer']) && is_string($spec['sanitizer'])
+                ? $spec['sanitizer']
+                : 'sanitize_text_field';
+
+            if (!function_exists($sanitizer)) {
+                $sanitizer = 'sanitize_text_field';
             }
 
-            return (string) $clean;
-        };
+            $sanitize_scalar = static function($item) use ($param_key, $key, $limit, $sanitizer) {
+                $raw = (string) $item;
+                $len = function_exists('mb_strlen')
+                    ? mb_strlen($raw, 'UTF-8')
+                    : strlen($raw);
 
-        // Build containers
-        $dy_params = (object) [
-            'post'    => [],
-            'get'     => [],
-            'request' => [],
-            'cookie'  => [],
-        ];
+                if ($len > $limit) {
+                    $message = "Invalid {$param_key} param length: {$key}";
+
+                    if (function_exists('cloudflare_ban_ip_address')) {
+                        cloudflare_ban_ip_address($message);
+                    }
+
+                    wp_die($message, 'Bad Request', ['response' => 400]);
+                }
+
+                return (string) call_user_func($sanitizer, $raw);
+            };
+
+            if (!is_scalar($value)) {
+                if (
+                    !is_array($value) ||
+                    !in_array($key, $valid_arrays_or_objects, true) ||
+                    count($value) > $max_items
+                ) {
+                    $message = "Invalid {$param_key} param is array or object: {$key}";
+                    write_log($message);
+                    wp_die($message, 'Bad Request', ['response' => 400]);
+                }
+
+                $clean = [];
+
+                foreach ($value as $item) {
+                    // Reject nested arrays, objects, resources, and null elements.
+                    if (!is_scalar($item)) {
+                        $message = "Invalid nested {$param_key} param: {$key}";
+                        write_log($message);
+                        wp_die($message, 'Bad Request', ['response' => 400]);
+                    }
+
+                    $clean[] = $sanitize_scalar($item);
+                }
+
+                return $clean;
+            }
+
+            return $sanitize_scalar($value);
+        };
 
         $default_params = [
             'post'   => (array) apply_filters('dy_default_post_params', []),
@@ -180,14 +206,12 @@ class Dy_WAF {
                 $clean = $sanitize_allowed_value($param_key, $key, $value, $spec);
                 if ($clean === null) { continue; }
 
-                $dy_params->{$param_key}[$key] = $clean;
             }
         }
 
         // Cookie-free request view; POST wins over GET.
         // Known POST/GET params are already sanitized above. Request-only filters remain supported.
         $request_view = $sg_post + $sg_get;
-        $dy_params->request = $dy_params->post + $dy_params->get;
 
         $request_allowed = $normalize_allowed((array) apply_filters('dy_default_request_params', []));
         $request_exact   = $request_allowed['EXACT'];
@@ -198,7 +222,6 @@ class Dy_WAF {
         });
 
         foreach ((array) $request_view as $key => $value) {
-            if (isset($dy_params->request[$key])) { continue; }
 
             $spec = $request_exact[$key] ?? null;
             if ($spec === null && !empty($request_prefix)) {
@@ -211,10 +234,8 @@ class Dy_WAF {
             $clean = $sanitize_allowed_value('request', $key, $value, $spec);
             if ($clean === null) { continue; }
 
-            $dy_params->request[$key] = $clean;
         }
 
-        $GLOBALS['dy_params'] = $dy_params;
     }
 
 
@@ -296,6 +317,12 @@ class Dy_WAF {
             'error'         => ['max_length' => 32,   'sanitizer' => 'sanitize_text_field'],
             // If you expose URLs via query vars (rare), you can force URL sanitizer:
             // 'redirect_to' => ['max_length' => 2048, 'sanitizer' => 'esc_url_raw'],
+
+            'has_published_posts' => [
+                'max_length' => 20,
+                    'max_items'  => 100,
+                    'sanitizer'  => 'sanitize_key',
+            ]
         ];
 
         // Apply overrides for any var we know about
@@ -390,7 +417,7 @@ class Dy_WAF {
     }
 
     public function default_request_params($arr = []) {
-        // Start with structured GET/POST/COOKIE maps
+        // Request is deliberately POST + GET only.
         $get = (array) apply_filters('dy_default_get_params', []);
         $post = (array) apply_filters('dy_default_post_params', []);
         $cookie = (array) apply_filters('dy_default_cookie_params', []);

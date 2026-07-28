@@ -174,14 +174,6 @@ const registerGrid = ({textareaId, containerId, maxId, isDisabled, hotDataFilter
 	jQuery(grid).handsontable(args);
 
 	const instance = jQuery(grid).handsontable('getInstance');
-
-	// NEW: keep the grid's stretch calculation in sync with its real container width
-	if (typeof ResizeObserver !== 'undefined') {
-		const resizeObserver = new ResizeObserver(() => {
-			instance.render();
-		});
-		resizeObserver.observe(jQuery(containerId).get(0));
-	}
 	
 	jQuery(maxId).on('change', function() {
 
