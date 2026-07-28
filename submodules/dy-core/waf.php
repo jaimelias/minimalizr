@@ -11,7 +11,7 @@ class Dy_WAF {
         add_filter('dy_default_post_params', [$this, 'default_post_params']);
         add_filter('dy_default_request_params', [$this, 'default_request_params']);
         add_filter('dy_default_cookie_params', [$this, 'default_cookie_params']);
-        add_action('template_redirect', [$this, 'validate_params'], 0);
+        add_action('init', [$this, 'validate_params'], 0);
     }
 
     private function should_skip_waf() {
