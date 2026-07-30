@@ -217,10 +217,10 @@ class Minimalizr {
 	}
 
 
-	function hide_string($text, $content = '')
+	function hide_string($text = '')
 	{
 
-		if(!is_array($text))
+		if(!is_array($text) || empty($text))
 		{
 			return '';
 		}
