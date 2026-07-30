@@ -217,36 +217,40 @@ class Minimalizr {
 	}
 
 
-	function hide_string($text = '', $content = '')
+	function hide_string($arr = '')
 	{
-
-		if(!is_array($text) || empty($text))
+		if(!is_array($arr) || empty($arr))
 		{
 			return '';
 		}
 
-		if(array_key_exists('email', $text))
+		if(array_key_exists('email', $arr))
 		{
-			$text = $text['email'];
-			
-			if(is_email($text))
+			$email = $arr['email'];
+
+			if(is_email($email))
 			{
 				$character_set = '+-.0123456789@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz';
 				$key = str_shuffle($character_set); $cipher_text = ''; $id = 'e'.rand(1,999999999);
-				for ($i=0;$i<strlen($text);$i+=1) $cipher_text.= $key[strpos($character_set,$text[$i])];
+				for ($i=0;$i<strlen($email);$i+=1) $cipher_text.= $key[strpos($character_set,$email[$i])];
 				$script = 'var a="'.$key.'";var b=a.split("").sort().join("");var c="'.$cipher_text.'";var d="";';
 				$script.= 'for(var e=0;e<c.length;e++)d+=b.charAt(a.indexOf(c.charAt(e)));';
 				$script.= 'document.getElementById("'.$id.'").innerHTML=`<a href="mailto:${d}">${d}</a>`';
 				$script = '<script>'.$script.'</script>';
-				return '<span id="'.$id.'">[javascript protected email address]</span>'.$script;		
+				return '<span id="'.$id.'">[javascript protected email address]</span>'.$script;
 			}
+
+			return ''; // invalid email — don't fall through to the text/url branch
 		}
-		if(array_key_exists('text', $text) && array_key_exists('url', $text))
+
+		if(array_key_exists('text', $arr) && array_key_exists('url', $arr))
 		{
-			$link = base64_encode('<a href="'.esc_url($text['url']).'" targe="_blank">'.esc_html($text['text']).'</a>');
-			$script = '<script>document.write(atob("'.$link.'"));</script>';	
+			$link = base64_encode('<a href="'.esc_url($arr['url']).'" target="_blank">'.esc_html($arr['text']).'</a>');
+			$script = '<script>document.write(atob("'.$link.'"));</script>';
 			return $script;
 		}
+
+		return '';
 	}
 
 	function ld_json_cb($json = [])
