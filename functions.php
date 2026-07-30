@@ -71,13 +71,15 @@ class Minimalizr {
 
 		//remove Beaver Builder (FLBuilder) defaults
 		remove_action('wp_footer', 'FLBuilder::include_jquery');
+
+		//custom media sizes
+		add_action('after_switch_theme', array(&$this, 'after_switch_theme'));
+		add_filter('intermediate_image_sizes_advanced', array(&$this, 'restrict_image_sizes'), 999);
+		add_filter('big_image_size_threshold', '__return_false');
 	}
 
 	public function init()
 	{
-
-		//require $this->theme_directory . '/dy-core/loader.php';
-
 		require $this->theme_directory . '/inc/template-tags.php';
 
 		require $this->theme_directory . '/inc/extras.php';
@@ -91,6 +93,7 @@ class Minimalizr {
 		require $this->theme_directory . '/inc/minimal.php';
 
 		require_once $this->theme_directory . '/inc/minimal-class.php';
+		
 
 		if(!defined('DY_CORE_FUNCTIONS'))
 		{
@@ -644,6 +647,8 @@ class Minimalizr {
 		$GLOBALS['content_width'] = apply_filters( 'minimalizr_content_width', 640 );
 	}
 
+
+
 	public function js_temp_fixes()
 	{
 		ob_start();
@@ -717,6 +722,29 @@ class Minimalizr {
 		wp_safe_redirect($redirect_url, 301);
 		exit;
 	}
+
+	function after_switch_theme() {
+		update_option('thumbnail_size_w', 600);
+		update_option('thumbnail_size_h', 400);
+		update_option('thumbnail_crop', 1);
+
+		update_option('medium_size_w', 1200);
+		update_option('medium_size_h', 800);
+
+		update_option('large_size_w', 2400);
+		update_option('large_size_h', 1600);
+	}
+	
+	function restrict_image_sizes ($sizes) {
+		$allowed = ['thumbnail', 'medium', 'large'];
+		foreach ($sizes as $key => $value) {
+			if (!in_array($key, $allowed, true)) {
+				unset($sizes[$key]);
+			}
+		}
+		return $sizes;
+	}
+
 
 }
 
