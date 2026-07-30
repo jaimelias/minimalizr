@@ -217,7 +217,7 @@ class Minimalizr {
 	}
 
 
-	function hide_string($text = '')
+	function hide_string($text = '', $content = '')
 	{
 
 		if(!is_array($text) || empty($text))
