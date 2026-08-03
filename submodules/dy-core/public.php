@@ -264,9 +264,9 @@ class Dynamic_Core_Public {
         $parsed_notification = do_shortcode($notification_raw);
 
         return sprintf(
-            '<div class="dy-%1$s"><div class="dy-%1$s-content"><span class="dashicons dashicons-warning"></span> %2$s</div></div>',
+            '<div class="dy-%1$s"><div class="dy-%1$s-content">%2$s</div></div>',
             esc_attr(str_replace('_', '-', $alert_id)),
-            $notification_raw
+            $parsed_notification
         );
     }
 
