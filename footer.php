@@ -63,5 +63,7 @@
 
 <?php wp_footer(); ?>
 
+<div class="minimal-footer-alert" data-nosnippet><?php do_action('minimal_footer_alert'); ?></div>
+
 </body>
 </html>
