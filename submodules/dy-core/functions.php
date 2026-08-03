@@ -589,38 +589,27 @@ if(!function_exists('currency_name'))
 	}
 }
 
-if (!function_exists('is_valid_date')) {
-    function is_valid_date($str)
+if (!function_exists("is_valid_date")) {
+    function is_valid_date($str, $formats = ["Y-m-d", "Y-m-d H:i:s"])
     {
-        if (empty($str)) {
+        if (empty($str) || !is_string($str)) {
             return false;
         }
-        
-        // Generate a cache key from the sanitized input
-        $cacheKey = sanitize_key($str) . '_is_valid_date';
-        
-        // Check global cache
-        if (isset($GLOBALS[$cacheKey])) {
-            return $GLOBALS[$cacheKey];
+        static $cache = [];
+        $cacheKey = implode("|", $formats) . "::" . $str;
+        if (isset($cache[$cacheKey])) {
+            return $cache[$cacheKey];
         }
-        
-        // List of allowed formats
-        $formats = ['Y-m-d', 'Y-m-d H:i:s'];
         $valid = false;
-        
         foreach ($formats as $format) {
             $dateTime = DateTime::createFromFormat($format, $str);
-            // Check for valid parsing and exact match (to avoid partially valid strings)
             if ($dateTime !== false && $dateTime->format($format) === $str) {
                 $valid = true;
                 break;
             }
         }
-        
-        // Cache the result globally
-        $GLOBALS[$cacheKey] = $valid;
-        
-        return $valid;
+		
+        return $cache[$cacheKey] = $valid;
     }
 }
 
@@ -633,12 +622,12 @@ if(!function_exists('is_valid_time'))
 
 		if(!empty($str))
 		{
+			static $cache = [];
 			$which_var = $str.'_is_valid_time';
-			global $$which_var;
-			
-			if(isset($$which_var))
+
+			if(isset($cache[$which_var]))
 			{
-				$output = $$which_var;
+				$output = $cache[$which_var];
 			}
 			else
 			{
@@ -647,13 +636,14 @@ if(!function_exists('is_valid_time'))
 					$output = true;
 				}
 
-				$GLOBALS[$which_var] = $output;
+				$cache[$which_var] = $output;
 			}
 		}
 				
 		return $output;
 	}
 }
+
 
 if(!function_exists('is_in_theme'))
 {
