@@ -350,6 +350,7 @@ if(!function_exists('whatsapp_button'))
 
 function validate_turnstile()
 {
+	static $cache = [];
 	$cache_key = 'dy_valid_turnstile';
 
 	/*
@@ -357,12 +358,12 @@ function validate_turnstile()
 	 * Turnstile tokens are single-use, so Siteverify must only be
 	 * called once during the current WordPress request.
 	 */
-	if(array_key_exists($cache_key, $GLOBALS))
+	if(array_key_exists($cache_key, $cache))
 	{
-		return (bool) $GLOBALS[$cache_key];
+		return (bool) $cache[$cache_key];
 	}
 
-	$GLOBALS[$cache_key] = false;
+	$cache[$cache_key] = false;
 
 	/*
 	 * Compatibility mode keeps the reCAPTCHA field name.
@@ -468,7 +469,7 @@ function validate_turnstile()
 		return false;
 	}
 
-	$GLOBALS[$cache_key] = true;
+	$cache[$cache_key] = true;
 
 	return true;
 }
