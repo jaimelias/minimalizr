@@ -28,6 +28,7 @@ class Dynamic_Core_Public {
         add_action('wp_enqueue_scripts', array(&$this, 'enqueue_scripts'));
         add_action('wp_enqueue_scripts', array(&$this, 'enqueue_styles'));
         add_action('minimal_site_alert', array(&$this, 'site_alert'));
+        add_action('minimal_footer_alert', array(&$this, 'footer_alert'));
         add_filter('dy_whatsapp_number', array(&$this, 'get_whatsapp_number'));
 
         add_filter('wp_resource_hints', array(&$this, 'resource_hints'), 10, 2);
@@ -236,33 +237,37 @@ class Dynamic_Core_Public {
 	{
 		return whatsapp_button();
 	}
+    public function site_alert() {
+        echo $this->render_alert('site_alert');
+    }
 
-    public function site_alert()
+    public function footer_alert() {
+        echo $this->render_alert('footer_alert');
+    }
+
+    public function render_alert($alert_id = '')
     {
+        static $prefix = null;
 
-        $languages = get_languages();
-        $current_language = current_language();
-        $default_language = default_language();
-        $output = '';
-
-        for($x = 0; $x < count($languages); $x++)
-        {
-			$lang = $languages[$x];
-
-            if($lang === $current_language)
-            {
-                $prefix = ($default_language === $lang) ? '' : '_'.$lang;
-                $notification_raw = html_entity_decode(get_option('dy_site_alert'.$prefix));
-
-                if(!empty($notification_raw))
-                {
-                    $output = '<div class="dy-site-alert"><div class="dy-site-alert-content"><span class="dashicons dashicons-warning"></span> ' . $notification_raw . '</div></div>';
-                }
-            }
+        if ($prefix === null) {
+            $current_language = current_language();
+            $default_language = default_language();
+            $prefix = ($current_language === $default_language) ? '' : '_' . $current_language;
         }
 
-        echo $output;
+        $notification_raw = html_entity_decode(get_option('dy_' . $alert_id . $prefix));
 
+        if (empty($notification_raw)) {
+            return '';
+        }
+
+        $parsed_notification = do_shortcode($notification_raw);
+
+        return sprintf(
+            '<div class="dy-%1$s"><div class="dy-%1$s-content">%2$s</div></div>',
+            esc_attr(str_replace('_', '-', $alert_id)),
+            $notification_raw
+        );
     }
 
     public function picker_containers()

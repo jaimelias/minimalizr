@@ -142,10 +142,11 @@ class Dynamic_Core_Admin {
 			
 			//site notification multy languages
 			register_setting($this->setting_id, 'dy_site_alert'.$prefix, 'wp_kses_post');
+			register_setting($this->setting_id, 'dy_footer_alert'.$prefix, 'wp_kses_post');
 
 			add_settings_field( 
 				'dy_site_alert'.$prefix, 
-				esc_html(__( 'Site Nofification').' '. strtoupper($lang)), 
+				esc_html(__( 'Site Alert').' '. strtoupper($lang)), 
 				array(&$this, 'settings_textarea'), 
 				$this->setting_id, 
 				$this->section_company,
@@ -154,7 +155,21 @@ class Dynamic_Core_Admin {
 					'url' => 'https://onlinehtmleditor.dev/', 
 					'url_text' => __('Html Editor')
 				)
-			);	
+			);
+			add_settings_field( 
+				'dy_footer_alert'.$prefix, 
+				esc_html(__( 'Footer Alert').' '. strtoupper($lang)), 
+				array(&$this, 'settings_textarea'), 
+				$this->setting_id, 
+				$this->section_company,
+				array(
+					'name' => 'dy_footer_alert'.$prefix, 
+					'url' => 'https://onlinehtmleditor.dev/', 
+					'url_text' => __('Html Editor')
+				)
+			);
+
+
 		}
 
 		add_settings_field( 
