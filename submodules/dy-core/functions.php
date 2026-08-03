@@ -138,145 +138,133 @@ if ( ! function_exists('write_log')) {
 
 
 
-if(!function_exists('default_language'))
+function default_language()
 {
-	function default_language()
-	{
-		$which_var = 'wp_core_default_language';
-		global $$which_var;
-		global $polylang;
-		$lang = '';
+	static $cache = [];
+	$which_var = 'wp_core_default_language';
+	global $polylang;
+	$lang = '';
 
-		if(isset($$which_var))
+	if(isset($cache[$which_var]))
+	{
+		$lang = $cache[$which_var];
+	}
+	else
+	{
+		if(isset($polylang))
 		{
-			$lang = $$which_var;
+			$lang = pll_default_language();
 		}
 		else
 		{
-			if(isset($polylang))
+			$locale_str = get_locale();
+			$lang = $locale_str;
+		
+			if(strlen($locale_str) === 5)
 			{
-				$lang = pll_default_language();
+				$lang = substr($locale_str, 0, -3);
 			}
-			else
-			{
-				$locale_str = get_locale();
-				$lang = $locale_str;
-			
-				if(strlen($locale_str) === 5)
-				{
-					$lang = substr($locale_str, 0, -3);
-				}
-			}
-
-			$GLOBALS[$which_var] = $lang;
 		}
 
-		return $lang;
+		$cache[$which_var] = $lang;
 	}
+
+	return $lang;
 }
 
 
-if(!function_exists('get_languages'))
+function get_languages()
 {
-	function get_languages()
+	global $polylang;
+	$output = [];
+	static $cache = [];
+	$which_var = 'wp_core_get_languages';
+
+	if(isset($cache[$which_var]))
 	{
-		global $polylang;
-		$output = [];
-		$which_var = 'wp_core_get_languages';
-		global $$which_var;
+		$output = $cache[$which_var];
+	}
+	else
+	{
+		if(isset($polylang))
+		{
+			$languages = PLL()->model->get_languages_list();
 
-		if(isset($$which_var))
-		{
-			$output = $$which_var;
-		}
-		else
-		{
-			if(isset($polylang))
+			for($x = 0; $x < count($languages); $x++)
 			{
-				$languages = PLL()->model->get_languages_list();
-
-				for($x = 0; $x < count($languages); $x++)
+				foreach($languages[$x] as $key => $value)
 				{
-					foreach($languages[$x] as $key => $value)
+					if($key == 'slug')
 					{
-						if($key == 'slug')
-						{
-							array_push($output, $value);
-						}
-					}	
-				}
+						array_push($output, $value);
+					}
+				}	
 			}
-
-			if(count($output) === 0)
-			{
-				$locale_str = get_locale();
-
-				if(strlen($locale_str) === 5)
-				{
-					array_push($output, substr($locale_str, 0, -3));
-				}
-				else if(strlen($locale_str) === 2)
-				{
-					array_push($output, $locale_str);
-				}
-			}
-
-			$GLOBALS[$which_var] = $output;
 		}
 
+		if(count($output) === 0)
+		{
+			$locale_str = get_locale();
 
-		return $output;
-	}	
+			if(strlen($locale_str) === 5)
+			{
+				array_push($output, substr($locale_str, 0, -3));
+			}
+			else if(strlen($locale_str) === 2)
+			{
+				array_push($output, $locale_str);
+			}
+		}
+
+		$cache[$which_var] = $output;
+	}
+
+	return $output;
 }
 
-if(!function_exists('current_language'))
+function current_language($the_id = '')
 {
-	function current_language($the_id = '')
+	global $polylang;
+	global $post;
+	$output = '';
+	static $cache = [];
+	$which_var = 'wp_core_current_language_' . $the_id;
+
+	if(isset($cache[$which_var]) && $cache[$which_var])
 	{
-		global $polylang;
-		global $post;
-		$output = '';
-		$which_var = 'wp_core_current_language_' . $the_id;
-
-		global $$which_var;
-
-		if($$which_var)
-		{
-			$output = $$which_var;
-		}
-		else
-		{
-			if(isset($polylang))
-			{
-				$lang = pll_current_language();
-
-				if($lang)
-				{
-					$output = $lang;
-				}
-			}
-
-			if(empty($output))
-			{
-				$locale = get_locale();
-				$locale_strlen = strlen($locale);
-
-				if($locale_strlen === 5)
-				{
-					$output = substr($locale, 0, -3);
-				}
-				if($locale_strlen === 2)
-				{
-					$output = $locale;
-				}
-			}
-
-			$GLOBALS[$which_var] = $output;
-		}
-
-
-		return $output;
+		$output = $cache[$which_var];
 	}
+	else
+	{
+		if(isset($polylang))
+		{
+			$lang = pll_current_language();
+
+			if($lang)
+			{
+				$output = $lang;
+			}
+		}
+
+		if(empty($output))
+		{
+			$locale = get_locale();
+			$locale_strlen = strlen($locale);
+
+			if($locale_strlen === 5)
+			{
+				$output = substr($locale, 0, -3);
+			}
+			if($locale_strlen === 2)
+			{
+				$output = $locale;
+			}
+		}
+
+		$cache[$which_var] = $output;
+	}
+
+	return $output;
 }
 
 if(!function_exists('get_ip_address'))
@@ -288,62 +276,56 @@ if(!function_exists('get_ip_address'))
 	
 }
 
-if(!function_exists('home_lang'))
+function home_lang()
 {
-    function home_lang()
-    {
-        $which_var = 'wp_core_home_lang';
-        global $$which_var;
-        $output = '';
+    static $cache = [];
+    $which_var = 'wp_core_home_lang';
+    $output = '';
 
-        if(isset($$which_var))
+    if(isset($cache[$which_var]))
+    {
+        $output = $cache[$which_var];
+    }
+    else
+    {
+        global $polylang;
+
+        if($polylang)
         {
-            $output = $$which_var;
+            $path = '';
+            $pll_url = pll_home_url();
+
+            if(!empty($pll_url))
+            {
+                $current_language = pll_current_language();
+                $parsed_url = wp_parse_url($pll_url);
+                $path_arr = array_values(array_filter(explode('/', $path)));
+
+                if(in_array($current_language, $path_arr))
+                {
+                    $parsed_url['path'] = $current_language;
+                }
+            }
+
+            $output = $parsed_url['scheme'] . '://'
+                . $parsed_url['host']
+                . (isset($parsed_url['port']) ? ':' . $parsed_url['port'] : '')
+                . (isset($parsed_url['path']) ? $parsed_url['path'] : '')
+                . (isset($parsed_url['query']) ? '?' . $parsed_url['query'] : '')
+                . (isset($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : '');
+
+            $output = normalize_url($output);
         }
         else
         {
-            global $polylang;
-
-            if($polylang)
-            {
-                $path = '';
-                $pll_url = pll_home_url();
-
-                if(!empty($pll_url))
-                {
-                    $current_language = pll_current_language();
-                    $parsed_url = wp_parse_url($pll_url);
-                    $path_arr = array_values(array_filter(explode('/', $path)));
-
-                    if(in_array($current_language, $path_arr))
-                    {
-                        $parsed_url['path'] = $current_language;
-                    }
-                }
-
-                $output = $parsed_url['scheme'] . '://'
-                    . $parsed_url['host']
-                    . (isset($parsed_url['port']) ? ':' . $parsed_url['port'] : '')
-                    . (isset($parsed_url['path']) ? $parsed_url['path'] : '')
-                    . (isset($parsed_url['query']) ? '?' . $parsed_url['query'] : '')
-                    . (isset($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : '');
-
-
-				$output = normalize_url($output);
-
-            }
-            else
-            {
-                $output =  home_url('/');
-            }
-
-            $GLOBALS[$which_var] = $output;
+            $output = home_url('/');
         }
 
-        return $output;
+        $cache[$which_var] = $output;
     }
-}
 
+    return $output;
+}
 
 if(!function_exists('whatsapp_button'))
 {
@@ -366,132 +348,129 @@ if(!function_exists('whatsapp_button'))
 	}
 }
 
-if(!function_exists('validate_turnstile'))
+function validate_turnstile()
 {
-	function validate_turnstile()
+	$cache_key = 'dy_valid_turnstile';
+
+	/*
+	 * Several classes validate the same request.
+	 * Turnstile tokens are single-use, so Siteverify must only be
+	 * called once during the current WordPress request.
+	 */
+	if(array_key_exists($cache_key, $GLOBALS))
 	{
-		$cache_key = 'dy_valid_turnstile';
-
-		/*
-		 * Several classes validate the same request.
-		 * Turnstile tokens are single-use, so Siteverify must only be
-		 * called once during the current WordPress request.
-		 */
-		if(array_key_exists($cache_key, $GLOBALS))
-		{
-			return (bool) $GLOBALS[$cache_key];
-		}
-
-		$GLOBALS[$cache_key] = false;
-
-		/*
-		 * Compatibility mode keeps the reCAPTCHA field name.
-		 * Change this to cf-turnstile-response only during Phase 2.
-		 */
-		$token = secure_post('cf-turnstile-response');
-
-		if(empty($token))
-		{
-			return false;
-			
-		} else {
-			if(strlen($token) > 2048) {
-
-				$GLOBALS['dy_request_invalids'] = array(
-					__('Invalid Turnstile response: token length > 2048')
-				);
-
-				return false;
-			}
-		}
-
-		$secret_key = get_option('dy_cf_turnstile_secret_key');
-
-		if(empty($secret_key))
-		{
-			write_log('Turnstile: missing secret key');
-
-			$GLOBALS['dy_request_invalids'] = array(
-				__('Turnstile is not configured')
-			);
-
-			return false;
-		}
-
-		$response = wp_remote_post(
-			'https://challenges.cloudflare.com/turnstile/v0/siteverify',
-			array(
-				'timeout' => 10,
-				'body' => array(
-					'secret'   => $secret_key,
-					'response' => $token,
-					'remoteip' => get_ip_address(),
-				),
-			)
-		);
-
-		if(is_wp_error($response))
-		{
-			write_log(
-				'Turnstile validation error: '
-				. $response->get_error_message()
-			);
-
-			$GLOBALS['dy_request_invalids'] = array(
-				__('Unable to validate Turnstile')
-			);
-
-			return false;
-		}
-
-		$status_code = (int) wp_remote_retrieve_response_code($response);
-		$data = json_decode(
-			wp_remote_retrieve_body($response),
-			true
-		);
-
-		$expected_hostname = (string) wp_parse_url(
-			home_url(),
-			PHP_URL_HOST
-		);
-
-		$valid = (
-			$status_code === 200
-			&& is_array($data)
-			&& !empty($data['success'])
-			&& isset($data['hostname'])
-			&& in_array($data['hostname'], [$expected_hostname, 'example.com'])
-		);
-
-		if(!$valid)
-		{
-			$errors = (
-				is_array($data)
-				&& isset($data['error-codes'])
-				&& is_array($data['error-codes'])
-			)
-				? $data['error-codes']
-				: array();
-
-			write_log(array(
-				'message' => 'Turnstile validation failed',
-				'status_code' => $status_code,
-				'error_codes' => $errors,
-				'action' => $data['action'] ?? null,
-				'hostname' => $data['hostname'] ?? null,
-			));
-
-			$GLOBALS['dy_request_invalids'] = array(
-				__('Invalid Turnstile')
-			);
-
-			return false;
-		}
-
-		$GLOBALS[$cache_key] = true;
-
-		return true;
+		return (bool) $GLOBALS[$cache_key];
 	}
+
+	$GLOBALS[$cache_key] = false;
+
+	/*
+	 * Compatibility mode keeps the reCAPTCHA field name.
+	 * Change this to cf-turnstile-response only during Phase 2.
+	 */
+	$token = secure_post('cf-turnstile-response');
+
+	if(empty($token))
+	{
+		return false;
+		
+	} else {
+		if(strlen($token) > 2048) {
+
+			$GLOBALS['dy_request_invalids'] = array(
+				__('Invalid Turnstile response: token length > 2048')
+			);
+
+			return false;
+		}
+	}
+
+	$secret_key = get_option('dy_cf_turnstile_secret_key');
+
+	if(empty($secret_key))
+	{
+		write_log('Turnstile: missing secret key');
+
+		$GLOBALS['dy_request_invalids'] = array(
+			__('Turnstile is not configured')
+		);
+
+		return false;
+	}
+
+	$response = wp_remote_post(
+		'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+		array(
+			'timeout' => 10,
+			'body' => array(
+				'secret'   => $secret_key,
+				'response' => $token,
+				'remoteip' => get_ip_address(),
+			),
+		)
+	);
+
+	if(is_wp_error($response))
+	{
+		write_log(
+			'Turnstile validation error: '
+			. $response->get_error_message()
+		);
+
+		$GLOBALS['dy_request_invalids'] = array(
+			__('Unable to validate Turnstile')
+		);
+
+		return false;
+	}
+
+	$status_code = (int) wp_remote_retrieve_response_code($response);
+	$data = json_decode(
+		wp_remote_retrieve_body($response),
+		true
+	);
+
+	$expected_hostname = (string) wp_parse_url(
+		home_url(),
+		PHP_URL_HOST
+	);
+
+	$valid = (
+		$status_code === 200
+		&& is_array($data)
+		&& !empty($data['success'])
+		&& isset($data['hostname'])
+		&& in_array($data['hostname'], [$expected_hostname, 'example.com'])
+	);
+
+	if(!$valid)
+	{
+		$errors = (
+			is_array($data)
+			&& isset($data['error-codes'])
+			&& is_array($data['error-codes'])
+		)
+			? $data['error-codes']
+			: array();
+
+		write_log(array(
+			'message' => 'Turnstile validation failed',
+			'status_code' => $status_code,
+			'error_codes' => $errors,
+			'action' => $data['action'] ?? null,
+			'hostname' => $data['hostname'] ?? null,
+		));
+
+		$GLOBALS['dy_request_invalids'] = array(
+			__('Invalid Turnstile')
+		);
+
+		return false;
+	}
+
+	$GLOBALS[$cache_key] = true;
+
+	return true;
 }
 
 if(!function_exists('get_inline_file'))
