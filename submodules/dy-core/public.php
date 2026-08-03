@@ -261,7 +261,7 @@ class Dynamic_Core_Public {
             }
         }
 
-        return $output;
+        echo $output;
 
     }
 
