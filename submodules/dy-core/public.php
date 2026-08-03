@@ -253,7 +253,6 @@ class Dynamic_Core_Public {
             {
                 $prefix = ($default_language === $lang) ? '' : '_'.$lang;
                 $notification_raw = html_entity_decode(get_option('dy_site_alert'.$prefix));
-                $notification_raw = do_shortcode($notification_raw);
 
                 if(!empty($notification_raw))
                 {
