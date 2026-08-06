@@ -135,9 +135,7 @@ class Dynamic_Core_Public {
         $args = array(
             'homeUrl' => home_url(),
             'permalink' => get_the_permalink(),
-            'pluginUrl' => $this->plugin_dir_url_file,
-            'argsUrl' => rest_url('dy-core/args'),
-            'countryCodesUrl' => rest_url('dy-core/country-codes'),
+            'wpJsonUrl' => rest_url('dy-core'),
             'lang' => current_language()
         );
 

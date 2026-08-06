@@ -132,10 +132,10 @@ const formToArray = form => {
 
 
  const getNonce = async () => {
-    const { argsUrl } = dyCoreArgs
+    const { wpJsonUrl } = dyCoreArgs
     const now = Date.now()
 
-    const url = new URL(argsUrl)
+    const url = new URL(`${wpJsonUrl}/args`)
 
     url.searchParams.set('timestamp', now.toString())
 

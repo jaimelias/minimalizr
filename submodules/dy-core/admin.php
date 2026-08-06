@@ -58,7 +58,6 @@ class Dynamic_Core_Admin {
     public function args()
     {
         $args = array(
-            'pluginUrl' => $this->plugin_dir_url_file,
             'lang' => current_language()
         );
 

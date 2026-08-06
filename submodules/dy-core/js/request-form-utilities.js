@@ -51,7 +51,7 @@ const fixInputSpecialTypes = () => {
 }; 
 
 const countryDropdown = () => {
-  const { lang, pluginUrl } = dyCoreArgs;
+  const { lang } = dyCoreArgs;
 
   const available = ['de', 'en', 'es', 'fr', 'it', 'ja'];
   const MAX_RETRIES = 5;
@@ -61,9 +61,9 @@ const countryDropdown = () => {
 
   const fetchCountryCodes = async (thisLang, step = 0) => {
 
-	const {countryCodesUrl} = dyCoreArgs;
+	const {wpJsonUrl} = dyCoreArgs;
 
-	const url = new URL(`${countryCodesUrl}/${thisLang}`)
+	const url = new URL(`${wpJsonUrl}/country-codes/${thisLang}`)
 
     const resp = await fetch(url);
 
