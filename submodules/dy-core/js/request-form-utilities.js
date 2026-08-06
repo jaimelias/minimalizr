@@ -59,26 +59,11 @@ const countryDropdown = () => {
 
   const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-  const getPluginBaseUrl = () => {
-    const url = new URL(pluginUrl);
-
-    // Important: makes new URL('json/...', base) resolve inside dy-core/
-    if (!url.pathname.endsWith('/')) {
-      url.pathname += '/';
-    }
-
-    return url;
-  };
-
-  const getCountriesUrl = thisLang => {
-    return new URL(
-      `json/countries/${encodeURIComponent(thisLang)}.json`,
-      getPluginBaseUrl()
-    );
-  };
-
   const fetchCountryCodes = async (thisLang, step = 0) => {
-    const url = getCountriesUrl(thisLang);
+
+	const {countryCodesUrl} = dyCoreArgs;
+
+	const url = new URL(`${countryCodesUrl}/${thisLang}`)
 
     const resp = await fetch(url);
 
