@@ -1,4 +1,7 @@
 <?php
+
+if ( !defined( 'WPINC' ) ) exit;
+
 /**
  * Ultra-light input getters for WordPress with per-request caching.
  * Functions: secure_post, secure_get, secure_request, secure_cookie

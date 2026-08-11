@@ -1,5 +1,7 @@
 <?php 
 
+if ( !defined( 'WPINC' ) ) exit;
+
 if(!function_exists('concatenate_object_to_text')) {
 	
     function concatenate_object_to_text($obj, $top_prefix = '* ', $child_prefix = '- ', $top_level_separator = "\n") {

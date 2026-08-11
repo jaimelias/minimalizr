@@ -1,5 +1,6 @@
 <?php 
 
+if ( !defined( 'WPINC' ) ) exit;
 
 #[AllowDynamicProperties]
 class Dy_WAF {

@@ -1,5 +1,7 @@
 <?php
 
+if ( !defined( 'WPINC' ) ) exit;
+
 if (!function_exists('concatenate_object_to_html')) {
 
     function concatenate_object_to_html(

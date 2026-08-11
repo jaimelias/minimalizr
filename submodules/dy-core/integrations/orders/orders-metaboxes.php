@@ -1,5 +1,7 @@
 <?php
 
+if ( !defined( 'WPINC' ) ) exit;
+
 #[AllowDynamicProperties]
 class Dynamic_Core_Orders_Metaboxes {
 
