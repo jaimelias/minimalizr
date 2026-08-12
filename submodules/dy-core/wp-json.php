@@ -43,16 +43,9 @@ class Dynamic_Core_WP_JSON
     {
         $site_time = get_site_time();
 
-        $args = array(
-            'dy_nonce' => wp_create_nonce('dy_nonce')
-        );
-
-        $whatsapp_number = apply_filters('dy_whatsapp_number', '');
-
-        if(!empty($whatsapp_number))
-        {
-            $args['whatsapp_number'] = $whatsapp_number;
-        }
+        $args = apply_filters('dy_core_wp_json_args', array());
+        
+        $args['dy_nonce'] = wp_create_nonce('dy_nonce');
 
         foreach($site_time as $k => $v)
         {

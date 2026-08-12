@@ -7,7 +7,7 @@ class Dynamic_Core_Public {
     
     public function __construct()
     {
-        $this->version = '0.1.91';
+        $this->version = '0.1.92';
         $this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
         $this->dirname_file = dirname( __FILE__ );
 
@@ -23,13 +23,15 @@ class Dynamic_Core_Public {
         add_action( 'wp_footer', array(&$this, 'whatsapp_modal'));
         add_action( 'wp_footer', array(&$this, 'picker_containers'));
         add_action( 'wp_head', array(&$this, 'gtag_tracking_script'));
+        add_action( 'wp_footer', array(&$this, 'gtag_conversion_events_script'), PHP_INT_MAX);
+
         add_action( 'wp_head', array(&$this, 'facebook_pixel_tracking_script'));
         add_action('wp_head', array(&$this, 'whatsapp_modal_css'));
         add_action('wp_enqueue_scripts', array(&$this, 'enqueue_scripts'));
         add_action('wp_enqueue_scripts', array(&$this, 'enqueue_styles'));
         add_action('minimal_site_alert', array(&$this, 'site_alert'));
         add_action('minimal_footer_alert', array(&$this, 'footer_alert'));
-        add_filter('dy_whatsapp_number', array(&$this, 'get_whatsapp_number'));
+        add_filter('dy_core_wp_json_args', array(&$this, 'hook_whatsapp_number'));
 
         add_filter('wp_resource_hints', array(&$this, 'resource_hints'), 10, 2);
     }
@@ -188,23 +190,192 @@ class Dynamic_Core_Public {
 
     public function gtag_tracking_script()
     {
-        $analytics = get_option('dy_gtag_tracking_id');
+        $analytics = strtoupper(
+            trim((string) get_option('dy_gtag_tracking_id'))
+        );
 
-        if(!empty($analytics)): ?>
+        $google_ads_id = strtoupper(
+            trim((string) get_option('dy_google_ads_id'))
+        );
 
-        <!-- Start Google - Analytics GA4 (GTAG) -->
+        if(1 !== preg_match('/^G-[A-Z0-9]+$/', $analytics))
+        {
+            $analytics = '';
+        }
 
-        <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo esc_html($analytics); ?>"></script>
+        if(1 !== preg_match('/^AW-[0-9]+$/', $google_ads_id))
+        {
+            $google_ads_id = '';
+        }
+
+        $loader_id = !empty($analytics)
+            ? $analytics
+            : $google_ads_id;
+
+        if(empty($loader_id))
+        {
+            return;
+        }
+
+        $gtag_src = add_query_arg(
+            array(
+                'id' => $loader_id,
+                'l' => 'dyGtagLayer'
+            ),
+            'https://www.googletagmanager.com/gtag/js'
+        );
+        ?>
+
+        <!-- Start Google tag (gtag.js) -->
+        <script async src="<?php echo esc_url($gtag_src); ?>"></script>
         <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '<?php echo esc_html($analytics); ?>');
-        </script>
-        
-        <!-- End Google - Analytics GA4 (GTAG) -->
+            window.dyGtagLayer = window.dyGtagLayer || [];
 
-        <?php endif;       
+            window.gtag = function() {
+                window.dyGtagLayer.push(arguments);
+            };
+
+            window.gtag('js', new Date());
+
+            <?php if(!empty($analytics)): ?>
+            window.gtag(
+                'config',
+                <?php echo wp_json_encode($analytics); ?>
+            );
+            <?php endif; ?>
+
+            <?php if(!empty($google_ads_id)): ?>
+            window.gtag(
+                'config',
+                <?php echo wp_json_encode($google_ads_id); ?>
+            );
+            <?php endif; ?>
+        </script>
+        <!-- End Google tag (gtag.js) -->
+
+        <?php
+    }
+
+    public function gtag_conversion_events_script()
+    {
+        $events = isset($GLOBALS['dy_gtag_server_events'])
+            && is_array($GLOBALS['dy_gtag_server_events'])
+                ? array_values($GLOBALS['dy_gtag_server_events'])
+                : array();
+
+        if(empty($events))
+        {
+            return;
+        }
+
+        $analytics = strtoupper(
+            trim((string) get_option('dy_gtag_tracking_id'))
+        );
+
+        $google_ads_id = strtoupper(
+            trim((string) get_option('dy_google_ads_id'))
+        );
+
+        if(1 !== preg_match('/^G-[A-Z0-9]+$/', $analytics))
+        {
+            $analytics = '';
+        }
+
+        if(1 !== preg_match('/^AW-[0-9]+$/', $google_ads_id))
+        {
+            $google_ads_id = '';
+        }
+
+        $ads_labels = array(
+            'purchase' => trim(
+                (string) get_option('dy_google_ads_purchase_label')
+            ),
+            'generate_lead' => trim(
+                (string) get_option('dy_google_ads_lead_label')
+            )
+        );
+
+        $commands = array();
+
+        foreach($events as $event)
+        {
+            if(
+                empty($event['name'])
+                || empty($event['params'])
+                || !is_array($event['params'])
+            )
+            {
+                continue;
+            }
+
+            /*
+            * Evento recomendado de GA4. El destino explícito evita
+            * que la conversión de Ads reciba también este evento.
+            */
+            if(!empty($analytics))
+            {
+                $ga4_params = $event['params'];
+                $ga4_params['send_to'] = $analytics;
+
+                $commands[] = array(
+                    'event' => $event['name'],
+                    'params' => $ga4_params
+                );
+            }
+
+            /*
+            * Conversión nativa de Google Ads.
+            */
+            $label = isset($ads_labels[$event['name']])
+                ? $ads_labels[$event['name']]
+                : '';
+
+            if(
+                !empty($google_ads_id)
+                && 1 === preg_match('/^[A-Za-z0-9_-]+$/', $label)
+            )
+            {
+                $commands[] = array(
+                    'event' => 'conversion',
+                    'params' => array(
+                        'send_to' => $google_ads_id . '/' . $label,
+                        'value' => $event['params']['value'],
+                        'currency' => $event['params']['currency'],
+                        'transaction_id' => $event['params']['transaction_id']
+                    )
+                );
+            }
+        }
+
+        if(empty($commands))
+        {
+            return;
+        }
+
+        $commands_json = wp_json_encode(
+            $commands,
+            JSON_HEX_TAG
+            | JSON_HEX_AMP
+            | JSON_HEX_APOS
+            | JSON_HEX_QUOT
+        );
+        ?>
+        <script id="dy-gtag-confirmed-conversions">
+            (function(commands) {
+                if(typeof window.gtag !== 'function') {
+                    return;
+                }
+
+                commands.forEach(function(command) {
+                    window.gtag(
+                        'event',
+                        command.event,
+                        command.params
+                    );
+                });
+            })(<?php echo $commands_json; ?>);
+        </script>
+        <?php
     }
 
     public function facebook_pixel_tracking_script()
@@ -363,23 +534,11 @@ class Dynamic_Core_Public {
         <?php
     }
 
-    public function get_whatsapp_number()
+    public function hook_whatsapp_number($output = array())
     {
+        $output['whatsapp_number'] = whatsapp_number();
 
-		$default_language = default_language();
-		$languages = get_languages();
-        $whatsapp_number = '';
-        
-		
-		for($x = 0; $x < count($languages); $x++)
-		{
-			$lang = $languages[$x];
-            $prefix = ($default_language === $lang) ? '' : '_'.$lang;
-            $whatsapp_number = get_option('dy_whatsapp'.$prefix);
-            $whatsapp_number = preg_replace('/[^0-9.]+/', '', $whatsapp_number);
-		}
-
-        return $whatsapp_number;
+        return $output;
     }
 
 }

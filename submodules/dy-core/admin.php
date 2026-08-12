@@ -88,6 +88,11 @@ class Dynamic_Core_Admin {
 
 		//settings - analytics
 		register_setting($this->setting_id, 'dy_gtag_tracking_id', 'sanitize_user');
+		register_setting($this->setting_id, 'dy_google_ads_id', 'sanitize_text_field');
+		register_setting($this->setting_id, 'dy_google_ads_purchase_label', 'sanitize_text_field');
+		register_setting($this->setting_id, 'dy_google_ads_lead_label', 'sanitize_text_field');
+
+
 		register_setting($this->setting_id, 'dy_gtm_tracking_id', 'sanitize_user');
 		register_setting($this->setting_id, 'dy_facebook_pixel_id', 'sanitize_user');
 
@@ -241,6 +246,42 @@ class Dynamic_Core_Admin {
 			$this->setting_id, 
 			$this->section_analytics,
 			array('name' => 'dy_gtag_tracking_id', 'url' => 'https://analytics.google.com/') 
+		);
+
+		add_settings_field(
+			'dy_google_ads_id',
+			__('Google Ads Conversion ID (AW-...)', 'dynamicpackages'),
+			array(&$this, 'settings_input'),
+			$this->setting_id,
+			$this->section_analytics,
+			array(
+				'name' => 'dy_google_ads_id',
+				'url' => 'https://ads.google.com/aw/conversions'
+			)
+		);
+
+		add_settings_field(
+			'dy_google_ads_purchase_label',
+			__('Google Ads Purchase Label', 'dynamicpackages'),
+			array(&$this, 'settings_input'),
+			$this->setting_id,
+			$this->section_analytics,
+			array(
+				'name' => 'dy_google_ads_purchase_label',
+				'url' => 'https://ads.google.com/aw/conversions'
+			)
+		);
+
+		add_settings_field(
+			'dy_google_ads_lead_label',
+			__('Google Ads Lead Label', 'dynamicpackages'),
+			array(&$this, 'settings_input'),
+			$this->setting_id,
+			$this->section_analytics,
+			array(
+				'name' => 'dy_google_ads_lead_label',
+				'url' => 'https://ads.google.com/aw/conversions'
+			)
 		);
 
 		add_settings_field( 

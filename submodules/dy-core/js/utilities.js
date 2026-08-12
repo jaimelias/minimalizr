@@ -200,8 +200,12 @@ const createFormSubmit = async (form) => {
 
     if(nonce)
     {
-        const {dy_nonce} = await getNonce();
-        
+        const {
+            dy_nonce,
+            transaction_id,
+            transaction_signature
+        } = await getNonce();
+
         if(dy_nonce)
         {
             if(nonce === 'slug')
@@ -212,6 +216,23 @@ const createFormSubmit = async (form) => {
             {
                 formFields.push({name: 'dy_nonce', value: dy_nonce});
             }
+        }
+
+        if(
+            method === 'post'
+            && transaction_id
+            && transaction_signature
+        )
+        {
+            formFields.push({
+                name: 'transaction_id',
+                value: transaction_id
+            });
+
+            formFields.push({
+                name: 'transaction_signature',
+                value: transaction_signature
+            });
         }
     }
 

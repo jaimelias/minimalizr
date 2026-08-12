@@ -22,6 +22,7 @@ if(!class_exists('Dy_Core_Init'))
             require_once $this->plugin_dir_path . 'training-data/concatenate_object_to_text.php';
             require_once $this->plugin_dir_path . 'training-data/concatenate_object_to_html.php';
             require_once $this->plugin_dir_path . 'functions.php';
+            require_once $this->plugin_dir_path . 'gtag.php';
             require_once $this->plugin_dir_path . 'mailer.php';
             require_once $this->plugin_dir_path . 'admin.php';
             require_once $this->plugin_dir_path . 'public.php';

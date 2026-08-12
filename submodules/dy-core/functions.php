@@ -327,12 +327,30 @@ function home_lang()
     return $output;
 }
 
+if(!function_exists('whatsapp_number')) {
+	function whatsapp_number() {
+
+		global $polylang;
+
+		if(!isset($polylang)) return '';
+
+		$current_language = current_language();
+		$default_language = default_language();
+
+		$prefix = ($current_language === $default_language) ? '' : '_' . $current_language;
+		$whatsapp_number = get_option('dy_whatsapp' . $prefix);
+
+		return preg_replace('/[^0-9]+/', '', $whatsapp_number);
+	}
+}
+
+
 if(!function_exists('whatsapp_button'))
 {
 	function whatsapp_button($label = '', $text = '')
 	{
 		$output = '';
-		$number = apply_filters('dy_whatsapp_number', '');
+		$number = whatsapp_number();
 
 		if(intval($number) > 0)
 		{
