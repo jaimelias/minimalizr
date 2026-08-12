@@ -330,10 +330,6 @@ function home_lang()
 if(!function_exists('whatsapp_number')) {
 	function whatsapp_number() {
 
-		global $polylang;
-
-		if(!isset($polylang)) return '';
-
 		$current_language = current_language();
 		$default_language = default_language();
 

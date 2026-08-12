@@ -7,7 +7,7 @@ class Dynamic_Core_Public {
     
     public function __construct()
     {
-        $this->version = '0.1.92';
+        $this->version = '0.1.94';
         $this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
         $this->dirname_file = dirname( __FILE__ );
 
@@ -18,8 +18,6 @@ class Dynamic_Core_Public {
 		}
 
         add_shortcode('whatsapp', array(&$this, 'whatsapp_button'));
-        add_action( 'wp_head', array(&$this, 'gtm_tracking_script'));
-        add_action( 'minimal_pre_body', array(&$this, 'gtm_tracking_iframe'));
         add_action( 'wp_footer', array(&$this, 'whatsapp_modal'));
         add_action( 'wp_footer', array(&$this, 'picker_containers'));
         add_action( 'wp_head', array(&$this, 'gtag_tracking_script'));
@@ -152,41 +150,19 @@ class Dynamic_Core_Public {
             $args['post_id'] = $post->ID;
             $args['post_title'] = $post->post_title;
         }
+
+        $analytics = strtoupper(
+            trim((string) get_option('dy_gtag_tracking_id'))
+        );
+
+        if(1 === preg_match('/^G-[A-Z0-9]+$/', $analytics))
+        {
+            $args['google_analytics_id'] = $analytics;
+        }
         
         return 'const dyCoreArgs = '.json_encode($args).';';
     }
 
-    public function gtm_tracking_script()
-    {
-        $value = get_option('dy_gtm_tracking_id');
-
-        if(!empty($value)): ?>
-
-        <!-- Start Google - Global Tag Manager (GMT) -->
-        <script>
-            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','<?php echo esc_html($value); ?>');
-        </script>
-        <!-- End Google - Global Tag Manager (GMT) -->
-
-        <?php endif;
-    }
-
-    public function gtm_tracking_iframe()
-    {
-        $value = get_option('dy_gtm_tracking_id');
-
-        if(!empty($value)): ?>
-
-        <!-- Start Google - Global Tag Manager (GMT) noscript-->
-        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<?php echo esc_html($value); ?>" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-        <!-- End Google - Global Tag Manager (GMT) noscript -->
-
-        <?php endif;
-    }
 
     public function gtag_tracking_script()
     {
@@ -218,21 +194,20 @@ class Dynamic_Core_Public {
         }
 
         $gtag_src = add_query_arg(
-            array(
-                'id' => $loader_id,
-                'l' => 'dyGtagLayer'
-            ),
+            array('id' => $loader_id),
             'https://www.googletagmanager.com/gtag/js'
         );
+
         ?>
 
         <!-- Start Google tag (gtag.js) -->
         <script async src="<?php echo esc_url($gtag_src); ?>"></script>
         <script>
-            window.dyGtagLayer = window.dyGtagLayer || [];
+            
+            window.dataLayer = window.dataLayer || [];
 
-            window.gtag = function() {
-                window.dyGtagLayer.push(arguments);
+            window.gtag = window.gtag || function() {
+                window.dataLayer.push(arguments);
             };
 
             window.gtag('js', new Date());

@@ -202,8 +202,7 @@ const createFormSubmit = async (form) => {
     {
         const {
             dy_nonce,
-            transaction_id,
-            transaction_signature
+            unique_tx_id
         } = await getNonce();
 
         if(dy_nonce)
@@ -218,20 +217,11 @@ const createFormSubmit = async (form) => {
             }
         }
 
-        if(
-            method === 'post'
-            && transaction_id
-            && transaction_signature
-        )
+        if(method === 'post' && unique_tx_id)
         {
             formFields.push({
-                name: 'transaction_id',
-                value: transaction_id
-            });
-
-            formFields.push({
-                name: 'transaction_signature',
-                value: transaction_signature
+                name: 'unique_tx_id',
+                value: unique_tx_id
             });
         }
     }
@@ -368,3 +358,24 @@ const storePopulate = () => {
         });
     }
 }
+
+const sendGa4Event = (eventName, eventParams = {}) => {
+	const destination = (
+		typeof dyCoreArgs !== 'undefined'
+		&& dyCoreArgs.google_analytics_id
+	)
+		? dyCoreArgs.google_analytics_id
+		: '';
+
+	if(typeof window.gtag !== 'function' || !destination)
+	{
+		return false;
+	}
+
+    window.gtag('event', eventName, {
+        ...eventParams,
+        send_to: destination
+    });
+
+	return true;
+};

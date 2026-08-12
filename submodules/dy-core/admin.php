@@ -93,7 +93,6 @@ class Dynamic_Core_Admin {
 		register_setting($this->setting_id, 'dy_google_ads_lead_label', 'sanitize_text_field');
 
 
-		register_setting($this->setting_id, 'dy_gtm_tracking_id', 'sanitize_user');
 		register_setting($this->setting_id, 'dy_facebook_pixel_id', 'sanitize_user');
 
 	
@@ -282,15 +281,6 @@ class Dynamic_Core_Admin {
 				'name' => 'dy_google_ads_lead_label',
 				'url' => 'https://ads.google.com/aw/conversions'
 			)
-		);
-
-		add_settings_field( 
-			'dy_gtm_tracking_id', 
-			__( 'Google - Global Tag Manager (GMT)'), 
-			array(&$this, 'settings_input'), 
-			$this->setting_id, 
-			$this->section_analytics,
-			array('name' => 'dy_gtm_tracking_id', 'url' => 'https://tagmanager.google.com/') 
 		);
 
 		add_settings_field( 
