@@ -2,35 +2,6 @@
 
 if ( !defined( 'WPINC' ) ) exit;
 
-
-if(!function_exists('dy_gtag_is_valid_transaction_id'))
-{
-	function dy_gtag_is_valid_transaction_id($transaction_id, $signature)
-	{
-		$transaction_id = trim((string) $transaction_id);
-		$signature = trim((string) $signature);
-
-		if(
-			1 !== preg_match(
-				'/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i',
-				$transaction_id
-			)
-			|| 1 !== preg_match('/^[0-9a-f]{64}$/i', $signature)
-		)
-		{
-			return false;
-		}
-
-		$expected_signature = hash_hmac(
-			'sha256',
-			$transaction_id,
-			wp_salt('nonce')
-		);
-
-		return hash_equals($expected_signature, $signature);
-	}
-}
-
 if(!function_exists('dy_gtag_build_item'))
 {
 	function dy_gtag_build_item($post_id, $item_name, $quantity, $value)
