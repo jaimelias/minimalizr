@@ -175,10 +175,6 @@ class Dy_WAF {
                 if ($len > $limit) {
                     $message = "Invalid {$param_key} param length: {$key}";
 
-                    if (function_exists('cloudflare_ban_ip_address')) {
-                        cloudflare_ban_ip_address($message);
-                    }
-
                     wp_die($message, 'Bad Request', ['response' => 400]);
                 }
 

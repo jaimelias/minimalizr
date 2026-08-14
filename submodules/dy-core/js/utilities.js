@@ -23,6 +23,20 @@ jQuery(() => {
 	whatsappButton();
 });
 
+const sha512 = async (message)  => {
+  // Encode the string as UTF-8 bytes
+  const msgBuffer = new TextEncoder().encode(message);
+
+  // Hash it
+  const hashBuffer = await crypto.subtle.digest('SHA-512', msgBuffer);
+
+  // Convert ArrayBuffer to hex string
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+  return hashHex;
+}
+
 
 const whatsappButton = async () => {
 
@@ -256,19 +270,21 @@ const createFormSubmit = async (form) => {
 
     if(hashParams)
     {
-        let hash = '';
+        let hashMessage = '';
         hashParams = hashParams.split(',');
 
         if(Array.isArray(hashParams))
         {
             hashParams.forEach(v => {
-                hash += jQuery(form).find(`[name="${v}"]`).val();
+                hashMessage += jQuery(form).find(`[name="${v}"]`).val();
             });
         }
 
-        if(hash)
+        if(hashMessage)
         {
-            formFields.push({name: 'hash', value: sha512(hash)});
+            const hash = await sha512(hashMessage);
+
+            formFields.push({name: 'hash', value: hash});
         }
     }
 
