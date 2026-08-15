@@ -138,46 +138,42 @@ const renderCountryCodes = ({className, data}) => {
 	}
 
 
-	jQuery(window).on('load', function(){
-		jQuery(`.${className}`).each(function() {
-			
-			const field = jQuery(this);
-			const name = jQuery(field).attr('name');
-			const hasCountryCallingCodes = jQuery(field).hasClass('countryCallingCode');
+	jQuery(`.${className}`).each(function() {
+		
+		const field = jQuery(this);
+		const name = jQuery(field).attr('name');
+		const hasCountryCallingCodes = jQuery(field).hasClass('countryCallingCode');
 
-			data.forEach(x => {
+		data.forEach(x => {
 
-				const countryFlag = x[3];
-				const countryName = x[1];
-				const countryCallingCode = x[2];
-				const countryCode = x[0];
-				const optionText = (hasCountryCallingCodes) 
-					? `${countryName} ${countryFlag} +${countryCallingCode}`
-					: `${countryName} ${countryFlag}`;
+			const countryFlag = x[3];
+			const countryName = x[1];
+			const countryCallingCode = x[2];
+			const countryCode = x[0];
+			const optionText = (hasCountryCallingCodes) 
+				? `${countryName} ${countryFlag} +${countryCallingCode}`
+				: `${countryName} ${countryFlag}`;
 
-				const optionValue = (hasCountryCallingCodes) ? countryCallingCode : countryCode;
-				const thisOption = jQuery('<option></option>').attr({'value': optionValue.replace('-', '')}).html(optionText);
-				jQuery(field).append(thisOption);
-
-			});
-
-
-			if (typeof Storage !== 'undefined')
-			{
-
-				const storedValue = sessionStorage.getItem(name);
-
-				if(!storedValue){
-					return false;
-				}
-
-				jQuery(field).find(`option[value="${storedValue}"]`).prop('selected', true).trigger('change');
-			}
+			const optionValue = (hasCountryCallingCodes) ? countryCallingCode : countryCode;
+			const thisOption = jQuery('<option></option>').attr({'value': optionValue.replace('-', '')}).html(optionText);
+			jQuery(field).append(thisOption);
 
 		});
+
+
+		if (typeof Storage !== 'undefined')
+		{
+
+			const storedValue = sessionStorage.getItem(name);
+
+			if(!storedValue){
+				return false;
+			}
+
+			jQuery(field).find(`option[value="${storedValue}"]`).prop('selected', true).trigger('change');
+		}
+
 	});
-
-
 
 
 
