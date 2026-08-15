@@ -1,7 +1,10 @@
 jQuery(() => {
-
-    countryDropdown();
+    
 	fixInputSpecialTypes();
+
+	jQuery(window).on('load', function () {
+		countryDropdown();
+	});
 });
 
 
