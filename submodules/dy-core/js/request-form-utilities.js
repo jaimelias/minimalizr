@@ -247,8 +247,6 @@ const isValidValue = ({ name, value, thisForm }) => {
         cardType = 'visa';
     } else if (/^5[1-5]/.test(ccValue) || /^2(2[2-9]|[3-6]\d|7[01])/.test(ccValue)) {
         cardType = 'mastercard';
-    } else if (/^3[47]/.test(ccValue)) {
-        cardType = 'amex';
     } else {
         return false; // Invalid card type
     }
