@@ -87,12 +87,15 @@ class Dynamic_Core_Admin {
         register_setting($this->setting_id, 'dy_sentry_api_key', 'sanitize_user');
 
 		//settings - analytics
+		register_setting($this->setting_id, 'dy_bidding_conversion_percentage', function($value) {
+			$value = is_numeric($value) ? (float) $value : 15; //defaults to 15% if not numeric
+			return max(1, min(100, $value)); //sets min at 1% and max at 100%
+		});
+		
 		register_setting($this->setting_id, 'dy_gtag_tracking_id', 'sanitize_user');
 		register_setting($this->setting_id, 'dy_google_ads_id', 'sanitize_text_field');
 		register_setting($this->setting_id, 'dy_google_ads_purchase_label', 'sanitize_text_field');
 		register_setting($this->setting_id, 'dy_google_ads_lead_label', 'sanitize_text_field');
-
-
 		register_setting($this->setting_id, 'dy_facebook_pixel_id', 'sanitize_user');
 
 	
@@ -238,6 +241,20 @@ class Dynamic_Core_Admin {
 			array('name' => 'dy_sentry_api_key') 
 		);
 
+		add_settings_field( 
+			'dy_bidding_conversion_percentage', 
+			__( 'Bidding Conversion Percentage'),
+			array(&$this, 'settings_input'), 
+			$this->setting_id, 
+			$this->section_analytics,
+			array(
+				'name' => 'dy_bidding_conversion_percentage', 
+				'type' => 'number',
+				'min' => "1",
+				'max' => "100",
+				'step' => "0.01"
+			) 
+		);
 		add_settings_field( 
 			'dy_gtag_tracking_id', 
 			__( 'Google - Analytics GA4 (GTAG)'), 
