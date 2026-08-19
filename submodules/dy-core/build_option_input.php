@@ -14,16 +14,19 @@ if(!class_exists('dy_build_option_input')) {
 				return 'Param $args must be an array in dy_build_option_input.';
 			}
 
-			$value = (string) get_option($name, '');
+			$value = sanitize_text((string) get_option($name, ''));
 
-			$defaults = [
-				'type'  => 'text',
-				'name'  => $name,
-				'id'    => $name,
-				'value' => $value,
-			];
-
-			$args = array_merge($defaults, $args);
+			$args = array_merge(
+				[
+					'type'  => 'text',
+					'value' => $value,
+				],
+				$args,
+				[
+					'name' => $name,
+					'id'   => $name,
+				]
+			);
 
 			$attributes = array_map(
 				fn($key, $value) => sprintf(

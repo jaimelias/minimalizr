@@ -28,6 +28,7 @@ if(!class_exists('Dy_Core_Init'))
             require_once $this->plugin_dir_path . 'public.php';
             require_once $this->plugin_dir_path . 'wp-json.php';
             require_once $this->plugin_dir_path . 'build_option_input.php';
+            require_once $this->plugin_dir_path . 'build_option_select.php';
             require_once $this->plugin_dir_path . 'integrations/providers/providers.php';
             //require_once $this->plugin_dir_path . 'integrations/orders/orders.php';
         }
