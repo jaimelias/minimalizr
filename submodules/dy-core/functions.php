@@ -990,43 +990,5 @@ if(!function_exists('current_url_full')) {
 	}
 }
 
-if(!function_exists('build_option_input')) {
-	function build_option_input($name, $args = []) {
-
-		if(empty($name)) {
-			return 'Param $name is required in build_option_input().';
-		}
-
-		if(!is_array($args)) {
-			return 'Param $args must be an array in build_option_input().';
-		}
-
-		$value = (string) get_option($name, '');
-
-		$defaults = [
-			'type'  => 'text',
-			'name'  => $name,
-			'id'    => $name,
-			'value' => $value,
-		];
-
-		$args = array_merge($defaults, $args);
-
-		$attributes = array_map(
-			fn($key, $value) => sprintf(
-				'%s="%s"',
-				esc_attr($key),
-				esc_attr($value)
-			),
-			array_keys($args),
-			array_values($args)
-		);
-
-		printf(
-			'<input %s />',
-			implode(' ', $attributes)
-		);
-	}
-}
 
 ?>
