@@ -32,7 +32,7 @@ if(!class_exists('dy_build_option_select')) {
                 return 'Param $args must be an array in dy_build_option_select.';
             }
 
-            $value = sanitize_text_field((string) get_option($name, ''));
+            $value = get_option($name, '');
 
             $args = array_merge(
                 $args,
