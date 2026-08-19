@@ -1001,17 +1001,13 @@ if(!function_exists('build_option_input')) {
 			return 'Param $args must be an array in build_option_input().';
 		}
 
-		$option = (string) get_option($name, '');
-
-		if(empty($option)) {
-			$option = 'Value for option "' . $name . '" is empty in build_option_input().';
-		}
+		$value = (string) get_option($name, '');
 
 		$defaults = [
 			'type'  => 'text',
 			'name'  => $name,
 			'id'    => $name,
-			'value' => $option,
+			'value' => $value,
 		];
 
 		$args = array_merge($defaults, $args);
