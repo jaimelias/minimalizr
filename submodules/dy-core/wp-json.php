@@ -8,14 +8,14 @@ class Dynamic_Core_WP_JSON
 {
     public function __construct()
     {
-        add_action('rest_api_init', array(&$this, 'core_args'));
+        add_action('rest_api_init', array($this, 'core_args'));
     }
 
     public function core_args()
     {
         register_rest_route('dy-core', 'args', array(
             'methods' => 'GET',
-            'callback' => array(&$this, 'core_args_callback'),
+            'callback' => array($this, 'core_args_callback'),
             'permission_callback' => '__return_true'
         ));
 

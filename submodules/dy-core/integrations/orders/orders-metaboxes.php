@@ -8,7 +8,7 @@ class Dynamic_Core_Orders_Metaboxes {
     public function __construct($valid_order_status, $valid_order_status_labels) {
         $this->valid_order_status = $valid_order_status;
         $this->valid_order_status_labels = $valid_order_status_labels;
-        add_action('add_meta_boxes', array(&$this, 'add_metaboxes'));
+        add_action('add_meta_boxes', array($this, 'add_metaboxes'));
         add_action('save_post', array($this, 'save_metabox_data'));
     }
 

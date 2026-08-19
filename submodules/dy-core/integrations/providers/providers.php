@@ -11,9 +11,9 @@ class Dynamic_Core_Providers {
     {
 		$this->name = 'dy-providers';
         $this->handle_create_edit();
-		add_filter('dy_list_providers', array(&$this, 'get_providers'));
-		add_action('init', array(&$this, 'register_taxonomies'));
-		add_action( 'admin_head', array(&$this, 'admin_head') );
+		add_filter('dy_list_providers', array($this, 'get_providers'));
+		add_action('init', array($this, 'register_taxonomies'));
+		add_action( 'admin_head', array($this, 'admin_head') );
     }
 
 	public function admin_head()
@@ -74,9 +74,9 @@ class Dynamic_Core_Providers {
     public function handle_create_edit()
     {
         //handles edit and save
-		add_action($this->name.'_edit_form_fields', array(&$this, 'form'), 10, 2);
-		add_action( 'create_'.$this->name, array(&$this, 'handle_save'), 10, 2);
-		add_action( 'edited_'.$this->name, array(&$this, 'handle_save'), 10, 2);
+		add_action($this->name.'_edit_form_fields', array($this, 'form'), 10, 2);
+		add_action( 'create_'.$this->name, array($this, 'handle_save'), 10, 2);
+		add_action( 'edited_'.$this->name, array($this, 'handle_save'), 10, 2);
     }
 
 	public function handle_save($term_id) {

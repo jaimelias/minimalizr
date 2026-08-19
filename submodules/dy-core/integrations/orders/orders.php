@@ -45,7 +45,7 @@ class Dynamic_Core_Orders {
 		);
 
 
-        add_action('init', array(&$this, 'package_post_type'));
+        add_action('init', array($this, 'package_post_type'));
 
 		require_once(plugin_dir_path( __FILE__ ) . 'orders-metaboxes.php');
 		new Dynamic_Core_Orders_Metaboxes($valid_order_status, $valid_order_status_labels);

@@ -17,21 +17,21 @@ class Dynamic_Core_Public {
 			$this->plugin_dir = get_template_directory().'/submodules/dy-core/';
 		}
 
-        add_shortcode('whatsapp', array(&$this, 'whatsapp_button'));
-        add_action( 'wp_footer', array(&$this, 'whatsapp_modal'));
-        add_action( 'wp_footer', array(&$this, 'picker_containers'));
-        add_action( 'wp_head', array(&$this, 'gtag_tracking_script'));
-        add_action( 'wp_footer', array(&$this, 'gtag_conversion_events_script'), PHP_INT_MAX);
+        add_shortcode('whatsapp', array($this, 'whatsapp_button'));
+        add_action( 'wp_footer', array($this, 'whatsapp_modal'));
+        add_action( 'wp_footer', array($this, 'picker_containers'));
+        add_action( 'wp_head', array($this, 'gtag_tracking_script'));
+        add_action( 'wp_footer', array($this, 'gtag_conversion_events_script'), PHP_INT_MAX);
 
-        add_action( 'wp_head', array(&$this, 'facebook_pixel_tracking_script'));
-        add_action('wp_head', array(&$this, 'whatsapp_modal_css'));
-        add_action('wp_enqueue_scripts', array(&$this, 'enqueue_scripts'));
-        add_action('wp_enqueue_scripts', array(&$this, 'enqueue_styles'));
-        add_action('minimal_site_alert', array(&$this, 'site_alert'));
-        add_action('minimal_footer_alert', array(&$this, 'footer_alert'));
-        add_filter('dy_core_wp_json_args', array(&$this, 'hook_whatsapp_number'));
+        add_action( 'wp_head', array($this, 'facebook_pixel_tracking_script'));
+        add_action('wp_head', array($this, 'whatsapp_modal_css'));
+        add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
+        add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
+        add_action('minimal_site_alert', array($this, 'site_alert'));
+        add_action('minimal_footer_alert', array($this, 'footer_alert'));
+        add_filter('dy_core_wp_json_args', array($this, 'hook_whatsapp_number'));
 
-        add_filter('wp_resource_hints', array(&$this, 'resource_hints'), 10, 2);
+        add_filter('wp_resource_hints', array($this, 'resource_hints'), 10, 2);
     }
 
     public function resource_hints($urls, $relation_type)

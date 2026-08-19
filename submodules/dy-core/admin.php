@@ -22,11 +22,11 @@ class Dynamic_Core_Admin {
         $this->section_company = 'dy_core_section_company';
         $this->section_security = 'dy_core_section_security';
         $this->section_analytics = 'dy_core_section_analytics';
-        add_action('admin_init', array(&$this, 'settings_init'), 1);
-        add_action('admin_menu', array(&$this, 'admin_menu'), 1);
-		add_action('admin_head', array(&$this, 'args'));
-		add_action('admin_enqueue_scripts', array(&$this, 'enqueue_scripts'));
-		add_action('admin_enqueue_scripts', array(&$this, 'enqueue_styles'));
+        add_action('admin_init', array($this, 'settings_init'), 1);
+        add_action('admin_menu', array($this, 'admin_menu'), 1);
+		add_action('admin_head', array($this, 'args'));
+		add_action('admin_enqueue_scripts', array($this, 'enqueue_scripts'));
+		add_action('admin_enqueue_scripts', array($this, 'enqueue_styles'));
     }
 
 	public function enqueue_scripts()
@@ -112,7 +112,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_email', 
 			esc_html(__( 'Email')), 
-			array(&$this, 'settings_input'), 
+			array($this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_company,
 			array('name' => 'dy_email', 'type' => 'email')
@@ -121,7 +121,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_phone', 
 			esc_html(__('Phone')), 
-			array(&$this, 'settings_input'), 
+			array($this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_company,
 			array('name' => 'dy_phone', 'type' => 'text')
@@ -140,7 +140,7 @@ class Dynamic_Core_Admin {
 			add_settings_field( 
 				'dy_whatsapp'.$prefix, 
 				esc_html(__( 'Whatsapp').' '. strtoupper($lang)), 
-				array(&$this, 'settings_input'), 
+				array($this, 'settings_input'), 
 				$this->setting_id, 
 				$this->section_company,
 				array('name' => 'dy_whatsapp'.$prefix, 'type' => 'number')
@@ -153,7 +153,7 @@ class Dynamic_Core_Admin {
 			add_settings_field( 
 				'dy_site_alert'.$prefix, 
 				esc_html(__( 'Site Alert').' '. strtoupper($lang)), 
-				array(&$this, 'settings_textarea'), 
+				array($this, 'settings_textarea'), 
 				$this->setting_id, 
 				$this->section_company,
 				array(
@@ -165,7 +165,7 @@ class Dynamic_Core_Admin {
 			add_settings_field( 
 				'dy_footer_alert'.$prefix, 
 				esc_html(__( 'Footer Alert').' '. strtoupper($lang)), 
-				array(&$this, 'settings_textarea'), 
+				array($this, 'settings_textarea'), 
 				$this->setting_id, 
 				$this->section_company,
 				array(
@@ -181,7 +181,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_address', 
 			esc_html(__( 'Address')), 
-			array(&$this, 'settings_input'), 
+			array($this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_company,
 			array('name' => 'dy_address', 'type' => 'text')
@@ -190,7 +190,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_tax_id', 
 			esc_html(__( 'Tax Identification ID')), 
-			array(&$this, 'settings_input'), 
+			array($this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_company,
 			array('name' => 'dy_tax_id', 'type' => 'text')
@@ -200,7 +200,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_cf_turnstile_site_key', 
 			esc_html(__( 'Cloudflare Turnstile Site Key')), 
-			array(&$this, 'settings_input'), 
+			array($this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_security,
 			array('name' => 'dy_cf_turnstile_site_key', 'url' => 'https://developers.cloudflare.com/turnstile/get-started/widget-management') 
@@ -209,7 +209,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_cf_turnstile_secret_key', 
 			esc_html(__( 'Cloudflare Turnstile Secret Key')), 
-			array(&$this, 'settings_input'), 
+			array($this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_security,
 			array('name' => 'dy_cf_turnstile_secret_key', 'url' => 'https://developers.cloudflare.com/turnstile/get-started/widget-management') 
@@ -218,7 +218,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_cloudflare_api_token', 
 			esc_html(__( 'Cloudflare API Token')), 
-			array(&$this, 'settings_input'), 
+			array($this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_security,
 			array('name' => 'dy_cloudflare_api_token') 
@@ -226,7 +226,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_cloudflare_account_id', 
 			esc_html(__( 'Cloudflare Account ID')), 
-			array(&$this, 'settings_input'), 
+			array($this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_security,
 			array('name' => 'dy_cloudflare_account_id') 
@@ -235,7 +235,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_sentry_api_key', 
 			esc_html(__( 'Sentry API Key')), 
-			array(&$this, 'settings_input'), 
+			array($this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_security,
 			array('name' => 'dy_sentry_api_key') 
@@ -244,7 +244,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_bidding_conversion_percentage', 
 			__( 'Bidding Conversion Percentage'),
-			array(&$this, 'settings_input'), 
+			array($this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_analytics,
 			array(
@@ -258,7 +258,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_gtag_tracking_id', 
 			__( 'Google - Analytics GA4 (GTAG)'), 
-			array(&$this, 'settings_input'), 
+			array($this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_analytics,
 			array('name' => 'dy_gtag_tracking_id', 'url' => 'https://analytics.google.com/') 
@@ -267,7 +267,7 @@ class Dynamic_Core_Admin {
 		add_settings_field(
 			'dy_google_ads_id',
 			__('Google Ads Conversion ID (AW-...)', 'dynamicpackages'),
-			array(&$this, 'settings_input'),
+			array($this, 'settings_input'),
 			$this->setting_id,
 			$this->section_analytics,
 			array(
@@ -279,7 +279,7 @@ class Dynamic_Core_Admin {
 		add_settings_field(
 			'dy_google_ads_purchase_label',
 			__('Google Ads Purchase Label', 'dynamicpackages'),
-			array(&$this, 'settings_input'),
+			array($this, 'settings_input'),
 			$this->setting_id,
 			$this->section_analytics,
 			array(
@@ -291,7 +291,7 @@ class Dynamic_Core_Admin {
 		add_settings_field(
 			'dy_google_ads_lead_label',
 			__('Google Ads Lead Label', 'dynamicpackages'),
-			array(&$this, 'settings_input'),
+			array($this, 'settings_input'),
 			$this->setting_id,
 			$this->section_analytics,
 			array(
@@ -303,7 +303,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_facebook_pixel_id', 
 			__( 'Facebook Pixel ID'), 
-			array(&$this, 'settings_input'), 
+			array($this, 'settings_input'), 
 			$this->setting_id, 
 			$this->section_analytics,
 			array('name' => 'dy_facebook_pixel_id', 'url' => 'https://www.facebook.com/business/tools/meta-pixel') 
@@ -341,7 +341,7 @@ class Dynamic_Core_Admin {
             $this->plugin_name, 
             'manage_options',  
             $this->slug, 
-            array(&$this, 'settings_page'), 
+            array($this, 'settings_page'), 
             'dashicons-building'
         );
     }
