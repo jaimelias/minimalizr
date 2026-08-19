@@ -5,7 +5,20 @@ if(!class_exists('dy_build_option_select')) {
 	class dy_build_option_select {
 
 
-        private static function render($name, $options = [], $args = []) {
+		/**
+		 * Create a select using custom options.
+		 *
+		 * Example:
+		 *
+		 * dy_build_option_select::custom('status', [
+		 *     ''        => 'Select status',
+		 *     'active'  => 'Active',
+		 *     'pending' => 'Pending',
+		 * ]);
+		 */
+
+
+        private static function custom($name, $options = [], $args = []) {
 
             if(empty($name)) {
                 return 'Param $name is required in dy_build_option_select.';
@@ -58,25 +71,6 @@ if(!class_exists('dy_build_option_select')) {
         }
 
 
-		/**
-		 * Create a select using custom options.
-		 *
-		 * Example:
-		 *
-		 * dy_build_option_select::custom('status', [
-		 *     ''        => 'Select status',
-		 *     'active'  => 'Active',
-		 *     'pending' => 'Pending',
-		 * ]);
-		 */
-		public static function custom($name, $options = [], $args = []) {
-
-			self::render(
-				$name,
-				$options,
-				$args
-			);
-		}
 
 
 		/**
@@ -134,7 +128,7 @@ if(!class_exists('dy_build_option_select')) {
                 $options[$i] = $i;
             }
 
-            self::render(
+            return self::custom(
                 $name,
                 $options,
                 $args
