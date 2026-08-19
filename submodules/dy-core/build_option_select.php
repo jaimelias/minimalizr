@@ -18,7 +18,7 @@ if(!class_exists('dy_build_option_select')) {
 		 */
 
 
-        private static function custom($name, $options = [], $args = []) {
+        public static function custom($name, $options = [], $args = []) {
 
             if(empty($name)) {
                 return 'Param $name is required in dy_build_option_select.';
