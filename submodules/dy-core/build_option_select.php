@@ -1,8 +1,8 @@
 <?php
 
-if(!class_exists('dy_build_option_select')) {
+if(!class_exists('dy_select_controller')) {
 
-	class dy_build_option_select {
+	class dy_select_controller {
 
 
 		/**
@@ -10,35 +10,46 @@ if(!class_exists('dy_build_option_select')) {
 		 *
 		 * Example:
 		 *
-		 * dy_build_option_select::custom('status', [
+		 * dy_select_controller::custom('status', [
 		 *     ''        => 'Select status',
 		 *     'active'  => 'Active',
 		 *     'pending' => 'Pending',
 		 * ]);
 		 */
 
+        protected static function get_value($key, $default = '', $post_id = null) {
+			
+			if($post_id === null) {
+				return get_option($key, $default);
+			}
 
-        public static function custom($name, $options = [], $args = []) {
+			return get_post_meta($post_id, $key, true) ?: $default;
+        }
 
-            if(empty($name)) {
-                return 'Param $name is required in dy_build_option_select.';
+        public static function custom($key, $options = [], $args = []) {
+
+            if(empty($key)) {
+                return 'Param $key is required in dy_select_controller.';
             }
 
             if(!is_array($options)) {
-                return 'Param $options must be an array in dy_build_option_select.';
+                return 'Param $options must be an array in dy_select_controller.';
             }
 
             if(!is_array($args)) {
-                return 'Param $args must be an array in dy_build_option_select.';
+                return 'Param $args must be an array in dy_select_controller.';
             }
 
-            $value = get_option($name, '');
+            $post_id = $args['post_id'] ?? null;
+            unset($args['post_id']);
+
+            $value = static::get_value($key, '', $post_id);
 
             $args = array_merge(
                 $args,
                 [
-                    'name' => $name,
-                    'id'   => $name,
+                    'name' => $key,
+                    'id'   => $key,
                 ]
             );
 
@@ -78,21 +89,21 @@ if(!class_exists('dy_build_option_select')) {
 		 *
 		 * Example:
 		 *
-		 * dy_build_option_select::min_max('quantity', 1, 10);
+		 * dy_select_controller::min_max('quantity', 1, 10);
 		 *
-		 * dy_build_option_select::min_max(
+		 * dy_select_controller::min_max(
 		 *     'percentage',
 		 *     [0, 100, 5], // min, max, step
 		 * );
 		 */
         public static function min_max(
-            $name,
+            $key,
             $options_config = [],
             $args = []
         ) {
 
             if(!is_array($options_config)) {
-                return 'Param $options_config must be an array in dy_build_option_select.';
+                return 'Param $options_config must be an array in dy_select_controller.';
             }
 
             $defaults = [
@@ -111,15 +122,15 @@ if(!class_exists('dy_build_option_select')) {
             $step = $options_config['step'];
 
             if(!is_numeric($min) || !is_numeric($max)) {
-                return 'Options min and max must be numeric in dy_build_option_select.';
+                return 'Options min and max must be numeric in dy_select_controller.';
             }
 
             if(!is_numeric($step) || $step <= 0) {
-                return 'Option step must be greater than 0 in dy_build_option_select.';
+                return 'Option step must be greater than 0 in dy_select_controller.';
             }
 
             if($min > $max) {
-                return 'Option min cannot be greater than max in dy_build_option_select.';
+                return 'Option min cannot be greater than max in dy_select_controller.';
             }
 
             $options = [];
@@ -129,7 +140,7 @@ if(!class_exists('dy_build_option_select')) {
             }
 
             return self::custom(
-                $name,
+                $key,
                 $options,
                 $args
             );

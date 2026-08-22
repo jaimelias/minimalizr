@@ -1,20 +1,32 @@
 <?php
 
-if(!class_exists('dy_build_option_input')) {
+if(!class_exists('dy_input_controller')) {
 
-	class dy_build_option_input {
+	class dy_input_controller {
 
-		private static function render($name, $args = []) {
+        protected static function get_value($key, $default = '', $post_id = null) {
+			
+			if($post_id === null) {
+				return get_option($key, $default);
+			}
 
-			if(empty($name)) {
-				return 'Param $name is required in dy_build_option_input.';
+			return get_post_meta($post_id, $key, true) ?: $default;
+        }
+
+		private static function render($key, $args = []) {
+
+			if(empty($key)) {
+				return 'Param $key is required in dy_input_controller.';
 			}
 
 			if(!is_array($args)) {
-				return 'Param $args must be an array in dy_build_option_input.';
+				return 'Param $args must be an array in dy_input_controller.';
 			}
 
-			$value = get_option($name, '');
+            $post_id = $args['post_id'] ?? null;
+            unset($args['post_id']);
+
+            $value = static::get_value($key, '', $post_id);
 
 			$args = array_merge(
 				[
@@ -23,8 +35,8 @@ if(!class_exists('dy_build_option_input')) {
 				],
 				$args,
 				[
-					'name' => $name,
-					'id'   => $name,
+					'name' => $key,
+					'id'   => $key,
 				]
 			);
 
@@ -45,59 +57,59 @@ if(!class_exists('dy_build_option_input')) {
 		}
 
 
-		public static function text($name, $args = []) {
+		public static function text($key, $args = []) {
 
-			self::render($name, array_merge([
+			self::render($key, array_merge([
 				'type' => 'text',
 			], $args));
 		}
 
 
-		public static function email($name, $args = []) {
+		public static function email($key, $args = []) {
 
-			self::render($name, array_merge([
+			self::render($key, array_merge([
 				'type' => 'email',
 			], $args));
 		}
 
 
-		public static function url($name, $args = []) {
+		public static function url($key, $args = []) {
 
-			self::render($name, array_merge([
+			self::render($key, array_merge([
 				'type' => 'url',
 			], $args));
 		}
 
 
-		public static function number($name, $args = []) {
+		public static function number($key, $args = []) {
 
-			self::render($name, array_merge([
+			self::render($key, array_merge([
 				'type' => 'number',
 			], $args));
 		}
 
 
-		public static function int($name, $args = []) {
+		public static function int($key, $args = []) {
 
-			self::render($name, array_merge([
+			self::render($key, array_merge([
 				'type' => 'number',
 				'step' => 1,
 			], $args));
 		}
 
 
-		public static function float($name, $args = []) {
+		public static function float($key, $args = []) {
 
-			self::render($name, array_merge([
+			self::render($key, array_merge([
 				'type' => 'number',
 				'step' => 'any',
 			], $args));
 		}
 
 
-		public static function price($name, $args = []) {
+		public static function price($key, $args = []) {
 
-			self::render($name, array_merge([
+			self::render($key, array_merge([
 				'type' => 'number',
 				'min'  => 0,
 				'step' => 0.01,
@@ -105,9 +117,9 @@ if(!class_exists('dy_build_option_input')) {
 		}
 
 
-		public static function percentage($name, $args = []) {
+		public static function percentage($key, $args = []) {
 
-			self::render($name, array_merge([
+			self::render($key, array_merge([
 				'type' => 'number',
 				'min'  => 0,
 				'max'  => 100,
