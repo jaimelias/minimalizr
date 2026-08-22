@@ -115,7 +115,9 @@ class Dynamic_Core_Admin {
 			['dy_input_controller', 'email'], 
 			$this->setting_id, 
 			$this->section_company,
-			'dy_email'
+			[
+				'key' => 'dy_email',
+			]
 		);
 
 		add_settings_field( 
@@ -124,7 +126,9 @@ class Dynamic_Core_Admin {
 			['dy_input_controller', 'text'], 
 			$this->setting_id, 
 			$this->section_company,
-			'dy_phone'
+			[
+				'key' => 'dy_phone'
+			]
 		);
 
 		$text_area_cb = function($key) {
@@ -139,40 +143,53 @@ class Dynamic_Core_Admin {
 		{
 			$lang = $languages[$x];
 
-			$prefix = ($default_language === $lang) ? '' : '_'.$lang;
+			$lang_suffix = ($default_language === $lang) ? '' : '_'.$lang;
 
 			//whatsapp multy languages
-			register_setting($this->setting_id, 'dy_whatsapp'.$prefix, 'intval');
+			register_setting($this->setting_id, 'dy_whatsapp'.$lang_suffix, 'intval');
 
 			add_settings_field( 
-				'dy_whatsapp'.$prefix, 
+				'dy_whatsapp'.$lang_suffix, 
 				esc_html(__( 'Whatsapp').' '. strtoupper($lang)), 
 				['dy_input_controller', 'number'], 
 				$this->setting_id, 
 				$this->section_company,
-				'dy_whatsapp'.$prefix
+				[
+					'key' => 'dy_whatsapp'.$lang_suffix
+				]
 			);
 			
 			//site notification multy languages
-			register_setting($this->setting_id, 'dy_site_alert'.$prefix, 'wp_kses_post');
-			register_setting($this->setting_id, 'dy_footer_alert'.$prefix, 'wp_kses_post');
+			register_setting($this->setting_id, 'dy_site_alert'.$lang_suffix, 'wp_kses_post');
+			register_setting($this->setting_id, 'dy_footer_alert'.$lang_suffix, 'wp_kses_post');
 
 			add_settings_field( 
-				'dy_site_alert'.$prefix, 
+				'dy_site_alert'.$lang_suffix, 
 				esc_html(__( 'Site Alert').' '. strtoupper($lang)), 
-				$text_area_cb, 
+				['dy_textarea_controller', 'text'], 
 				$this->setting_id, 
 				$this->section_company,
-				'dy_site_alert'.$prefix
+				[
+					'key' => 'dy_site_alert'.$lang_suffix,
+					'rows' => 5,
+					'cols' => 50,
+					'class' => 'width-100',
+				]
 			);
 			add_settings_field( 
-				'dy_footer_alert'.$prefix, 
+				'dy_footer_alert'.$lang_suffix, 
 				esc_html(__( 'Footer Alert').' '. strtoupper($lang)), 
-				$text_area_cb,
+				['dy_textarea_controller', 'text'],
 				$this->setting_id, 
 				$this->section_company,
-				'dy_footer_alert'.$prefix,
+				[
+					'key' => 'dy_footer_alert'.$lang_suffix,
+					'rows' => 5,
+					'cols' => 50,
+					'class' => 'width-100',
+				]
 			);
+			
 
 
 		}
@@ -183,7 +200,9 @@ class Dynamic_Core_Admin {
 			['dy_input_controller', 'text'], 
 			$this->setting_id, 
 			$this->section_company,
-			'dy_address'
+			[
+				'key' => 'dy_address'
+			]
 		);
 
 		add_settings_field( 
@@ -192,7 +211,9 @@ class Dynamic_Core_Admin {
 			['dy_input_controller', 'text'], 
 			$this->setting_id, 
 			$this->section_company,
-			'dy_tax_id'
+			[
+				'key' => 'dy_tax_id'
+			]
 		);
 
 		
@@ -202,7 +223,9 @@ class Dynamic_Core_Admin {
 			['dy_input_controller', 'text'], 
 			$this->setting_id, 
 			$this->section_security,
-			'dy_cf_turnstile_site_key'
+			[
+				'key' => 'dy_cf_turnstile_site_key'
+			]
 		);
 
 		add_settings_field( 
@@ -211,7 +234,9 @@ class Dynamic_Core_Admin {
 			['dy_input_controller', 'text'], 
 			$this->setting_id, 
 			$this->section_security,
-			'dy_cf_turnstile_secret_key'
+			[
+				'key' => 'dy_cf_turnstile_secret_key'
+			]
 		);
 		
 		add_settings_field( 
@@ -220,7 +245,9 @@ class Dynamic_Core_Admin {
 			['dy_input_controller', 'text'], 
 			$this->setting_id, 
 			$this->section_security,
-			'dy_cloudflare_api_token'
+			[
+				'key' => 'dy_cloudflare_api_token'
+			]
 		);
 		add_settings_field( 
 			'dy_cloudflare_account_id', 
@@ -228,7 +255,9 @@ class Dynamic_Core_Admin {
 			['dy_input_controller', 'text'], 
 			$this->setting_id, 
 			$this->section_security,
-			'dy_cloudflare_account_id'
+			[
+				'key' => 'dy_cloudflare_account_id'
+			]
 		);
 
 		add_settings_field( 
@@ -237,26 +266,24 @@ class Dynamic_Core_Admin {
 			['dy_input_controller', 'text'], 
 			$this->setting_id, 
 			$this->section_security,
-			'dy_sentry_api_key'
+			[
+				'key' => 'dy_sentry_api_key'
+			]
 		);
-
-		$conversion_percentage_cb = function($key) {
-
-			return dy_input_controller::percentage($key, array(
-				'min' => 1,
-				'max' => 100,
-				'step' => 0.01,
-				'append' => '%',
-			));
-		};
 
 		add_settings_field( 
 			'dy_bidding_conversion_percentage', 
 			__( 'Bidding Conversion Percentage'),
-			$conversion_percentage_cb, 
+			['dy_input_controller', 'percentage'], 
 			$this->setting_id, 
 			$this->section_analytics,
-			'dy_bidding_conversion_percentage'
+			[
+				'key' => 'dy_bidding_conversion_percentage',
+				'min' => 1,
+				'max' => 100,
+				'step' => 0.01,
+				'append' => '%',
+			]
 		);
 
 
@@ -266,7 +293,9 @@ class Dynamic_Core_Admin {
 			['dy_input_controller', 'text'], 
 			$this->setting_id, 
 			$this->section_analytics,
-			'dy_gtag_tracking_id'
+			[
+				'key' => 'dy_gtag_tracking_id'
+			]
 		);
 
 		add_settings_field(
@@ -275,7 +304,9 @@ class Dynamic_Core_Admin {
 			['dy_input_controller', 'text'],
 			$this->setting_id,
 			$this->section_analytics,
-			'dy_google_ads_id'
+			[
+				'key' => 'dy_google_ads_id'
+			]
 		);
 
 		add_settings_field(
@@ -284,7 +315,9 @@ class Dynamic_Core_Admin {
 			['dy_input_controller', 'text'],
 			$this->setting_id,
 			$this->section_analytics,
-			'dy_google_ads_purchase_label'
+			[
+				'key' => 'dy_google_ads_purchase_label'
+			]
 		);
 
 		add_settings_field(
@@ -293,7 +326,9 @@ class Dynamic_Core_Admin {
 			['dy_input_controller', 'text'],
 			$this->setting_id,
 			$this->section_analytics,
-			'dy_google_ads_lead_label'
+			[
+				'key' => 'dy_google_ads_lead_label'
+			]
 		);
 
 		add_settings_field( 
@@ -302,7 +337,9 @@ class Dynamic_Core_Admin {
 			['dy_input_controller', 'text'],
 			$this->setting_id, 
 			$this->section_analytics,
-			'dy_facebook_pixel_id'		
+			[
+				'key' => 'dy_facebook_pixel_id'
+			]		
 		);
     }
 

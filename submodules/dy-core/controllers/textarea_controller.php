@@ -23,17 +23,26 @@ if(!class_exists('dy_textarea_controller')) {
 			return self::$cache[$cache_key] = $value === '' ? $default : $value;
 		}
 
-		private static function render($key, $args = [], $defaults = []) {
+		private static function render($args = [], $defaults = []) {
+
+			if(!is_array($args)) {
+				write_log('Param $args must be an array in dy_textarea_controller.');
+				return '';
+			}
+
+			if(!array_key_exists('key', $args)) {
+				write_log('Param $args must contain a "key" in dy_input_controller.');
+				return '';
+			}
+
+			$key = $args['key'];
 
 			if(!is_string($key) || trim($key) === '') {
 				write_log('Param $key must be a non-empty string in dy_textarea_controller.');
 				return '';
 			}
 
-			if(!is_array($args)) {
-				write_log('Param $args must be an array in dy_textarea_controller.');
-				return '';
-			}
+
 
 			$post_id = $args['post_id'] ?? null;
 			$append = $args['append'] ?? '';
@@ -52,6 +61,7 @@ if(!class_exists('dy_textarea_controller')) {
 
 			$attributes = [];
 
+			unset($args['key']);
 			unset($args['post_id']);
 			unset($args['append']);
 			unset($args['prepend']);
@@ -81,9 +91,9 @@ if(!class_exists('dy_textarea_controller')) {
 		}
 
 
-		public static function text($key, $args = []) {
+		public static function text($args = []) {
 
-			echo self::render($key, $args);
+			echo self::render($args);
 		}
 
 

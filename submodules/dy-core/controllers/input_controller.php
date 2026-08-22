@@ -23,15 +23,23 @@ if(!class_exists('dy_input_controller')) {
 			return self::$cache[$cache_key] = $value === '' ? $default : $value;
 		}
 
-		private static function render($key, $args = [], $defaults = []) {
+		private static function render($args = [], $defaults = []) {
 
-			if(!is_string($key) || trim($key) === '') {
-				write_log('Param $key must be a non-empty string in dy_input_controller.');
-				return '';
-			}
 
 			if(!is_array($args)) {
 				write_log('Param $args must be an array in dy_input_controller.');
+				return '';
+			}
+
+			if(!array_key_exists('key', $args)) {
+				write_log('Param $args must contain a "key" in dy_input_controller.');
+				return '';
+			}
+
+			$key = $args['key'];
+
+			if(!is_string($key) || trim($key) === '') {
+				write_log('Param $key must be a non-empty string in dy_input_controller.');
 				return '';
 			}
 
@@ -62,6 +70,7 @@ if(!class_exists('dy_input_controller')) {
 
 			$attributes = [];
 
+			unset($args['key']);
 			unset($args['post_id']);
 			unset($args['append']);
 			unset($args['prepend']);
@@ -90,57 +99,57 @@ if(!class_exists('dy_input_controller')) {
 		}
 
 
-		public static function text($key, $args = []) {
+		public static function text($args = []) {
 
-			echo self::render($key, $args);
+			echo self::render($args);
 		}
 
 
-		public static function email($key, $args = []) {
+		public static function email($args = []) {
 
-			echo self::render($key, $args, [
+			echo self::render($args, [
 				'type' => 'email',
 			]);
 		}
 
 
-		public static function url($key, $args = []) {
+		public static function url($args = []) {
 
-			echo self::render($key, $args, [
+			echo self::render($args, [
 				'type' => 'url',
 			]);
 		}
 
 
-		public static function number($key, $args = []) {
+		public static function number($args = []) {
 
-			echo self::render($key, $args, [
+			echo self::render($args, [
 				'type' => 'number',
 			]);
 		}
 
 
-		public static function int($key, $args = []) {
+		public static function int($args = []) {
 
-			echo self::render($key, $args, [
+			echo self::render($args, [
 				'type' => 'number',
 				'step' => 1,
 			]);
 		}
 
 
-		public static function float($key, $args = []) {
+		public static function float($args = []) {
 
-			echo self::render($key, $args, [
+			echo self::render($args, [
 				'type' => 'number',
 				'step' => 'any',
 			]);
 		}
 
 
-		public static function price($key, $args = []) {
+		public static function price($args = []) {
 
-			echo self::render($key, $args, [
+			echo self::render($args, [
 				'type' => 'number',
 				'min'  => 0,
 				'step' => 0.01,
@@ -148,9 +157,9 @@ if(!class_exists('dy_input_controller')) {
 		}
 
 
-		public static function percentage($key, $args = []) {
+		public static function percentage($args = []) {
 
-			echo self::render($key, $args, [
+			echo self::render($args, [
 				'type' => 'number',
 				'min'  => 0,
 				'max'  => 100,
@@ -160,9 +169,9 @@ if(!class_exists('dy_input_controller')) {
 		}
 
 
-		public static function checkbox($key, $args = []) {
+		public static function checkbox($args = []) {
  
-			echo self::render($key, $args, [
+			echo self::render($args, [
 				'type'  => 'checkbox',
 				'value' => 1,
 			]);

@@ -43,7 +43,19 @@ if(!class_exists('dy_select_controller')) {
 			return self::$cache[$cache_key] = $value === '' ? $default : $value;
 		}
 
-        public static function custom($key, $options = [], $args = []) {
+        public static function custom($options = [], $args = []) {
+
+            if(!is_array($args)) {
+                write_log('Param $args must be an array in dy_select_controller.');
+                return '';
+            }
+
+			if(!array_key_exists('key', $args)) {
+				write_log('Param $args must contain a "key" in dy_input_controller.');
+				return '';
+			}
+
+            $key = $args['key'];
 
             if(!is_string($key) || trim($key) === '') {
                 write_log('Param $key must be a non-empty string in dy_select_controller.');
@@ -55,10 +67,6 @@ if(!class_exists('dy_select_controller')) {
                 return '';
             }
 
-            if(!is_array($args)) {
-                write_log('Param $args must be an array in dy_select_controller.');
-                return '';
-            }
 
             $post_id = $args['post_id'] ?? null;
 			$append = $args['append'] ?? '';
@@ -78,6 +86,7 @@ if(!class_exists('dy_select_controller')) {
 
             $attributes = [];
 
+			unset($args['key']);
 			unset($args['post_id']);
 			unset($args['append']);
 			unset($args['prepend']);
@@ -123,7 +132,6 @@ if(!class_exists('dy_select_controller')) {
 
 
         public static function min_max(
-            $key,
             $options_config = [],
             $args = []
         ) {
@@ -176,7 +184,6 @@ if(!class_exists('dy_select_controller')) {
             }
 
             return self::custom(
-                $key,
                 $options,
                 $args
             );
