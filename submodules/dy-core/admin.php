@@ -112,21 +112,28 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_email', 
 			esc_html(__( 'Email')), 
-			array($this, 'settings_input'), 
+			['dy_input_controller', 'email'], 
 			$this->setting_id, 
 			$this->section_company,
-			array('name' => 'dy_email', 'type' => 'email')
+			'dy_email'
 		);
 
 		add_settings_field( 
 			'dy_phone', 
 			esc_html(__('Phone')), 
-			array($this, 'settings_input'), 
+			['dy_input_controller', 'number'], 
 			$this->setting_id, 
 			$this->section_company,
-			array('name' => 'dy_phone', 'type' => 'text')
+			'dy_phone'
 		);
 
+		$text_area_cb = function($key) {
+			return dy_textarea_controller::text($key, array(
+				'rows' => 5,
+				'cols' => 50,
+				'class' => 'width-100',
+			));
+		};
 
 		for($x = 0; $x < count($languages); $x++)
 		{
@@ -140,10 +147,10 @@ class Dynamic_Core_Admin {
 			add_settings_field( 
 				'dy_whatsapp'.$prefix, 
 				esc_html(__( 'Whatsapp').' '. strtoupper($lang)), 
-				array($this, 'settings_input'), 
+				['dy_input_controller', 'number'], 
 				$this->setting_id, 
 				$this->section_company,
-				array('name' => 'dy_whatsapp'.$prefix, 'type' => 'number')
+				'dy_whatsapp'.$prefix
 			);
 			
 			//site notification multy languages
@@ -153,26 +160,18 @@ class Dynamic_Core_Admin {
 			add_settings_field( 
 				'dy_site_alert'.$prefix, 
 				esc_html(__( 'Site Alert').' '. strtoupper($lang)), 
-				array($this, 'settings_textarea'), 
+				$text_area_cb, 
 				$this->setting_id, 
 				$this->section_company,
-				array(
-					'name' => 'dy_site_alert'.$prefix, 
-					'url' => 'https://onlinehtmleditor.dev/', 
-					'url_text' => __('Html Editor')
-				)
+				'dy_site_alert'.$prefix
 			);
 			add_settings_field( 
 				'dy_footer_alert'.$prefix, 
 				esc_html(__( 'Footer Alert').' '. strtoupper($lang)), 
-				array($this, 'settings_textarea'), 
+				$text_area_cb,
 				$this->setting_id, 
 				$this->section_company,
-				array(
-					'name' => 'dy_footer_alert'.$prefix, 
-					'url' => 'https://onlinehtmleditor.dev/', 
-					'url_text' => __('Html Editor')
-				)
+				'dy_footer_alert'.$prefix,
 			);
 
 
@@ -181,132 +180,129 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_address', 
 			esc_html(__( 'Address')), 
-			array($this, 'settings_input'), 
+			['dy_input_controller', 'text'], 
 			$this->setting_id, 
 			$this->section_company,
-			array('name' => 'dy_address', 'type' => 'text')
+			'dy_address'
 		);
 
 		add_settings_field( 
 			'dy_tax_id', 
 			esc_html(__( 'Tax Identification ID')), 
-			array($this, 'settings_input'), 
+			['dy_input_controller', 'text'], 
 			$this->setting_id, 
 			$this->section_company,
-			array('name' => 'dy_tax_id', 'type' => 'text')
+			'dy_tax_id'
 		);
 
 		
 		add_settings_field( 
 			'dy_cf_turnstile_site_key', 
 			esc_html(__( 'Cloudflare Turnstile Site Key')), 
-			array($this, 'settings_input'), 
+			['dy_input_controller', 'text'], 
 			$this->setting_id, 
 			$this->section_security,
-			array('name' => 'dy_cf_turnstile_site_key', 'url' => 'https://developers.cloudflare.com/turnstile/get-started/widget-management') 
+			'dy_cf_turnstile_site_key'
 		);
 
 		add_settings_field( 
 			'dy_cf_turnstile_secret_key', 
 			esc_html(__( 'Cloudflare Turnstile Secret Key')), 
-			array($this, 'settings_input'), 
+			['dy_input_controller', 'text'], 
 			$this->setting_id, 
 			$this->section_security,
-			array('name' => 'dy_cf_turnstile_secret_key', 'url' => 'https://developers.cloudflare.com/turnstile/get-started/widget-management') 
+			'dy_cf_turnstile_secret_key'
 		);
 		
 		add_settings_field( 
 			'dy_cloudflare_api_token', 
 			esc_html(__( 'Cloudflare API Token')), 
-			array($this, 'settings_input'), 
+			['dy_input_controller', 'text'], 
 			$this->setting_id, 
 			$this->section_security,
-			array('name' => 'dy_cloudflare_api_token') 
+			'dy_cloudflare_api_token'
 		);
 		add_settings_field( 
 			'dy_cloudflare_account_id', 
 			esc_html(__( 'Cloudflare Account ID')), 
-			array($this, 'settings_input'), 
+			['dy_input_controller', 'text'], 
 			$this->setting_id, 
 			$this->section_security,
-			array('name' => 'dy_cloudflare_account_id') 
+			'dy_cloudflare_account_id'
 		);
 
 		add_settings_field( 
 			'dy_sentry_api_key', 
 			esc_html(__( 'Sentry API Key')), 
-			array($this, 'settings_input'), 
+			['dy_input_controller', 'text'], 
 			$this->setting_id, 
 			$this->section_security,
-			array('name' => 'dy_sentry_api_key') 
+			'dy_sentry_api_key'
 		);
+
+		$conversion_percentage_cb = function($key) {
+
+			return dy_input_controller::percentage($key, array(
+				'min' => 1,
+				'max' => 100,
+				'step' => 0.01,
+				'append' => '%',
+			));
+		};
 
 		add_settings_field( 
 			'dy_bidding_conversion_percentage', 
 			__( 'Bidding Conversion Percentage'),
-			array($this, 'settings_input'), 
+			$conversion_percentage_cb, 
 			$this->setting_id, 
 			$this->section_analytics,
-			array(
-				'name' => 'dy_bidding_conversion_percentage', 
-				'type' => 'number',
-				'min' => "1",
-				'max' => "100",
-				'step' => "0.01"
-			) 
+			'dy_bidding_conversion_percentage'
 		);
+
+
 		add_settings_field( 
 			'dy_gtag_tracking_id', 
 			__( 'Google - Analytics GA4 (GTAG)'), 
-			array($this, 'settings_input'), 
+			['dy_input_controller', 'text'], 
 			$this->setting_id, 
 			$this->section_analytics,
-			array('name' => 'dy_gtag_tracking_id', 'url' => 'https://analytics.google.com/') 
+			'dy_gtag_tracking_id'
 		);
 
 		add_settings_field(
 			'dy_google_ads_id',
 			__('Google Ads Conversion ID (AW-...)', 'dynamicpackages'),
-			array($this, 'settings_input'),
+			['dy_input_controller', 'text'],
 			$this->setting_id,
 			$this->section_analytics,
-			array(
-				'name' => 'dy_google_ads_id',
-				'url' => 'https://ads.google.com/aw/conversions'
-			)
+			'dy_google_ads_id'
 		);
 
 		add_settings_field(
 			'dy_google_ads_purchase_label',
 			__('Google Ads Purchase Label', 'dynamicpackages'),
-			array($this, 'settings_input'),
+			['dy_input_controller', 'text'],
 			$this->setting_id,
 			$this->section_analytics,
-			array(
-				'name' => 'dy_google_ads_purchase_label',
-				'url' => 'https://ads.google.com/aw/conversions'
-			)
+			'dy_google_ads_purchase_label'
 		);
 
 		add_settings_field(
 			'dy_google_ads_lead_label',
 			__('Google Ads Lead Label', 'dynamicpackages'),
-			array($this, 'settings_input'),
+			['dy_input_controller', 'text'],
 			$this->setting_id,
 			$this->section_analytics,
-			array(
-				'name' => 'dy_google_ads_lead_label',
-				'url' => 'https://ads.google.com/aw/conversions'
-			)
+			'dy_google_ads_lead_label'
 		);
 
 		add_settings_field( 
 			'dy_facebook_pixel_id', 
 			__( 'Facebook Pixel ID'), 
-			array($this, 'settings_input'), 
+			['dy_input_controller', 'text'],
 			$this->setting_id, 
 			$this->section_analytics,
-			array('name' => 'dy_facebook_pixel_id', 'url' => 'https://www.facebook.com/business/tools/meta-pixel') 
+			'dy_facebook_pixel_id'		
 		);
     }
 

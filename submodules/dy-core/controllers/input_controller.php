@@ -35,13 +35,8 @@ if(!class_exists('dy_input_controller')) {
 				return '';
 			}
 
-            $post_id = $args['post_id'] ?? null;
-			$append = $args['append'] ?? '';
-			$prepend = $args['prepend'] ?? '';
-			
+			$post_id = $args['post_id'] ?? null;
 			unset($args['post_id']);
-			unset($args['append']);
-			unset($args['prepend']);
 
 			$value = static::get_value($key, '', $post_id);
 
@@ -57,6 +52,10 @@ if(!class_exists('dy_input_controller')) {
 					'id'   => $key,
 				]
 			);
+
+			if($args['type'] === 'checkbox' && !array_key_exists('checked', $args)) {
+				$args['checked'] = (string) $value === (string) $args['value'];
+			}
 
 			$attributes = [];
 
@@ -76,10 +75,8 @@ if(!class_exists('dy_input_controller')) {
 			}
 
 			return sprintf(
-				'%s<input %s />%s',
-				wp_kses_post($prepend),
-				implode(' ', $attributes),
-				wp_kses_post($append) 
+				'<input %s />',
+				implode(' ', $attributes)
 			);
 		}
 
@@ -87,6 +84,15 @@ if(!class_exists('dy_input_controller')) {
 		public static function text($key, $args = []) {
 
 			echo self::render($key, $args);
+		}
+
+
+		public static function checkbox($key, $args = []) {
+
+			echo self::render($key, $args, [
+				'type'  => 'checkbox',
+				'value' => 1,
+			]);
 		}
 
 
