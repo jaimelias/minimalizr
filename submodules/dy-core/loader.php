@@ -15,26 +15,31 @@ if(!class_exists('Dy_Core_Init'))
         }
         public function load_dependencies()
         {
+            //core helpers
+            require_once $this->plugin_dir_path . 'functions.php';
+            require_once $this->plugin_dir_path . 'security/waf.php';
+            require_once $this->plugin_dir_path . 'security/queries.php';
+            require_once $this->plugin_dir_path . 'controllers/input_controller.php';
+            require_once $this->plugin_dir_path . 'controllers/select_controller.php';
+
+            //third-party integrations
             require_once $this->plugin_dir_path . 'integrations/gtag.php';
             require_once $this->plugin_dir_path . 'integrations/mailer.php';
             require_once $this->plugin_dir_path . 'integrations/cloudflare.php';
-            require_once $this->plugin_dir_path . 'waf.php';
-            require_once $this->plugin_dir_path . 'sitemap.php';
-            require_once $this->plugin_dir_path . 'queries.php';
+            require_once $this->plugin_dir_path . 'integrations/sitemap.php';
+
+            //ai training data
             require_once $this->plugin_dir_path . 'training-data/concatenate_object_to_text.php';
             require_once $this->plugin_dir_path . 'training-data/concatenate_object_to_html.php';
-            require_once $this->plugin_dir_path . 'functions.php';
             
-            
-            
+            //core endpoints
             require_once $this->plugin_dir_path . 'public.php';
             require_once $this->plugin_dir_path . 'wp-json.php';
-
             require_once $this->plugin_dir_path . 'admin.php';
-            require_once $this->plugin_dir_path . 'controllers/input_controller.php';
-            require_once $this->plugin_dir_path . 'controllers/select_controller.php';
-            require_once $this->plugin_dir_path . 'integrations/providers/providers.php';
-            //require_once $this->plugin_dir_path . 'integrations/orders/orders.php';
+
+            //e-commerce
+            require_once $this->plugin_dir_path . 'e_commerce/providers/providers.php';
+            //require_once $this->plugin_dir_path . 'e_commerce/orders/orders.php';
         }
         public function init()
         {
