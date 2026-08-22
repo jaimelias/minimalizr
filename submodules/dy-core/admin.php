@@ -121,7 +121,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_phone', 
 			esc_html(__('Phone')), 
-			['dy_input_controller', 'number'], 
+			['dy_input_controller', 'text'], 
 			$this->setting_id, 
 			$this->section_company,
 			'dy_phone'
@@ -305,30 +305,6 @@ class Dynamic_Core_Admin {
 			'dy_facebook_pixel_id'		
 		);
     }
-
-	public function settings_input($arr){
-        $name = $arr['name'];
-        $url = (array_key_exists('url', $arr)) ? '<a target="_blank" rel="noopener noreferrer" href="'.esc_url($arr['url']).'">?</a>' : null;
-        $type = (array_key_exists('type', $arr)) ? $arr['type'] : 'text';
-        $value = ($type == 'checkbox') ? 1 : get_option($name);
-        ?>
-            <input 
-                type="<?php echo esc_attr($type); ?>" 
-                name="<?php echo esc_attr($name); ?>" 
-                id="<?php echo esc_attr($name); ?>" 
-                value="<?php echo esc_attr($value); ?>" <?php echo ($type == 'checkbox') ? checked( 1, get_option($name), false ) : null; ?> /> <span><?php echo $url; ?></span>
-    <?php }	
-
-	public function settings_textarea($arr){
-		$name = $arr['name'];
-		$url_text = (array_key_exists('url_text', $arr)) ? $arr['url_text'] : '?';
-		$url = (array_key_exists('url', $arr)) ? '<a target="_blank" rel="noopener noreferrer" href="'.esc_url($arr['url']).'">'.$url_text.'</a>' : null;
-		$type = (array_key_exists('type', $arr)) ? $arr['type'] : 'text';
-		$value = ($type == 'checkbox') ? 1 : get_option($name);
-		?>
-			<div class="text-right"><?php echo $url; ?></div>
-			<textarea class="width-100" rows="10" name="<?php echo esc_attr($name); ?>" id="<?php echo esc_attr($name); ?>" ><?php echo esc_textarea($value); ?></textarea>
-	<?php }	
 
     public  function admin_menu()
     {
