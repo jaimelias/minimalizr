@@ -15,6 +15,7 @@ if(!class_exists('Dy_Core_Init'))
         }
         public function load_dependencies()
         {
+            require_once $this->plugin_dir_path . 'integrations/gtag.php';
             require_once $this->plugin_dir_path . 'integrations/mailer.php';
             require_once $this->plugin_dir_path . 'integrations/cloudflare.php';
             require_once $this->plugin_dir_path . 'waf.php';
@@ -23,15 +24,15 @@ if(!class_exists('Dy_Core_Init'))
             require_once $this->plugin_dir_path . 'training-data/concatenate_object_to_text.php';
             require_once $this->plugin_dir_path . 'training-data/concatenate_object_to_html.php';
             require_once $this->plugin_dir_path . 'functions.php';
-            require_once $this->plugin_dir_path . 'integrations/gtag.php';
+            
             
             
             require_once $this->plugin_dir_path . 'public.php';
             require_once $this->plugin_dir_path . 'wp-json.php';
 
-            require_once $this->plugin_dir_path . 'admin/admin.php';
-            require_once $this->plugin_dir_path . 'admin/controllers/input_controller.php';
-            require_once $this->plugin_dir_path . 'admin/controllers/select_controller.php';
+            require_once $this->plugin_dir_path . 'admin.php';
+            require_once $this->plugin_dir_path . 'controllers/input_controller.php';
+            require_once $this->plugin_dir_path . 'controllers/select_controller.php';
             require_once $this->plugin_dir_path . 'integrations/providers/providers.php';
             //require_once $this->plugin_dir_path . 'integrations/orders/orders.php';
         }
