@@ -4,35 +4,48 @@ if(!class_exists('dy_input_controller')) {
 
 	class dy_input_controller {
 
-        protected static function get_value($key, $default = '', $post_id = null) {
-			
-			if($post_id === null) {
-				return get_option($key, $default);
+		private static $cache = [];
+
+		protected static function get_value($key, $default = '', $post_id = null) {
+
+			$cache_key = $key . '_' . ($post_id ?? 'option');
+
+			if (array_key_exists($cache_key, self::$cache)) {
+				return self::$cache[$cache_key]; 
 			}
 
-			return get_post_meta($post_id, $key, true) ?: $default;
-        }
+			if($post_id === null) {
+				return self::$cache[$cache_key] = get_option($key, $default);
+			}
 
-		private static function render($key, $args = []) {
+			$value = get_post_meta($post_id, $key, true);
 
-			if(empty($key)) {
-				return 'Param $key is required in dy_input_controller.';
+			return self::$cache[$cache_key] = $value === '' ? $default : $value;
+		}
+
+		private static function render($key, $args = [], $defaults = []) {
+
+			if(!is_string($key) || trim($key) === '') {
+				write_log('Param $key must be a non-empty string in dy_input_controller.');
+				return '';
 			}
 
 			if(!is_array($args)) {
-				return 'Param $args must be an array in dy_input_controller.';
+				write_log('Param $args must be an array in dy_input_controller.');
+				return '';
 			}
 
-            $post_id = $args['post_id'] ?? null;
-            unset($args['post_id']);
+			$post_id = $args['post_id'] ?? null;
+			unset($args['post_id']);
 
-            $value = static::get_value($key, '', $post_id);
+			$value = static::get_value($key, '', $post_id);
 
 			$args = array_merge(
 				[
 					'type'  => 'text',
 					'value' => $value,
 				],
+				$defaults,
 				$args,
 				[
 					'name' => $key,
@@ -40,17 +53,24 @@ if(!class_exists('dy_input_controller')) {
 				]
 			);
 
-			$attributes = array_map(
-				fn($key, $value) => sprintf(
-					'%s="%s"',
-					esc_attr($key),
-					esc_attr($value)
-				),
-				array_keys($args),
-				array_values($args)
-			);
+			$attributes = [];
 
-			printf(
+			foreach($args as $attribute => $value) {
+
+				if($value === false || $value === null) {
+					continue;
+				}
+
+				$attributes[] = $value === true
+					? esc_attr($attribute)
+					: sprintf(
+						'%s="%s"',
+						esc_attr($attribute),
+						esc_attr($value)
+					);
+			}
+
+			return sprintf(
 				'<input %s />',
 				implode(' ', $attributes)
 			);
@@ -59,73 +79,73 @@ if(!class_exists('dy_input_controller')) {
 
 		public static function text($key, $args = []) {
 
-			self::render($key, array_merge([
-				'type' => 'text',
-			], $args));
+			echo self::render($key, $args);
 		}
 
 
 		public static function email($key, $args = []) {
 
-			self::render($key, array_merge([
+			echo self::render($key, $args, [
 				'type' => 'email',
-			], $args));
+			]);
 		}
 
 
 		public static function url($key, $args = []) {
 
-			self::render($key, array_merge([
+			echo self::render($key, $args, [
 				'type' => 'url',
-			], $args));
+			]);
 		}
 
 
 		public static function number($key, $args = []) {
 
-			self::render($key, array_merge([
+			echo self::render($key, $args, [
 				'type' => 'number',
-			], $args));
+			]);
 		}
 
 
 		public static function int($key, $args = []) {
 
-			self::render($key, array_merge([
+			echo self::render($key, $args, [
 				'type' => 'number',
 				'step' => 1,
-			], $args));
+			]);
 		}
 
 
 		public static function float($key, $args = []) {
 
-			self::render($key, array_merge([
+			echo self::render($key, $args, [
 				'type' => 'number',
 				'step' => 'any',
-			], $args));
+			]);
 		}
 
 
 		public static function price($key, $args = []) {
 
-			self::render($key, array_merge([
+			echo self::render($key, $args, [
 				'type' => 'number',
 				'min'  => 0,
 				'step' => 0.01,
-			], $args));
+			]);
 		}
 
 
 		public static function percentage($key, $args = []) {
 
-			self::render($key, array_merge([
+			echo self::render($key, $args, [
 				'type' => 'number',
 				'min'  => 0,
 				'max'  => 100,
 				'step' => 0.01,
-			], $args));
+			]);
 		}
+
+
 	}
 }
 
