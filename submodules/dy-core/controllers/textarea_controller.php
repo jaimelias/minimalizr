@@ -38,11 +38,6 @@ if(!class_exists('dy_textarea_controller')) {
 			$post_id = $args['post_id'] ?? null;
 			$append = $args['append'] ?? '';
 			$prepend = $args['prepend'] ?? '';
-			
-			unset($args['post_id']);
-			unset($args['append']);
-			unset($args['prepend']);
-
 
 			$value = static::get_value($key, '', $post_id);
 
@@ -56,6 +51,10 @@ if(!class_exists('dy_textarea_controller')) {
 			);
 
 			$attributes = [];
+
+			unset($args['post_id']);
+			unset($args['append']);
+			unset($args['prepend']);
 
 			foreach($args as $attribute => $attribute_value) {
 

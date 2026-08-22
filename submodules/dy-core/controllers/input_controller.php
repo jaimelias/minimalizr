@@ -39,10 +39,6 @@ if(!class_exists('dy_input_controller')) {
 			$append = $args['append'] ?? '';
 			$prepend = $args['prepend'] ?? '';
 			
-			unset($args['post_id']);
-			unset($args['append']);
-			unset($args['prepend']);
-
 			$value = static::get_value($key, '', $post_id);
 
 			$args = array_merge(
@@ -58,12 +54,17 @@ if(!class_exists('dy_input_controller')) {
 				]
 			);
 
+
 			if($args['type'] === 'checkbox' && !array_key_exists('checked', $args)) {
 				$args['checked'] = (string) $value === (string) $args['value'];
 			}
  
 
 			$attributes = [];
+
+			unset($args['post_id']);
+			unset($args['append']);
+			unset($args['prepend']);
 
 			foreach($args as $attribute => $value) {
 

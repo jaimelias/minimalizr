@@ -64,9 +64,7 @@ if(!class_exists('dy_select_controller')) {
 			$append = $args['append'] ?? '';
 			$prepend = $args['prepend'] ?? '';
 			
-			unset($args['post_id']);
-			unset($args['append']);
-			unset($args['prepend']);
+
 
             $selected_value = static::get_value($key, '', $post_id);
 
@@ -79,6 +77,10 @@ if(!class_exists('dy_select_controller')) {
             );
 
             $attributes = [];
+
+			unset($args['post_id']);
+			unset($args['append']);
+			unset($args['prepend']);
 
             foreach($args as $attribute => $attribute_value) {
 
