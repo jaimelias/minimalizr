@@ -1,5 +1,7 @@
 <?php
 
+if ( !defined( 'WPINC' ) ) exit;
+
 if(!class_exists('dy_textarea_controller')) {
 
 	class dy_textarea_controller {

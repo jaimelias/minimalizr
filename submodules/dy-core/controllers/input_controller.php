@@ -1,5 +1,7 @@
 <?php
 
+if ( !defined( 'WPINC' ) ) exit;
+
 if(!class_exists('dy_input_controller')) {
 
 	class dy_input_controller {

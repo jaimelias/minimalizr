@@ -71,7 +71,7 @@ class Dy_Mailer
 
 		//mailer settings
 		register_setting('mailer_settings', 'sendgrid_email', 'sanitize_text_field');
-		register_setting('mailer_settings', 'sendgrid_email_bcc', array($this, 'sanitize_items_per_line'));
+		register_setting('mailer_settings', 'sendgrid_email_bcc', 'dy_sanitize_email_per_line');
 		register_setting('mailer_settings', 'sendgrid_name', 'sanitize_text_field');		
 
 
@@ -95,58 +95,51 @@ class Dy_Mailer
 		add_settings_field( 
 			'sendgrid_email', 
 			'Bot Email (From)', 
-			array($this, 'settings_input'), 
+			['dy_input_controller', 'email'], 
 			'mailer_settings', 
 			'mailer_settings_section',
-			array('name' => 'sendgrid_email', 'type' => 'email') 
+			[
+				'key' => 'sendgrid_email'
+			] 
 		);
 		
 		add_settings_field( 
 			'sendgrid_email_bcc', 
 			'Inbox Email (Bcc)', 
-			array($this, 'settings_textarea'), 
+			['dy_textarea_controller', 'text'], 
 			'mailer_settings', 
 			'mailer_settings_section',
-			array('name' => 'sendgrid_email_bcc') 
+			[
+				'key' => 'sendgrid_email_bcc',
+				'rows' => 10,
+				'cols' => 50,
+				'klass' => 'width-100'
+			]
 		);			
 
 		add_settings_field( 
 			'sendgrid_name', 
 			'From Name', 
-			array($this, 'settings_input'), 
+			['dy_input_controller', 'text'], 
 			'mailer_settings', 
 			'mailer_settings_section',
-			array('name' => 'sendgrid_name') 
+			[
+				'key' => 'sendgrid_name'
+			]
 		);	
 
 		add_settings_field( 
 			'sendgrid_web_api_key', 
 			'Web API Key', 
-			array($this, 'settings_input'), 
+			['dy_input_controller', 'text'], 
 			'mailer_settings', 
 			'sendgrid_settings_section',
-			array('name' => 'sendgrid_web_api_key') 
+			[
+				'key' => 'sendgrid_web_api_key'
+			]
 		);
 		
 	}
-	
-	public function settings_input($arr){
-			$name = $arr['name'];
-			$url = (array_key_exists('url', $arr)) ? '<a href="'.esc_url($arr['url']).'">?</a>' : null;
-			$type = (array_key_exists('type', $arr)) ? $arr['type'] : 'text';
-		?>
-		<input type="<?php echo $type; ?>" name="<?php echo esc_attr($name); ?>" id="<?php echo esc_attr($name); ?>" value="<?php echo esc_attr(get_option($name)); ?>" /> <span><?php echo $url; ?></span>
-
-	<?php }
-
-	public function settings_textarea($arr){
-		$name = $arr['name'];
-		$url = (array_key_exists('url', $arr)) ? '<a href="'.esc_url($arr['url']).'">?</a>' : null;
-	?>
-		<span><?php echo $url; ?></span>
-		<textarea rows="10" class="width-100" name="<?php echo esc_attr($name); ?>" id="<?php echo esc_attr($name); ?>"><?php echo esc_textarea($this->sanitize_items_per_line(get_option($name))); ?></textarea>
-
-	<?php }		
 
 	public function pre_wp_mail($preempt, $atts)
 	{
@@ -941,26 +934,6 @@ class Dy_Mailer
 
 
 		return $output;
-	}
-
-	public function sanitize_items_per_line($str)
-	{
-		$decoded_str = html_entity_decode($str);
-	
-		if ($decoded_str === false) {
-			// Handle decoding error, perhaps log or throw an exception
-			return false;
-		}
-	
-		// Normalize line endings
-		$emails = explode(PHP_EOL, $decoded_str);
-	
-		$unique_emails = array_unique(array_filter(array_map('sanitize_email', $emails)));
-	
-		// Limit the result to a configurable number
-		$arr = array_slice($unique_emails, 0, $this->recipients_limit);
-	
-		return implode(PHP_EOL, $arr);
 	}
 	
 }

@@ -93,7 +93,7 @@ class Dynamic_Core_Providers {
 		}
 		if(isset($_POST[$this->name.'_emails']))
 		{
-			update_term_meta($term_id, $this->name.'_emails', esc_textarea($this->sanitize_items_per_line('sanitize_email', $_POST[$this->name.'_emails'])));
+			update_term_meta($term_id, $this->name.'_emails', esc_textarea(dy_sanitize_email_per_line($_POST[$this->name.'_emails'])));
 		}
 		if(isset($_POST[$this->name.'_whatsapp']))
 		{
@@ -101,19 +101,10 @@ class Dynamic_Core_Providers {
 		}
 	}
 
-	public function sanitize_items_per_line($sanitize_func, $str)
-	{
-		$str = html_entity_decode($str);
-		$emails = explode("\r\n", $str);		
-		$arr = array_slice(array_unique(array_filter(array_map($sanitize_func, $emails))), 0, 10) ;
-
-		return implode("\r\n", $arr);
-	}
-
-	public function textarea_items_per_line($term_id, $sanitize_func = 'sanitize_text_field')
+	public function textarea_items_per_line($term_id)
 	{
 		$emails = get_term_meta($term_id, $this->name.'_emails', true);
-		return '<textarea rows="10" name="'.esc_attr($this->name.'_emails').'">'.esc_textarea($this->sanitize_items_per_line($sanitize_func, $emails)).'</textarea>';
+		return '<textarea rows="10" name="'.esc_attr($this->name.'_emails').'">'.esc_textarea(dy_sanitize_email_per_line($emails)).'</textarea>';
 	}
 
 	public function input_field($term_id, $type = 'text')
@@ -182,7 +173,7 @@ class Dynamic_Core_Providers {
 
 
 		$rows .= $this->admin_taxonomy_form_row($this->name.'_whatsapp', __('Whatsapp'), $this->input_field($term_id, 'number'));
-		$rows .= $this->admin_taxonomy_form_row($this->name.'_emails', __('Provider Emails'), $this->textarea_items_per_line($term_id, 'sanitize_email'), __('1 email per line. Up to 10 emails maximum.'));
+		$rows .= $this->admin_taxonomy_form_row($this->name.'_emails', __('Provider Emails'), $this->textarea_items_per_line($term_id), __('1 email per line. Up to 10 emails maximum.'));
 		echo $rows;
     }
 
