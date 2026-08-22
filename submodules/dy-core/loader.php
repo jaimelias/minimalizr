@@ -21,7 +21,7 @@ if(!class_exists('Dy_Core_Init'))
             require_once $this->plugin_dir_path . 'security/queries.php';
             require_once $this->plugin_dir_path . 'controllers/input_controller.php';
             require_once $this->plugin_dir_path . 'controllers/select_controller.php';
-            require_once $this->plugin_dir_path . 'textarea/select_controller.php';
+            require_once $this->plugin_dir_path . 'controllers/textarea_controller.php';
 
             //third-party integrations
             require_once $this->plugin_dir_path . 'integrations/gtag.php';
