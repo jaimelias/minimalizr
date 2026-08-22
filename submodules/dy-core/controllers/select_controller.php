@@ -61,7 +61,12 @@ if(!class_exists('dy_select_controller')) {
             }
 
             $post_id = $args['post_id'] ?? null;
-            unset($args['post_id']);
+			$append = $args['append'] ?? '';
+			$prepend = $args['prepend'] ?? '';
+			
+			unset($args['post_id']);
+			unset($args['append']);
+			unset($args['prepend']);
 
             $selected_value = static::get_value($key, '', $post_id);
 
@@ -91,7 +96,8 @@ if(!class_exists('dy_select_controller')) {
             }
 
             printf(
-                '<select %s>',
+                '%s<select %s>', 
+                wp_kses_post($prepend),
                 implode(' ', $attributes)
             );
 
@@ -106,7 +112,10 @@ if(!class_exists('dy_select_controller')) {
 
             }
 
-            echo '</select>';
+            printf(
+                '</select>%s', 
+                wp_kses_post($append)
+            );
         }
 
 

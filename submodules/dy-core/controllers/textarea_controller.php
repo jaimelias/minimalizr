@@ -36,7 +36,13 @@ if(!class_exists('dy_textarea_controller')) {
 			}
 
 			$post_id = $args['post_id'] ?? null;
+			$append = $args['append'] ?? '';
+			$prepend = $args['prepend'] ?? '';
+			
 			unset($args['post_id']);
+			unset($args['append']);
+			unset($args['prepend']);
+
 
 			$value = static::get_value($key, '', $post_id);
 
@@ -67,9 +73,11 @@ if(!class_exists('dy_textarea_controller')) {
 			}
 
 			return sprintf(
-				'<textarea %s>%s</textarea>',
+				'%s<textarea %s>%s</textarea>%s',
+				wp_kses_post($prepend),
 				implode(' ', $attributes),
-				esc_textarea($value)
+				esc_textarea($value),
+				wp_kses_post($append)
 			);
 		}
 

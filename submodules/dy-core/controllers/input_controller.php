@@ -35,8 +35,13 @@ if(!class_exists('dy_input_controller')) {
 				return '';
 			}
 
-			$post_id = $args['post_id'] ?? null;
+            $post_id = $args['post_id'] ?? null;
+			$append = $args['append'] ?? '';
+			$prepend = $args['prepend'] ?? '';
+			
 			unset($args['post_id']);
+			unset($args['append']);
+			unset($args['prepend']);
 
 			$value = static::get_value($key, '', $post_id);
 
@@ -71,8 +76,10 @@ if(!class_exists('dy_input_controller')) {
 			}
 
 			return sprintf(
-				'<input %s />',
-				implode(' ', $attributes)
+				'%s<input %s />%s',
+				wp_kses_post($prepend),
+				implode(' ', $attributes),
+				wp_kses_post($append) 
 			);
 		}
 
