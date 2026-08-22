@@ -131,14 +131,6 @@ class Dynamic_Core_Admin {
 			]
 		);
 
-		$text_area_cb = function($key) {
-			return dy_textarea_controller::text($key, array(
-				'rows' => 5,
-				'cols' => 50,
-				'class' => 'width-100',
-			));
-		};
-
 		for($x = 0; $x < count($languages); $x++)
 		{
 			$lang = $languages[$x];
