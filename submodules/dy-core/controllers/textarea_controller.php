@@ -48,6 +48,20 @@ if(!class_exists('dy_textarea_controller')) {
 			$append = $args['append'] ?? '';
 			$prepend = $args['prepend'] ?? '';
 
+			if($post_id === null) {
+
+				//removes the class attribute to avoid conflicts row class in the admin settings page
+
+				if(array_key_exists('klass', $args)) {
+					if(is_string($args['klass']) && trim($args['klass']) !== '') {
+						$args['class'] = $args['klass'];
+					}
+
+					unset($args['klass']);
+				}
+				
+			}
+
 			$value = static::get_value($key, '', $post_id);
 
 			$args = array_merge(

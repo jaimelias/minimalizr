@@ -31,6 +31,7 @@ if(!class_exists('dy_input_controller')) {
 				return '';
 			}
 
+			
 			if(!array_key_exists('key', $args)) {
 				write_log('Param $args must contain a "key" in dy_input_controller.');
 				return '';
@@ -46,6 +47,18 @@ if(!class_exists('dy_input_controller')) {
             $post_id = $args['post_id'] ?? null;
 			$append = $args['append'] ?? '';
 			$prepend = $args['prepend'] ?? '';
+
+			if($post_id === null) {
+
+				//removes the class attribute to avoid conflicts row class in the admin settings page
+
+				if(array_key_exists('klass', $args)) {
+					if(is_string($args['klass']) && trim($args['klass']) !== '') {
+						$args['class'] = $args['klass'];
+					}
+					unset($args['klass']);
+				}
+			}
 			
 			$value = static::get_value($key, '', $post_id);
 
@@ -163,8 +176,7 @@ if(!class_exists('dy_input_controller')) {
 				'type' => 'number',
 				'min'  => 0,
 				'max'  => 100,
-				'step' => 0.01,
-				'append' => '%'
+				'step' => 0.01
 			]);
 		}
 

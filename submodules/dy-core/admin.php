@@ -173,7 +173,7 @@ class Dynamic_Core_Admin {
 					'key' => 'dy_site_alert'.$lang_suffix,
 					'rows' => 5,
 					'cols' => 50,
-					'class' => 'width-100',
+					'klass' => 'width-100',
 				]
 			);
 			add_settings_field( 
@@ -186,7 +186,7 @@ class Dynamic_Core_Admin {
 					'key' => 'dy_footer_alert'.$lang_suffix,
 					'rows' => 5,
 					'cols' => 50,
-					'class' => 'width-100',
+					'klass' => 'width-100',
 				]
 			);
 			
