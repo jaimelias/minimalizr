@@ -45,30 +45,36 @@ if(!class_exists('dy_select_controller')) {
 			return self::$cache[$cache_key] = $value === '' ? $default : $value;
 		}
 
-        public static function custom($options = [], $args = []) {
+        public static function custom($args = []) {
 
             if(!is_array($args)) {
-                write_log('Param $args must be an array in dy_select_controller.');
+                write_log('Param $args must be an array in "dy_select_controller".');
                 return '';
             }
 
 			if(!array_key_exists('key', $args)) {
-				write_log('Param $args must contain a "key" in dy_input_controller.');
+				write_log('Param $args must contain a "key" property in "dy_select_controller".');
 				return '';
 			}
 
             $key = $args['key'];
 
             if(!is_string($key) || trim($key) === '') {
-                write_log('Param $key must be a non-empty string in dy_select_controller.');
+                write_log('Param $key must be a non-empty string in "dy_select_controller".');
                 return '';
             }
+
+            if(!array_key_exists('options', $args)) {
+                write_log('Param $args must contain an "options" property in "dy_select_controller".');
+                return '';
+            }
+
+            $options = $args['options'];
 
             if(!is_array($options)) {
-                write_log('Param $options must be an array in dy_select_controller.');
+                write_log('Param $args["options"] must be an array in "dy_select_controller".');
                 return '';
             }
-
 
             $post_id = $args['post_id'] ?? null;
 			$append = $args['append'] ?? '';
@@ -103,6 +109,7 @@ if(!class_exists('dy_select_controller')) {
 			unset($args['post_id']);
 			unset($args['append']);
 			unset($args['prepend']);
+            unset($args['options']);
 
             foreach($args as $attribute => $attribute_value) {
 
@@ -145,12 +152,26 @@ if(!class_exists('dy_select_controller')) {
 
 
         public static function min_max(
-            $options_config = [],
             $args = []
         ) {
 
-            if(!is_array($options_config)) {
-                write_log('Param $options_config must be an array in dy_select_controller.');
+            if(!is_array($args)) {
+                write_log('Param $args must be an array in "dy_select_controller".');
+                return '';
+            }
+
+            if(!array_key_exists('min', $args)) {
+                write_log('Property $args["min"] not found in "dy_select_controller".');
+                return '';
+            }
+
+            if(!array_key_exists('max', $args)) {
+                write_log('Property $args["max"] not found in "dy_select_controller".');
+                return '';
+            }
+
+            if(!array_key_exists('step', $args)) {
+                write_log('Property $args["step"] not found in "dy_select_controller".');
                 return '';
             }
 
@@ -160,14 +181,14 @@ if(!class_exists('dy_select_controller')) {
                 'step' => 1,
             ];
 
-            $options_config = array_merge(
+            $config = array_merge(
                 $defaults,
-                $options_config
+                $config
             );
 
-            $min  = $options_config['min'];
-            $max  = $options_config['max'];
-            $step = $options_config['step'];
+            $min  = $config['min'];
+            $max  = $config['max'];
+            $step = $config['step'];
 
             if(
                 filter_var($min, FILTER_VALIDATE_INT) === false ||
@@ -190,16 +211,17 @@ if(!class_exists('dy_select_controller')) {
                 return '';
             }
 
-            $options = [];
+           $args["options"] = [];
 
             for($i = $min; $i <= $max; $i += $step) {
-                $options[$i] = $i;
+                $args["options"][$i] = $i;
             }
 
-            return self::custom(
-                $options,
-                $args
-            );
+            unset($args['min']);
+            unset($args['max']);
+            unset($args['step']);
+
+            return self::custom( $args );
         }
 
 
