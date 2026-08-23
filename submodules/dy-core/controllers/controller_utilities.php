@@ -31,7 +31,8 @@ if(!function_exists('dy_sanitize_per_line')) {
 
 if(!function_exists('dy_sanitize_email_per_line')) {
 
-    function dy_sanitize_email_per_line($str, $max_items = 10) 	{
+    function dy_sanitize_email_per_line($str) 	{
+		$max_items = 10;
         return dy_sanitize_per_line('sanitize_email', $str, $max_items);
 	}
 }
