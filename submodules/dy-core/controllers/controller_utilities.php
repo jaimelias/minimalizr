@@ -2,22 +2,22 @@
 
 if ( !defined( 'WPINC' ) ) exit;
 
-if(!function_exists('sanitize_per_line')) {
+if(!function_exists('dy_sanitize_per_line')) {
 
-    function sanitize_per_line($sanitize_func, $str, $max_items = 10) 	{
+    function dy_sanitize_per_line($sanitize_func, $str, $max_items = 10) 	{
         
         if(!function_exists($sanitize_func)) {
-            write_log('sanitize_per_line expects a valid sanitization function as the first argument. '.$sanitize_func.' given.');
+            write_log('dy_sanitize_per_line expects a valid sanitization function as the first argument. '.$sanitize_func.' given.');
             return '';
         }
 
 		if(!is_string($str)) {
-			write_log('sanitize_per_line expects a string as the second argument. '.gettype($str).' given.');
+			write_log('dy_sanitize_per_line expects a string as the second argument. '.gettype($str).' given.');
 			return '';
 		}
 
 		if(!is_int($max_items) || $max_items < 1) {
-			write_log('sanitize_per_line expects a positive integer as the third argument. '.gettype($max_items).' given.');
+			write_log('dy_sanitize_per_line expects a positive integer as the third argument. '.gettype($max_items).' given.');
 			return '';
 		}
 
@@ -29,10 +29,10 @@ if(!function_exists('sanitize_per_line')) {
 	}
 }
 
-if(!function_exists('sanitize_email_per_line')) {
+if(!function_exists('dy_sanitize_email_per_line')) {
 
-    function sanitize_email_per_line($str, $max_items = 10) 	{
-        return sanitize_per_line('sanitize_email', $str, $max_items);
+    function dy_sanitize_email_per_line($str, $max_items = 10) 	{
+        return dy_sanitize_per_line('sanitize_email', $str, $max_items);
 	}
 }
 
