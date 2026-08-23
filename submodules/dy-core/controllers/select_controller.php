@@ -6,26 +6,24 @@ if(!class_exists('dy_select_controller')) {
 
 	class dy_select_controller {
 
+        /* 
 
-		/**
-		 * Create a select using custom options.
-		 *
-		 * Example:
-		 *
-		 * dy_select_controller::custom('status', [
-		 *     ''        => 'Select status',
-		 *     '0'  => 'Active',
-		 *     '1' => 'Pending',
-		 * ]);
-         * 
-		 * dy_select_controller::min_max('status', [
-		 *     'min'        => 0,
-		 *     'max'        => 100,
-		 *     'step'       => 1,
-		 * ]);
-		 */
+        dy_select_controller::custom([
+            'key' => 'status',
+            'options' => [
+                0 => 'Active',
+                1 => 'Pending',
+            ],
+        ]);
 
+        dy_select_controller::min_max([
+            'key'  => 'status',
+            'min'  => 0,
+            'max'  => 100,
+            'step' => 1,
+        ]);
 
+        */
 		private static $cache = [];
 
 		protected static function get_value($key, $default = '', $post_id = null) {
@@ -175,20 +173,9 @@ if(!class_exists('dy_select_controller')) {
                 return '';
             }
 
-            $defaults = [
-                'min'  => 0,
-                'max'  => 100,
-                'step' => 1,
-            ];
-
-            $config = array_merge(
-                $defaults,
-                $config
-            );
-
-            $min  = $config['min'];
-            $max  = $config['max'];
-            $step = $config['step'];
+            $min  = $args['min'];
+            $max  = $args['max'];
+            $step = $args['step'];
 
             if(
                 filter_var($min, FILTER_VALIDATE_INT) === false ||
