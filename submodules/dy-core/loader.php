@@ -29,6 +29,7 @@ if(!class_exists('Dy_Core_Init'))
             require_once $this->plugin_dir_path . 'integrations/mailer.php';
             require_once $this->plugin_dir_path . 'integrations/cloudflare.php';
             require_once $this->plugin_dir_path . 'integrations/sitemap.php';
+            require_once $this->plugin_dir_path . 'integrations/handsontable.php';
 
             //ai training data
             require_once $this->plugin_dir_path . 'training-data/concatenate_object_to_text.php';
