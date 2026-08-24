@@ -2,37 +2,39 @@
 
  
 /**
- * dy_textarea_abstract
+ * Base renderer for value-backed HTML <textarea> elements.
  *
- * Renders a self-populating <textarea> field whose content is read from
- * a WordPress option via the "key" passed in $args. Designed to be used
- * both on plugin/theme settings pages and, when a "post_id" is supplied,
- * inside post meta boxes.
+ * This class provides shared validation, attribute filtering, escaping, and
+ * rendering logic. Concrete subclasses must implement get_value() to define
+ * the field's storage provider.
  *
- * Common $args keys:
- * - key      (string, required) Option name used to fetch/cache the
- *             content and used as the "name"/"id" attribute of the field.
- * - post_id  (int|null, optional) Present to signal a post-meta context;
- *             see get_value() for how this should interact with storage.
- * - klass    (string, optional) Alias for "class"; converted internally
- *             so calling code can pass a CSS class without colliding with
- *             the "class" key used internally on the settings page.
- * - append   (string, optional) Raw HTML appended after the </textarea>
- *             tag (passed through wp_kses_post).
- * - prepend  (string, optional) Raw HTML prepended before the <textarea>
- *             tag (passed through wp_kses_post).
- * - Any other key (class, rows, cols, placeholder, etc.) is rendered
- *   directly as an HTML attribute on the <textarea> element.
+ * Do not invoke this abstract class directly. Use a concrete implementation
+ * such as dy_textarea_option.
  *
- * The stored value is escaped with esc_textarea() and printed as the
- * element's inner content, not as a "value" attribute.
+ * Supported arguments:
+ * - key     (string, required) Storage key and generated textarea name/id.
+ * - klass   (string, optional) Converted to the HTML "class" attribute.
+ * - prepend (string, optional) HTML rendered before the textarea.
+ * - append  (string, optional) HTML rendered after the textarea.
  *
- * Usage:
+ * Allowlisted global and <textarea> attributes such as rows, cols, required,
+ * maxlength, and placeholder are rendered. Valid data-* and aria-* attributes
+ * are also accepted. Internal and event-handler attributes are rejected.
  *
- *     dy_textarea_abstract::text([
- *         'key'  => 'company_bio',
- *         'rows' => 5,
- *         'klass' => 'large-text',
+ * The retrieved value is rendered as the textarea content and escaped with
+ * esc_textarea(). Attribute values are escaped with esc_attr(). Prepend and
+ * append content are filtered with wp_kses_post().
+ *
+ * text() echoes the generated markup.
+ *
+ * Example:
+ *
+ *     dy_textarea_option::text([
+ *         'key'             => 'company_bio',
+ *         'klass'           => 'large-text',
+ *         'rows'            => 5,
+ *         'data-controller' => 'company-bio',
+ *         'aria-label'      => 'Company biography',
  *     ]);
  *
  * @package dy
@@ -44,6 +46,20 @@ if(!class_exists('dy_textarea_abstract')) {
 
 	abstract class dy_textarea_abstract {
 
+
+		/**
+		 * Retrieves the stored value for the field.
+		 *
+		 * Concrete subclasses must implement this method and return the value supplied
+		 * by their storage provider.
+		 *
+		 * The "key" argument has already been validated as a non-empty string before
+		 * this method is called.
+		 *
+		 * @param array<string, mixed> $args Field configuration containing "key".
+		 * @return mixed Stored field value.
+		 */
+		
 		abstract protected static function get_value($args);
 
 		private static function render($args = [], $defaults = []) {
@@ -74,8 +90,6 @@ if(!class_exists('dy_textarea_abstract')) {
 				if(is_string($args['klass']) && trim($args['klass']) !== '') {
 					$args['class'] = $args['klass'];
 				}
-
-				unset($args['klass']);
 			}
 
 			$stored_value = static::get_value($args);
@@ -90,6 +104,7 @@ if(!class_exists('dy_textarea_abstract')) {
 			);
 
 			$attributes = [];
+			$allowed_keys = self::get_allowed_keys();
 
 			foreach($args as $attribute => $attribute_value) {
 
@@ -99,7 +114,7 @@ if(!class_exists('dy_textarea_abstract')) {
 						$attribute
 					);
 
-				if(!in_array($attribute, $allowed_keys) && !$is_prefixed_attribute) {
+				if(!in_array($attribute, $allowed_keys, true) && !$is_prefixed_attribute) {
 					continue;
 				}
 

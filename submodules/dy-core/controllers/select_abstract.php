@@ -1,51 +1,59 @@
 <?php
 
 /**
- * dy_select_abstract
+ * Base renderer for value-backed HTML <select> elements.
  *
- * Renders self-populating <select> dropdown fields whose selected value is
- * read from a WordPress option via the "key" passed in $args. Two entry
- * points are provided: custom(), which takes an explicit value => label
- * "options" array, and min_max(), a convenience wrapper that generates a
- * numeric range of options and delegates to custom().
+ * Concrete subclasses must implement get_value() to retrieve the currently
+ * selected value from a storage provider. Do not invoke this abstract class
+ * directly; use a concrete implementation such as dy_select_option.
  *
- * Common $args keys (custom()):
- * - key      (string, required) Option name used to fetch/cache the
- *             selected value and used as the "name"/"id" attribute.
- * - options  (array, required) Associative array of value => label pairs
- *             rendered as <option> elements.
- * - post_id  (int|null, optional) Present to signal a post-meta context;
- *             see get_value() for how this should interact with storage.
- * - klass    (string, optional) Alias for "class"; converted internally
- *             so calling code can pass a CSS class without colliding with
- *             the "class" key used internally on the settings page.
- * - append   (string, optional) Raw HTML appended after the </select> tag
- *             (passed through wp_kses_post).
- * - prepend  (string, optional) Raw HTML prepended before the <select> tag
- *             (passed through wp_kses_post).
- * - Any other key (class, multiple, disabled, etc.) is rendered directly
- *   as an HTML attribute on the <select> element.
+ * Public methods:
+ * - custom()  Renders options supplied as value => label pairs.
+ * - min_max() Generates a numeric range and delegates rendering to custom().
  *
- * min_max() additionally requires:
- * - min   (int, required) Lower bound of the generated range (inclusive).
- * - max   (int, required) Upper bound of the generated range (inclusive).
- * - step  (int, required) Positive integer increment between options.
+ * Arguments accepted by custom():
+ * - key     (string, required) Storage key and generated select name/id.
+ * - options (array, required)  Option values mapped to visible labels.
+ * - klass   (string, optional) Converted to the HTML "class" attribute.
+ * - prepend (string, optional) HTML rendered before the select.
+ * - append  (string, optional) HTML rendered after the select.
  *
- * Usage:
+ * Additional arguments required by min_max():
+ * - min  (int) Lower inclusive range boundary.
+ * - max  (int) Upper inclusive range boundary.
+ * - step (int) Positive range increment.
  *
- *     dy_select_abstract::custom([
- *         'key' => 'status',
+ * Only allowlisted global and <select> attributes are rendered. Valid data-*
+ * and aria-* attributes are accepted. Internal arguments, option definitions,
+ * and event-handler attributes are not rendered.
+ *
+ * Attribute values and option values are escaped with esc_attr(). Option
+ * labels are escaped with esc_html(). Prepend and append content are filtered
+ * with wp_kses_post().
+ *
+ * Public methods echo the generated markup.
+ *
+ * Example:
+ *
+ *     dy_select_option::custom([
+ *         'key'     => 'status',
+ *         'klass'   => 'regular-select',
+ *         'required' => true,
  *         'options' => [
- *             0 => 'Active',
- *             1 => 'Pending',
+ *             'active'   => 'Active',
+ *             'disabled' => 'Disabled',
  *         ],
+ *         'data-controller' => 'status-field',
+ *         'aria-label'      => 'Status',
  *     ]);
  *
- *     dy_select_abstract::min_max([
- *         'key'  => 'status',
+ * Numeric range example:
+ *
+ *     dy_select_option::min_max([
+ *         'key'  => 'percentage',
  *         'min'  => 0,
  *         'max'  => 100,
- *         'step' => 1,
+ *         'step' => 10,
  *     ]);
  *
  * @package dy
@@ -57,24 +65,18 @@ if(!class_exists('dy_select_abstract')) {
 
 	abstract class dy_select_abstract {
 
-        /* 
-
-        dy_select_abstract::custom([
-            'key' => 'status',
-            'options' => [
-                0 => 'Active',
-                1 => 'Pending',
-            ],
-        ]);
-
-        dy_select_abstract::min_max([
-            'key'  => 'status',
-            'min'  => 0,
-            'max'  => 100,
-            'step' => 1,
-        ]);
-
-        */
+        /**
+         * Retrieves the stored value for the field.
+         *
+         * Concrete subclasses must implement this method and return the value supplied
+         * by their storage provider.
+         *
+         * The "key" argument has already been validated as a non-empty string before
+         * this method is called.
+         *
+         * @param array<string, mixed> $args Field configuration containing "key".
+         * @return mixed Stored field value.
+         */
 
 		abstract protected static function get_value($args);
 
@@ -117,8 +119,6 @@ if(!class_exists('dy_select_abstract')) {
                 if(is_string($args['klass']) && trim($args['klass']) !== '') {
                     $args['class'] = $args['klass'];
                 }
-
-                unset($args['klass']);
             }
 
             $stored_value =  static::get_value($args);
@@ -132,6 +132,7 @@ if(!class_exists('dy_select_abstract')) {
             );
 
             $attributes = [];
+            $allowed_keys = self::get_allowed_keys();
 
             foreach($args as $attribute => $attribute_value) {
 
@@ -141,7 +142,7 @@ if(!class_exists('dy_select_abstract')) {
 						$attribute
 					);
 
-				if(!in_array($attribute, $allowed_keys) && !$is_prefixed_attribute) {
+				if(!in_array($attribute, $allowed_keys, true) && !$is_prefixed_attribute) {
 					continue;
 				}
 

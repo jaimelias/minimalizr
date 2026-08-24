@@ -1,51 +1,52 @@
 <?php
 
 /**
- * dy_input_abstract
+ * Base renderer for value-backed HTML <input> elements.
  *
- * Renders self-populating <input> form fields whose value is read from
- * (and, by convention, intended to be saved back to) a WordPress option
- * via the "key" passed in $args. Designed to be used both on plugin/theme
- * settings pages and, when a "post_id" is supplied, inside post meta boxes.
+ * This class implements the shared validation, attribute filtering, escaping,
+ * and rendering logic for input fields. Concrete subclasses must implement
+ * get_value() to define where the field's stored value comes from.
  *
- * Each helper method (text, email, url, number, int, float, price,
- * percentage, checkbox) is a thin wrapper around the private render()
- * method that simply pre-fills sensible <input type="..."> defaults
- * before echoing the final HTML.
+ * Do not call this abstract class directly. Use a concrete implementation such
+ * as dy_input_option or create a subclass for another storage provider.
  *
- * Common $args keys:
- * - key      (string, required) Option name used to fetch/cache the value
- *             and used as the "name"/"id" attribute of the field.
- * - post_id  (int|null, optional) Present to signal a post-meta context;
- *             see get_value() for how this should interact with storage.
- * - value    (mixed, optional) Overrides the auto-fetched stored value
- *             (e.g. the "on" value for checkbox()).
- * - klass    (string, optional) Alias for "class"; converted internally
- *             so calling code can pass a CSS class without colliding with
- *             the "class" key used internally on the settings page.
- * - append   (string, optional) Raw HTML appended after the <input> tag
- *             (passed through wp_kses_post).
- * - prepend  (string, optional) Raw HTML prepended before the <input> tag
- *             (passed through wp_kses_post).
- * - checked  (bool, optional) For checkbox(); auto-derived from the
- *             stored value when omitted.
- * - Any other key (type, class, placeholder, min, max, step, etc.) is
- *   rendered directly as an HTML attribute on the <input> element.
+ * Available field helpers:
+ * - text()
+ * - email()
+ * - url()
+ * - number()
+ * - int()
+ * - float()
+ * - price()
+ * - percentage()
+ * - checkbox()
  *
- * All other unrecognized attributes are escaped with esc_attr() and
- * printed as-is, so any valid HTML input attribute can be passed through.
+ * Supported arguments:
+ * - key     (string, required) Storage key and generated field name/id.
+ * - value   (mixed, optional) Overrides the retrieved value.
+ * - klass   (string, optional) Converted to the HTML "class" attribute.
+ * - prepend (string, optional) HTML rendered before the input.
+ * - append  (string, optional) HTML rendered after the input.
+ * - checked (bool, optional) Explicit checkbox state. When omitted, the
+ *                            retrieved value is compared with "value".
  *
- * Usage:
+ * Only allowlisted global and <input> attributes are rendered. Valid data-*
+ * and aria-* attributes are also accepted. Internal controller arguments and
+ * event-handler attributes such as onclick are not rendered.
  *
- *     dy_input_abstract::text([
- *         'key'         => 'company_name',
- *         'placeholder' => 'Acme Inc.',
- *         'klass'       => 'regular-text',
- *     ]);
+ * Attribute names and values are escaped with esc_attr(). Prepend and append
+ * content are filtered with wp_kses_post().
  *
- *     dy_input_abstract::checkbox([
- *         'key'   => 'enable_feature',
- *         'value' => 1,
+ * Public helpers echo the generated markup.
+ *
+ * Example:
+ *
+ *     dy_input_option::text([
+ *         'key'             => 'company_name',
+ *         'klass'           => 'regular-text',
+ *         'placeholder'     => 'Acme Inc.',
+ *         'data-controller' => 'company-field',
+ *         'aria-label'      => 'Company name',
  *     ]);
  *
  * @package dy
@@ -57,6 +58,20 @@ if(!class_exists('dy_input_abstract')) {
 	
 
 	abstract class dy_input_abstract {
+
+
+		/**
+		 * Retrieves the stored value for the field.
+		 *
+		 * Concrete subclasses must implement this method and return the value supplied
+		 * by their storage provider.
+		 *
+		 * The "key" argument has already been validated as a non-empty string before
+		 * this method is called.
+		 *
+		 * @param array<string, mixed> $args Field configuration containing "key".
+		 * @return mixed Stored field value.
+		 */
 
 		abstract protected static function get_value($args);
 
@@ -89,7 +104,6 @@ if(!class_exists('dy_input_abstract')) {
 				if(is_string($args['klass']) && trim($args['klass']) !== '') {
 					$args['class'] = $args['klass'];
 				}
-				unset($args['klass']);
 			}
 			
 			$stored_value = static::get_value($args);
@@ -114,7 +128,6 @@ if(!class_exists('dy_input_abstract')) {
  
 
 			$attributes = [];
-
 			$allowed_keys = self::get_allowed_keys();
 
 			foreach($args as $attribute => $attribute_value) {
@@ -125,7 +138,7 @@ if(!class_exists('dy_input_abstract')) {
 						$attribute
 					);
 
-				if(!in_array($attribute, $allowed_keys) && !$is_prefixed_attribute) {
+				if(!in_array($attribute, $allowed_keys, true) && !$is_prefixed_attribute) {
 					continue;
 				}
 
