@@ -95,7 +95,7 @@ class Dy_Mailer
 		add_settings_field( 
 			'sendgrid_email', 
 			'Bot Email (From)', 
-			['dy_input_controller', 'email'], 
+			['dy_input_option', 'email'], 
 			'mailer_settings', 
 			'mailer_settings_section',
 			[
@@ -106,7 +106,7 @@ class Dy_Mailer
 		add_settings_field( 
 			'sendgrid_email_bcc', 
 			'Inbox Email (Bcc)', 
-			['dy_textarea_controller', 'text'], 
+			['dy_textarea_option', 'text'], 
 			'mailer_settings', 
 			'mailer_settings_section',
 			[
@@ -120,7 +120,7 @@ class Dy_Mailer
 		add_settings_field( 
 			'sendgrid_name', 
 			'From Name', 
-			['dy_input_controller', 'text'], 
+			['dy_input_option', 'text'], 
 			'mailer_settings', 
 			'mailer_settings_section',
 			[
@@ -131,7 +131,7 @@ class Dy_Mailer
 		add_settings_field( 
 			'sendgrid_web_api_key', 
 			'Web API Key', 
-			['dy_input_controller', 'text'], 
+			['dy_input_option', 'text'], 
 			'mailer_settings', 
 			'sendgrid_settings_section',
 			[

@@ -19,10 +19,11 @@ if(!class_exists('Dy_Core_Init'))
             require_once $this->plugin_dir_path . 'functions.php';
             require_once $this->plugin_dir_path . 'security/waf.php';
             require_once $this->plugin_dir_path . 'security/queries.php';
-            require_once $this->plugin_dir_path . 'controllers/input_controller.php';
-            require_once $this->plugin_dir_path . 'controllers/select_controller.php';
-            require_once $this->plugin_dir_path . 'controllers/textarea_controller.php';
+            require_once $this->plugin_dir_path . 'controllers/input_abstract.php';
+            require_once $this->plugin_dir_path . 'controllers/select_abstract.php';
+            require_once $this->plugin_dir_path . 'controllers/textarea_abstract.php';
             require_once $this->plugin_dir_path . 'controllers/controller_utilities.php';
+            require_once $this->plugin_dir_path . 'controllers/extended_option.php';
 
             //third-party integrations
             require_once $this->plugin_dir_path . 'integrations/gtag.php';

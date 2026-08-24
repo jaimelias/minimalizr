@@ -112,7 +112,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_email', 
 			esc_html(__( 'Email')), 
-			['dy_input_controller', 'email'], 
+			['dy_input_option', 'email'], 
 			$this->setting_id, 
 			$this->section_company,
 			[
@@ -123,7 +123,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_phone', 
 			esc_html(__('Phone')), 
-			['dy_input_controller', 'text'], 
+			['dy_input_option', 'text'], 
 			$this->setting_id, 
 			$this->section_company,
 			[
@@ -143,7 +143,7 @@ class Dynamic_Core_Admin {
 			add_settings_field( 
 				'dy_whatsapp'.$lang_suffix, 
 				esc_html(__( 'Whatsapp').' '. strtoupper($lang)), 
-				['dy_input_controller', 'number'], 
+				['dy_input_option', 'number'], 
 				$this->setting_id, 
 				$this->section_company,
 				[
@@ -158,7 +158,7 @@ class Dynamic_Core_Admin {
 			add_settings_field( 
 				'dy_site_alert'.$lang_suffix, 
 				esc_html(__( 'Site Alert').' '. strtoupper($lang)), 
-				['dy_textarea_controller', 'text'], 
+				['dy_textarea_option', 'text'], 
 				$this->setting_id, 
 				$this->section_company,
 				[
@@ -171,7 +171,7 @@ class Dynamic_Core_Admin {
 			add_settings_field( 
 				'dy_footer_alert'.$lang_suffix, 
 				esc_html(__( 'Footer Alert').' '. strtoupper($lang)), 
-				['dy_textarea_controller', 'text'],
+				['dy_textarea_option', 'text'],
 				$this->setting_id, 
 				$this->section_company,
 				[
@@ -189,7 +189,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_address', 
 			esc_html(__( 'Address')), 
-			['dy_input_controller', 'text'], 
+			['dy_input_option', 'text'], 
 			$this->setting_id, 
 			$this->section_company,
 			[
@@ -200,7 +200,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_tax_id', 
 			esc_html(__( 'Tax Identification ID')), 
-			['dy_input_controller', 'text'], 
+			['dy_input_option', 'text'], 
 			$this->setting_id, 
 			$this->section_company,
 			[
@@ -212,7 +212,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_cf_turnstile_site_key', 
 			esc_html(__( 'Cloudflare Turnstile Site Key')), 
-			['dy_input_controller', 'text'], 
+			['dy_input_option', 'text'], 
 			$this->setting_id, 
 			$this->section_security,
 			[
@@ -223,7 +223,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_cf_turnstile_secret_key', 
 			esc_html(__( 'Cloudflare Turnstile Secret Key')), 
-			['dy_input_controller', 'text'], 
+			['dy_input_option', 'text'], 
 			$this->setting_id, 
 			$this->section_security,
 			[
@@ -234,7 +234,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_cloudflare_api_token', 
 			esc_html(__( 'Cloudflare API Token')), 
-			['dy_input_controller', 'text'], 
+			['dy_input_option', 'text'], 
 			$this->setting_id, 
 			$this->section_security,
 			[
@@ -244,7 +244,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_cloudflare_account_id', 
 			esc_html(__( 'Cloudflare Account ID')), 
-			['dy_input_controller', 'text'], 
+			['dy_input_option', 'text'], 
 			$this->setting_id, 
 			$this->section_security,
 			[
@@ -255,7 +255,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_sentry_api_key', 
 			esc_html(__( 'Sentry API Key')), 
-			['dy_input_controller', 'text'], 
+			['dy_input_option', 'text'], 
 			$this->setting_id, 
 			$this->section_security,
 			[
@@ -266,7 +266,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_bidding_conversion_percentage', 
 			__( 'Bidding Conversion Percentage'),
-			['dy_input_controller', 'percentage'], 
+			['dy_input_option', 'percentage'], 
 			$this->setting_id, 
 			$this->section_analytics,
 			[
@@ -282,7 +282,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_gtag_tracking_id', 
 			__( 'Google - Analytics GA4 (GTAG)'), 
-			['dy_input_controller', 'text'], 
+			['dy_input_option', 'text'], 
 			$this->setting_id, 
 			$this->section_analytics,
 			[
@@ -293,7 +293,7 @@ class Dynamic_Core_Admin {
 		add_settings_field(
 			'dy_google_ads_id',
 			__('Google Ads Conversion ID (AW-...)', 'dynamicpackages'),
-			['dy_input_controller', 'text'],
+			['dy_input_option', 'text'],
 			$this->setting_id,
 			$this->section_analytics,
 			[
@@ -304,7 +304,7 @@ class Dynamic_Core_Admin {
 		add_settings_field(
 			'dy_google_ads_purchase_label',
 			__('Google Ads Purchase Label', 'dynamicpackages'),
-			['dy_input_controller', 'text'],
+			['dy_input_option', 'text'],
 			$this->setting_id,
 			$this->section_analytics,
 			[
@@ -315,7 +315,7 @@ class Dynamic_Core_Admin {
 		add_settings_field(
 			'dy_google_ads_lead_label',
 			__('Google Ads Lead Label', 'dynamicpackages'),
-			['dy_input_controller', 'text'],
+			['dy_input_option', 'text'],
 			$this->setting_id,
 			$this->section_analytics,
 			[
@@ -326,7 +326,7 @@ class Dynamic_Core_Admin {
 		add_settings_field( 
 			'dy_facebook_pixel_id', 
 			__( 'Facebook Pixel ID'), 
-			['dy_input_controller', 'text'],
+			['dy_input_option', 'text'],
 			$this->setting_id, 
 			$this->section_analytics,
 			[
