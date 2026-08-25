@@ -5,32 +5,23 @@ if ( !defined( 'WPINC' ) ) exit;
 define('DY_CORE_FUNCTIONS', true);
 
 
-if(! function_exists('get_dy_id'))
+if(!function_exists('get_dy_id'))
 {
 	function get_dy_id()
 	{
 		global $post;
-		$req_id = null;
-		$post_id = null;
-		$admin_id = null;
 
-		if(!empty(secure_request('dy_id')))
-		{
-			$req_id = (int) secure_request('dy_id');
-		} else {
-			if(!empty(secure_request('post_id'))) {
-				$req_id = (int) secure_request('post_id');
-			}
-		}
+		$dy_id      = secure_request('dy_id', null, 'absint');
+		$post_req   = secure_request('post_id', null, 'absint');
+		$admin_post = secure_request('post', null, 'absint');
 
-		if($post instanceof WP_Post)
-		{
-			$post_id = $post->ID;
-		}
-		else
-		{
-			$post_id = (is_admin() && !empty(secure_request('post'))) ? (int) secure_request('post') : $post_id;
-		}
+		$req_id = !empty($dy_id)
+			? $dy_id
+			: (!empty($post_req) ? $post_req : null);
+
+		$post_id = $post instanceof WP_Post
+			? $post->ID
+			: (is_admin() && !empty($admin_post) ? $admin_post : null);
 
 		if($req_id !== null && $post_id !== null && $req_id !== $post_id)
 		{
@@ -39,9 +30,7 @@ if(! function_exists('get_dy_id'))
 			wp_die($err);
 		}
 
-		if($post_id) return $post_id;
-		else if($req_id) return $req_id;
-		else return null;
+		return $post_id ?: ($req_id ?: null);
 	}
 }
 
@@ -136,135 +125,62 @@ if ( ! function_exists('write_log')) {
 }
 
 
-
-
 function default_language()
 {
 	static $cache = [];
-	$which_var = 'wp_core_default_language';
-	global $polylang;
-	$lang = '';
+	$cache_key = 'wp_core_default_language'; //constant
 
-	if(isset($cache[$which_var]))
+	if(array_key_exists($cache_key, $cache))
 	{
-		$lang = $cache[$which_var];
-	}
-	else
-	{
-		if(isset($polylang))
-		{
-			$lang = pll_default_language();
-		}
-		else
-		{
-			$locale_str = get_locale();
-			$lang = $locale_str;
-		
-			if(strlen($locale_str) === 5)
-			{
-				$lang = substr($locale_str, 0, -3);
-			}
-		}
-
-		$cache[$which_var] = $lang;
+		return $cache[$cache_key];
 	}
 
-	return $lang;
+	return $cache[$cache_key] = function_exists('pll_default_language')
+		? pll_default_language()
+		: explode('_', get_locale())[0];
 }
 
 
 function get_languages()
 {
-	global $polylang;
-	$output = [];
 	static $cache = [];
-	$which_var = 'wp_core_get_languages';
+	$cache_key = 'wp_core_get_languages'; //constant
 
-	if(isset($cache[$which_var]))
+	if(array_key_exists($cache_key, $cache))
 	{
-		$output = $cache[$which_var];
-	}
-	else
-	{
-		if(isset($polylang))
-		{
-			$languages = PLL()->model->get_languages_list();
-
-			for($x = 0; $x < count($languages); $x++)
-			{
-				foreach($languages[$x] as $key => $value)
-				{
-					if($key == 'slug')
-					{
-						array_push($output, $value);
-					}
-				}	
-			}
-		}
-
-		if(count($output) === 0)
-		{
-			$locale_str = get_locale();
-
-			if(strlen($locale_str) === 5)
-			{
-				array_push($output, substr($locale_str, 0, -3));
-			}
-			else if(strlen($locale_str) === 2)
-			{
-				array_push($output, $locale_str);
-			}
-		}
-
-		$cache[$which_var] = $output;
+		return $cache[$cache_key];
 	}
 
-	return $output;
+	if(function_exists('pll_languages_list'))
+	{
+		$cache[$cache_key] = pll_languages_list();
+
+		if(!empty($cache[$cache_key])) {
+			return $cache[$cache_key];
+		}
+	}
+
+	return $cache[$cache_key] = [explode('_', get_locale())[0]];
 }
 
-function current_language($the_id = '')
+
+function current_language()
 {
-	global $polylang;
-	global $post;
-	$output = '';
 	static $cache = [];
-	$which_var = 'wp_core_current_language_' . $the_id;
+	$cache_key = 'wp_core_current_language'; //constant
 
-	if(isset($cache[$which_var]) && $cache[$which_var])
+	if(array_key_exists($cache_key, $cache))
 	{
-		$output = $cache[$which_var];
-	}
-	else
-	{
-		if(isset($polylang))
-		{
-			$lang = pll_current_language();
-
-			if($lang)
-			{
-				$output = $lang;
-			}
-		}
-
-		if(empty($output))
-		{
-			$locale = get_locale();
-			$locale_strlen = strlen($locale);
-
-			if($locale_strlen === 5)
-			{
-				$output = substr($locale, 0, -3);
-			}
-			if($locale_strlen === 2)
-			{
-				$output = $locale;
-			}
-		}
-
-		$cache[$which_var] = $output;
+		return $cache[$cache_key];
 	}
 
-	return $output;
+	$lang = function_exists('pll_current_language')
+		? pll_current_language()
+		: null;
+
+	return $cache[$cache_key] = !empty($lang)
+		? $lang
+		: explode('_', get_locale())[0];
 }
 
 if(!function_exists('get_ip_address'))
@@ -279,18 +195,18 @@ if(!function_exists('get_ip_address'))
 function home_lang()
 {
     static $cache = [];
-    $which_var = 'wp_core_home_lang';
+    $cache_key = 'wp_core_home_lang';
     $output = '';
 
-    if(isset($cache[$which_var]))
+    if(isset($cache[$cache_key]))
     {
-        $output = $cache[$which_var];
+        $output = $cache[$cache_key];
     }
     else
     {
         global $polylang;
 
-        if($polylang)
+        if(isset($polylang))
         {
             $path = '';
             $pll_url = pll_home_url();
@@ -321,7 +237,7 @@ function home_lang()
             $output = home_url('/');
         }
 
-        $cache[$which_var] = $output;
+        $cache[$cache_key] = $output;
     }
 
     return $output;
@@ -466,9 +382,9 @@ if (!function_exists("is_valid_date")) {
             return false;
         }
         static $cache = [];
-        $cacheKey = implode("|", $formats) . "::" . $str;
-        if (isset($cache[$cacheKey])) {
-            return $cache[$cacheKey];
+        $cache_key = implode("|", $formats) . "::" . $str;
+        if (isset($cache[$cache_key])) {
+            return $cache[$cache_key];
         }
         $valid = false;
         foreach ($formats as $format) {
@@ -479,7 +395,7 @@ if (!function_exists("is_valid_date")) {
             }
         }
 		
-        return $cache[$cacheKey] = $valid;
+        return $cache[$cache_key] = $valid;
     }
 }
 
@@ -493,11 +409,11 @@ if(!function_exists('is_valid_time'))
 		if(!empty($str))
 		{
 			static $cache = [];
-			$which_var = $str.'_is_valid_time';
+			$cache_key = $str.'_is_valid_time';
 
-			if(isset($cache[$which_var]))
+			if(isset($cache[$cache_key]))
 			{
-				$output = $cache[$which_var];
+				$output = $cache[$cache_key];
 			}
 			else
 			{
@@ -506,7 +422,7 @@ if(!function_exists('is_valid_time'))
 					$output = true;
 				}
 
-				$cache[$which_var] = $output;
+				$cache[$cache_key] = $output;
 			}
 		}
 				
@@ -524,22 +440,6 @@ if(!function_exists('is_in_theme'))
 		$theme_dir = WP_CONTENT_DIR . '/themes/';
 		$theme_dir = str_replace('\\', '/', $theme_dir); // Windows fix
 		if (strpos($path, $theme_dir) === 0) {
-			return true;
-		}
-	
-		return false;
-	}	
-}
-
-if(!function_exists('is_in_plugin'))
-{
-	function is_in_plugin() {
-		$path = dirname(__FILE__);
-		
-		// Check if the script is in a plugin directory
-		$plugin_dir = WP_CONTENT_DIR . '/plugins/';
-		$plugin_dir = str_replace('\\', '/', $plugin_dir); // Windows fix
-		if (strpos($path, $plugin_dir) === 0) {
 			return true;
 		}
 	
