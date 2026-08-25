@@ -599,78 +599,153 @@ if(!function_exists('html_to_plain_text')) {
 }
 
 
-
 if(!function_exists('dy_strtotime'))
 {
+	/**
+	 * Convert a date/time string to a Unix timestamp using the
+	 * WordPress site's configured timezone.
+	 *
+	 * This works similarly to PHP's strtotime(), but ensures that
+	 * date/time strings without an explicit timezone are interpreted
+	 * using the timezone configured in WordPress.
+	 *
+	 * Examples:
+	 *
+	 * dy_strtotime('2026-08-25 10:30:00');
+	 * dy_strtotime('tomorrow');
+	 * dy_strtotime('+2 days');
+	 * dy_strtotime('next monday');
+	 *
+	 * Note:
+	 * If the provided string contains an explicit timezone or UTC offset,
+	 * PHP will honor that timezone instead of the WordPress timezone.
+	 *
+	 * @param string $str Date/time string accepted by PHP's DateTime parser.
+	 *
+	 * @return int Unix timestamp.
+	 *
+	 * @throws InvalidArgumentException If $str is empty or not a string.
+	 * @throws Exception If PHP cannot parse the supplied date/time.
+	 */
 	function dy_strtotime($str) {
-		// This function behaves a bit like PHP's StrToTime() function, but taking into account the Wordpress site's timezone
-		// CAUTION: It will throw an exception when it receives invalid input - please catch it accordingly
-		// From https://mediarealm.com.au/
 
-		$tz_string = get_option('timezone_string');
-		$tz_offset = get_option('gmt_offset', 0);
-
-		if (!empty($tz_string))
-		{
-			// If site timezone option string exists, use it
-			$timezone = $tz_string;
+		if(!is_string($str) || trim($str) === '') {
+			throw new InvalidArgumentException(
+				'Param $str must be a non-empty string in dy_strtotime.'
+			);
 		}
-		else if ($tz_offset == 0)
-		{
-			// get UTC offset, if it isn’t set then return UTC
-			$timezone = 'UTC';
-		}
-		else
-		{
-			$timezone = $tz_offset;
 
-			if(substr($tz_offset, 0, 1) != "-" && substr($tz_offset, 0, 1) != "+" && substr($tz_offset, 0, 1) != "U")
-			{
-				$timezone = "+" . $tz_offset;
-			}
-		}
-		
-		$datetime = new DateTime($str, new DateTimeZone($timezone));
+		/*
+		 * wp_timezone() returns the site's timezone as a DateTimeZone object.
+		 *
+		 * It correctly supports both:
+		 *
+		 * - Named timezones such as "America/Panama"
+		 * - UTC offsets configured through WordPress
+		 *
+		 * This is preferable to manually reading timezone_string or gmt_offset.
+		 */
+		$timezone = wp_timezone();
 
-		return $datetime->format('U');
+		/*
+		 * Interpret the supplied date/time using the WordPress timezone.
+		 *
+		 * DateTimeImmutable is used because the date object itself does not
+		 * need to be modified after creation.
+		 */
+		$datetime = new DateTimeImmutable(
+			$str,
+			$timezone
+		);
+
+		/*
+		 * getTimestamp() returns an actual integer.
+		 *
+		 * Avoid using format('U') here because format() always returns
+		 * a string.
+		 */
+		return $datetime->getTimestamp();
 	}
 }
 
+
 if(!function_exists('dy_date'))
 {
+	/**
+	 * Format a Unix timestamp using the WordPress site's configured timezone.
+	 *
+	 * This works similarly to PHP's date(), except the output is formatted
+	 * using the timezone configured in WordPress instead of PHP's default
+	 * runtime timezone.
+	 *
+	 * Examples:
+	 *
+	 * dy_date('Y-m-d H:i:s');
+	 * dy_date('Y-m-d', 1787668200);
+	 * dy_date('F j, Y', dy_strtotime('tomorrow'));
+	 *
+	 * If no timestamp is provided, the current Unix timestamp is used.
+	 *
+	 * @param string   $format    PHP DateTime format string.
+	 * @param int|null $timestamp Unix timestamp. Defaults to current time.
+	 *
+	 * @return string Formatted date/time string.
+	 *
+	 * @throws InvalidArgumentException If $format is invalid or $timestamp
+	 *                                  is not an integer/numeric value.
+	 */
 	function dy_date($format, $timestamp = null) {
-		// This function behaves a bit like PHP's Date() function, but taking into account the Wordpress site's timezone
-		// CAUTION: It will throw an exception when it receives invalid input - please catch it accordingly
-		// From https://mediarealm.com.au/
 
-		$tz_string = get_option('timezone_string');
-		$tz_offset = get_option('gmt_offset', 0);
-
-		if (!empty($tz_string)) 
-		{
-			// If site timezone option string exists, use it
-			$timezone = $tz_string;
-		} 
-		elseif ($tz_offset == 0) 
-		{
-				// get UTC offset, if it isn’t set then return UTC
-				$timezone = 'UTC';
-		} else {
-			$timezone = $tz_offset;
-
-			if(substr($tz_offset, 0, 1) != "-" && substr($tz_offset, 0, 1) != "+" && substr($tz_offset, 0, 1) != "U") {
-				$timezone = "+" . $tz_offset;
-			}
+		if(!is_string($format) || $format === '') {
+			throw new InvalidArgumentException(
+				'Param $format must be a non-empty string in dy_date.'
+			);
 		}
 
+		/*
+		 * Use the current Unix timestamp when none is explicitly provided.
+		 *
+		 * The strict null comparison is intentional because timestamp 0
+		 * is valid and represents 1970-01-01 00:00:00 UTC.
+		 */
 		if($timestamp === null) {
 			$timestamp = time();
 		}
 
-		$datetime = new DateTime();
-		$datetime->setTimestamp($timestamp);
-		$datetime->setTimezone(new DateTimeZone($timezone));
-		return $datetime->format($format);
+		/*
+		 * Accept integer timestamps directly.
+		 *
+		 * Numeric strings are also accepted for compatibility with values
+		 * commonly retrieved from databases, options, metadata, or APIs.
+		 */
+		if(!is_int($timestamp)) {
+
+			if(is_numeric($timestamp)) {
+				$timestamp = (int) $timestamp;
+			}
+			else {
+				throw new InvalidArgumentException(
+					'Param $timestamp must be an integer in dy_date.'
+				);
+			}
+		}
+
+		/*
+		 * Prefixing a Unix timestamp with "@" creates the DateTime object
+		 * as an absolute UTC instant.
+		 *
+		 * A Unix timestamp itself has no timezone. The timezone only affects
+		 * how that timestamp is displayed.
+		 */
+		$datetime = new DateTimeImmutable('@' . $timestamp);
+
+		/*
+		 * Convert the absolute timestamp to the WordPress site's timezone
+		 * before formatting it.
+		 */
+		return $datetime
+			->setTimezone(wp_timezone())
+			->format($format);
 	}
 }
 
