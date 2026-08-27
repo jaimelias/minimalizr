@@ -85,6 +85,17 @@ if(!class_exists('dy_textarea_abstract')) {
 			$append = $args['append'] ?? '';
 			$prepend = $args['prepend'] ?? '';
 
+			if(array_key_exists('label', $args)) {
+				if(is_string($args['label']) && trim($args['label']) !== '' ) {
+					$prepend = sprintf(
+						'<label for="%s">%s</label><br />',
+						esc_attr( $key ),
+						esc_html($args['label'] )
+					);
+				}
+			}
+
+
 			//replaces the current class by the attribute of class
 			if(array_key_exists('klass', $args)) {
 				if(is_string($args['klass']) && trim($args['klass']) !== '') {
