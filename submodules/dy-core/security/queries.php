@@ -8,18 +8,6 @@ if ( !defined( 'WPINC' ) ) exit;
  * Now: secure_get also safely falls back to get_query_var($key) when available.
  */
 
-if ( ! function_exists( '_secure_apply_recursive' ) ) {
-	function _secure_apply_recursive( $value, $sanitizer ) {
-		if ( is_array( $value ) ) {
-			foreach ( $value as $k => $v ) {
-				$value[ $k ] = _secure_apply_recursive( $v, $sanitizer );
-			}
-			return $value;
-		}
-		return $sanitizer( $value );
-	}
-}
-
 if ( ! function_exists( '_secure_prepare_sanitizer' ) ) {
 	function _secure_prepare_sanitizer( $sanitize_cb ) {
 		if ( is_string( $sanitize_cb ) && function_exists( $sanitize_cb ) ) {
@@ -43,15 +31,42 @@ if ( ! function_exists( '_secure_input' ) ) {
 			'QVAR'    => [],
 		];
 
-		// Handle "exists" special sanitizer first.
+		// A parameter exists only when its submitted value is scalar.
 		if ( $sanitize_cb === 'exists' ) {
 			switch ( $source_name ) {
-				case 'POST':    return array_key_exists( $key, $_POST );
-				case 'GET':     return array_key_exists( $key, $_GET )
-					|| ( did_action( 'parse_request' ) && isset( $GLOBALS['wp'] ) && $GLOBALS['wp'] instanceof WP && array_key_exists( $key, $GLOBALS['wp']->query_vars ) )
-					|| ( function_exists( 'get_query_var' ) && ( did_action( 'parse_query' ) || did_action( 'wp' ) ) && get_query_var( $key, null ) !== null );
-				case 'REQUEST': return array_key_exists( $key, $_REQUEST );
-				case 'COOKIE':  return array_key_exists( $key, $_COOKIE );
+				case 'POST':
+					return array_key_exists( $key, $_POST ) && is_scalar( $_POST[ $key ] );
+
+				case 'GET':
+					if ( array_key_exists( $key, $_GET ) ) {
+						return is_scalar( $_GET[ $key ] );
+					}
+
+					if (
+						did_action( 'parse_request' )
+						&& isset( $GLOBALS['wp'] )
+						&& $GLOBALS['wp'] instanceof WP
+						&& is_array( $GLOBALS['wp']->query_vars )
+						&& array_key_exists( $key, $GLOBALS['wp']->query_vars )
+					) {
+						return is_scalar( $GLOBALS['wp']->query_vars[ $key ] );
+					}
+
+					if (
+						function_exists( 'get_query_var' )
+						&& ( did_action( 'parse_query' ) || did_action( 'wp' ) )
+					) {
+						$qv = get_query_var( $key, null );
+						return $qv !== null && is_scalar( $qv );
+					}
+
+					return false;
+
+				case 'REQUEST':
+					return array_key_exists( $key, $_REQUEST ) && is_scalar( $_REQUEST[ $key ] );
+
+				case 'COOKIE':
+					return array_key_exists( $key, $_COOKIE ) && is_scalar( $_COOKIE[ $key ] );
 			}
 			return false;
 		}
@@ -71,13 +86,22 @@ if ( ! function_exists( '_secure_input' ) ) {
 
 		// Fast path: superglobal hit
 		if ( array_key_exists( $key, $src ) ) {
+			$value = $src[ $key ];
+
+			if ( ! is_scalar( $value ) ) {
+				return $default;
+			}
 
 			if ( $cacheable && array_key_exists( $cache_id, $cache[ $source_name ] ) ) {
 				return $cache[ $source_name ][ $cache_id ];
 			}
 
-			$value = wp_unslash( $src[ $key ] );
-			$sanitized = is_array( $value ) ? _secure_apply_recursive( $value, $sanitizer ) : $sanitizer( $value );
+			$value = wp_unslash( $value );
+			$sanitized = $sanitizer( $value );
+
+			if ( ! is_scalar( $sanitized ) ) {
+				return $default;
+			}
 			
 			if ( $cacheable ) {
 				$cache[ $source_name ][ $cache_id ] = $sanitized;
@@ -90,12 +114,22 @@ if ( ! function_exists( '_secure_input' ) ) {
 		if ( $source_name === 'GET' ) {
 			if ( did_action( 'parse_request' ) && isset( $GLOBALS['wp'] ) && $GLOBALS['wp'] instanceof WP && is_array( $GLOBALS['wp']->query_vars ) ) {
 				if ( array_key_exists( $key, $GLOBALS['wp']->query_vars ) ) {
+					$qv = $GLOBALS['wp']->query_vars[ $key ];
+
+					if ( ! is_scalar( $qv ) ) {
+						return $default;
+					}
+
 					if ( $cacheable && array_key_exists( $cache_id, $cache['QVAR'] ) ) {
 						return $cache['QVAR'][ $cache_id ];
 					}
 
-					$qv = wp_unslash( $GLOBALS['wp']->query_vars[ $key ] );
-					$sanitized = is_array( $qv ) ? _secure_apply_recursive( $qv, $sanitizer ) : $sanitizer( $qv );
+					$qv = wp_unslash( $qv );
+					$sanitized = $sanitizer( $qv );
+
+					if ( ! is_scalar( $sanitized ) ) {
+						return $default;
+					}
 
 					if ( $cacheable ) {
 						$cache['QVAR'][ $cache_id ] = $sanitized;
@@ -109,13 +143,22 @@ if ( ! function_exists( '_secure_input' ) ) {
 				function_exists( 'get_query_var' ) &&
 				( did_action( 'parse_query' ) || did_action( 'wp' ) || ( isset( $GLOBALS['wp_query'] ) && $GLOBALS['wp_query'] instanceof WP_Query ) )
 			) {
-				if ( $cacheable && array_key_exists( $cache_id, $cache['QVAR'] ) ) {
-					return $cache['QVAR'][ $cache_id ];
-				}
 				$qv = get_query_var( $key, null );
 				if ( $qv !== null ) {
+					if ( ! is_scalar( $qv ) ) {
+						return $default;
+					}
+
+					if ( $cacheable && array_key_exists( $cache_id, $cache['QVAR'] ) ) {
+						return $cache['QVAR'][ $cache_id ];
+					}
+
 					$qv = wp_unslash( $qv );
-					$sanitized = is_array( $qv ) ? _secure_apply_recursive( $qv, $sanitizer ) : $sanitizer( $qv );
+					$sanitized = $sanitizer( $qv );
+
+					if ( ! is_scalar( $sanitized ) ) {
+						return $default;
+					}
 
 					if ( $cacheable ) {
 						$cache['QVAR'][ $cache_id ] = $sanitized;

@@ -116,7 +116,7 @@ if(!class_exists('dy_select_abstract')) {
 
 			if(array_key_exists('label', $args)) {
 				if(is_string($args['label']) && trim($args['label']) !== '' ) {
-					$prepend = sprintf(
+					$prepend .= sprintf(
 						'<label for="%s">%s</label><br />',
 						esc_attr( $key ),
 						esc_html($args['label'] )
