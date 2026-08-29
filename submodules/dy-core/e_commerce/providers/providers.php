@@ -32,7 +32,7 @@ class Dynamic_Core_Providers {
 
 	public function admin_head() {
 
-		if(!isset($_GET['taxonomy']) || $_GET['taxonomy'] !== self::TAXONOMY) {
+		if(secure_get('taxonomy') !== self::TAXONOMY) {
 			return;
 		}
 
@@ -90,14 +90,14 @@ class Dynamic_Core_Providers {
 		];
 
 		foreach($sanitizers as $key => $sanitize) {
-			if(!isset($_POST[$key])) {
+			if(!post_has($key)) {
 				continue;
 			}
 
 			update_term_meta(
 				$term_id,
 				$key,
-				call_user_func($sanitize, $_POST[$key])
+				secure_post($key, '', $sanitize)
 			);
 		}
 	}

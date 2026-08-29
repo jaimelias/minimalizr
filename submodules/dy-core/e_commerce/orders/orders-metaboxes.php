@@ -16,7 +16,7 @@ class Dynamic_Core_Orders_Metaboxes {
         add_meta_box(
             'dy_orders_metabox',          // Unique ID
             'Orders Details',          // Box title
-            array($this, 'render_metaboxes'),    // Content callback, must be of type callable
+            [$this, 'render_metaboxes'],    // Content callback, must be of type callable
             'dy-orders'                   // Post type
         );
     }
@@ -51,7 +51,7 @@ class Dynamic_Core_Orders_Metaboxes {
 
     public function save_metabox_data($post_id) {
         // Verify the nonce before proceeding.
-        if (!isset($_POST['dy_orders_nonce']) || !wp_verify_nonce($_POST['dy_orders_nonce'], 'dy_orders_nonce_action')) {
+        if (!post_has('dy_orders_nonce') || !wp_verify_nonce(secure_post('dy_orders_nonce'), 'dy_orders_nonce_action')) {
             return;
         }
 
@@ -61,19 +61,17 @@ class Dynamic_Core_Orders_Metaboxes {
         }
 
         // Check the user's permissions.
-        if (isset($_POST['post_type']) && 'dy-orders' == $_POST['post_type']) {
-            if (!current_user_can('edit_post', $post_id)) {
-                return;
-            }
-        } else {
+        if ( get_post_type($post_id) !== 'dy-orders' || !current_user_can('edit_post', $post_id)) {
             return;
         }
 
         // Sanitize user input.
-        $order_status = sanitize_text_field($_POST['dy_order_status']);
+        $order_status = secure_post('dy_order_status');
 
-        // Update the meta field in the database.
-        update_post_meta($post_id, 'dy_order_status', $order_status);
+        if(in_array($order_status, $this->valid_order_status, true)) {
+            // Update the meta field in the database.
+            update_post_meta($post_id, 'dy_order_status', $order_status);
+        }
     }
 
     public function select_options_arr($name, $value, $options, $option_labels, $label)

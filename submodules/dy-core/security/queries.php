@@ -10,9 +10,50 @@ if ( !defined( 'WPINC' ) ) exit;
 
 if ( ! function_exists( '_secure_prepare_sanitizer' ) ) {
 	function _secure_prepare_sanitizer( $sanitize_cb ) {
+		$numeric_sanitizers = array( 'intval', 'absint', 'floatval' );
+
+		// Validate numeric input before casting. Null tells _secure_input() to use its default.
+		if (
+			is_string( $sanitize_cb )
+			&& in_array( $sanitize_cb, $numeric_sanitizers, true )
+			&& function_exists( $sanitize_cb )
+		) {
+			return static function ( $value ) use ( $sanitize_cb ) {
+				if ( is_bool( $value ) ) {
+					return null;
+				}
+
+				switch ( $sanitize_cb ) {
+					case 'intval':
+						$validated = filter_var( $value, FILTER_VALIDATE_INT );
+						return false === $validated ? null : (int) $validated;
+
+					case 'absint':
+						$validated = filter_var(
+							$value,
+							FILTER_VALIDATE_INT,
+							array( 'options' => array( 'min_range' => 0 ) )
+						);
+						return false === $validated ? null : absint( $validated );
+
+					case 'floatval':
+						$validated = filter_var( $value, FILTER_VALIDATE_FLOAT );
+
+						if ( false === $validated || ! is_finite( (float) $validated ) ) {
+							return null;
+						}
+
+						return (float) $validated;
+				}
+
+				return null;
+			};
+		}
+
 		if ( is_string( $sanitize_cb ) && function_exists( $sanitize_cb ) ) {
 			return $sanitize_cb;
 		}
+
 		if ( is_callable( $sanitize_cb ) ) {
 			return $sanitize_cb;
 		}
@@ -20,6 +61,7 @@ if ( ! function_exists( '_secure_prepare_sanitizer' ) ) {
 		return 'sanitize_text_field';
 	}
 }
+
 
 if ( ! function_exists( '_secure_input' ) ) {
 	function _secure_input( $source_name, $key, $default = '', $sanitize_cb = 'sanitize_text_field' ) {

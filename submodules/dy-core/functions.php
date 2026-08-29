@@ -404,29 +404,20 @@ if(!function_exists('is_valid_time'))
 {
 	function is_valid_time($str)
 	{
-		$output = false;
+		static $cache = [];
 
-		if(!empty($str))
+		if(empty($str))
 		{
-			static $cache = [];
-			$cache_key = $str.'_is_valid_time';
-
-			if(isset($cache[$cache_key]))
-			{
-				$output = $cache[$cache_key];
-			}
-			else
-			{
-				if(DateTime::createFromFormat('H:i A', $str) !== false)
-				{
-					$output = true;
-				}
-
-				$cache[$cache_key] = $output;
-			}
+			return false;
 		}
-				
-		return $output;
+
+		if(array_key_exists($str, $cache))
+		{
+			return $cache[$str];
+		}
+
+		// 12-hour format: h:i A  (e.g. "03:45 PM")
+		return $cache[$str] = (bool) preg_match('/^(?:0?[1-9]|1[0-2]):[0-5][0-9] (?:AM|PM)$/', $str);
 	}
 }
 

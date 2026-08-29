@@ -42,7 +42,7 @@ class Dy_WAF {
         }
 
         // Alternate REST routing. Empty values must not bypass the WAF.
-        if (!empty($_GET['rest_route'])) {
+        if (!get_has('rest_route')) {
             return true;
         }
 

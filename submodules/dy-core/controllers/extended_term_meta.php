@@ -2,6 +2,78 @@
 
 if ( !defined( 'WPINC' ) ) exit;
 
+if(!function_exists('dy_taxonomy_form_row')) {
+
+    /**
+     * Builds the opening and closing markup for a WordPress taxonomy form row.
+     *
+     * The returned object is intended for use with the `prepend` and `append`
+     * arguments supported by term-meta field renderers.
+     *
+     * The `prepend` property contains the opening `<tr>`, `<th>`, field label,
+     * and opening `<td>`. The `append` property contains the optional field
+     * description and the closing `</td>` and `</tr>` tags.
+     *
+     * The key, label, and description are escaped before being added to the
+     * generated markup. This function returns markup but does not print it.
+     *
+     * Do not also pass `label` to the field renderer because this helper already
+     * generates the field label.
+     *
+     * Example:
+     *
+     *     $row = dy_taxonomy_form_row(
+     *         'tax_add_ons_max',
+     *         __('Maximum Number of participants', 'dynamicpackages')
+     *     );
+     *
+     *     dy_select_term_meta::min_max([
+     *         'term_id' => $term_id,
+     *         'key'     => 'tax_add_ons_max',
+     *         'min'     => 1,
+     *         'max'     => 500,
+     *         'step'    => 1,
+     *         'prepend' => $row->prepend,
+     *         'append'  => $row->append,
+     *     ]);
+     *
+     * @param string      $key         Field ID used by the label's `for` attribute.
+     * @param string      $label       Visible field label. Plain text only.
+     * @param string|null $description Optional field description. Plain text only.
+     *
+     * @return object{prepend: string, append: string} Object containing the HTML
+     *                                                  fragments used to wrap the field.
+     */
+
+    function dy_taxonomy_form_row(
+        $key,
+        $label,
+        $description = null
+    ) {
+        $description_html = '';
+
+        if(is_string($description) && trim($description) !== '') {
+            $description_html = sprintf(
+                '<br/><p class="description">%s</p>',
+                esc_html($description)
+            );
+        }
+
+        return (object) [
+            'prepend' => sprintf(
+                '<tr class="form-field">
+                    <th scope="row" valign="top">
+                        <label for="%s">%s</label>
+                    </th>
+                    <td>',
+                esc_attr($key),
+                esc_html($label)
+            ),
+            'append' => $description_html . '</td></tr>',
+        ];
+    }
+}
+
 if(!function_exists('dy_get_value_term_meta')) {
 
     /**
