@@ -77,8 +77,9 @@ class Dynamic_Core_Admin {
 
 
 		//Cloudflare - Security
+		register_setting($this->setting_id, 'dy_cloudflare_account_id', 'esc_html');
         register_setting($this->setting_id, 'dy_cloudflare_api_token', 'esc_html');
-        register_setting($this->setting_id, 'dy_cloudflare_account_id', 'esc_html');
+        register_setting($this->setting_id, 'dy_cloudflare_pdf_api_token', 'esc_html');
 
 		//Cloudflare - Turnstile
 		register_setting($this->setting_id, 'dy_cf_turnstile_site_key', 'esc_html');
@@ -231,16 +232,7 @@ class Dynamic_Core_Admin {
 			]
 		);
 		
-		add_settings_field( 
-			'dy_cloudflare_api_token', 
-			esc_html(__( 'Cloudflare API Token')), 
-			['dy_input_option', 'text'], 
-			$this->setting_id, 
-			$this->section_security,
-			[
-				'key' => 'dy_cloudflare_api_token'
-			]
-		);
+
 		add_settings_field( 
 			'dy_cloudflare_account_id', 
 			esc_html(__( 'Cloudflare Account ID')), 
@@ -251,6 +243,29 @@ class Dynamic_Core_Admin {
 				'key' => 'dy_cloudflare_account_id'
 			]
 		);
+
+		add_settings_field( 
+			'dy_cloudflare_api_token', 
+			esc_html(__( 'Cloudflare API Token')), 
+			['dy_input_option', 'text'], 
+			$this->setting_id, 
+			$this->section_security,
+			[
+				'key' => 'dy_cloudflare_api_token'
+			]
+		);
+
+		add_settings_field( 
+			'dy_cloudflare_pdf_api_token', 
+			esc_html(__( 'Cloudflare PDF API Token')), 
+			['dy_input_option', 'text'], 
+			$this->setting_id, 
+			$this->section_security,
+			[
+				'key' => 'dy_cloudflare_pdf_api_token'
+			]
+		);
+
 
 		add_settings_field( 
 			'dy_sentry_api_key', 

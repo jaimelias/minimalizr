@@ -424,3 +424,67 @@ if (!function_exists('cloudflare_ban_ip_address')) {
         return true;
     }
 }
+
+
+if(!function_exists('cloudflare_html_to_pdf')) {
+    function cloudflare_html_to_pdf($html, $filename, $format = 'a4')
+    {
+        $pdf_api_token      = trim((string) get_option('dy_cloudflare_pdf_api_token'));
+        $account_id = trim((string) get_option('dy_cloudflare_account_id'));
+
+        if($pdf_api_token === '' || $account_id === '') {
+            return null;
+        }
+
+        $upload_dir    = wp_upload_dir();
+        $temp_path     = $upload_dir['basedir'];
+        $temp_filename = '/temp_' . uniqid() . '.pdf';
+        $pdf_path      = $temp_path . $temp_filename;
+
+        $response = wp_remote_post(
+            "https://api.cloudflare.com/client/v4/accounts/{$account_id}/browser-rendering/pdf",
+            array(
+                'timeout' => 30, // rendering takes longer than a typical WP request
+                'headers' => array(
+                    'Authorization' => 'Bearer ' . $pdf_api_token,
+                    'Content-Type'  => 'application/json',
+                ),
+                'body' => wp_json_encode(array(
+                    'html' => $html,
+                    'pdfOptions' => array(
+                        'format' => $format,
+                        'printBackground' => true, // needed for background colors/images in the invoice
+                    ),
+                )),
+            )
+        );
+
+        if ( is_wp_error( $response ) ) {
+
+            $error_message = [
+                'error' => $response->get_error_message()
+            ];
+
+            write_log($error_message);
+
+            return null;
+        }
+
+        $code = wp_remote_retrieve_response_code( $response );
+        $body = wp_remote_retrieve_body( $response );
+
+        if ( $code !== 200 ) {
+            $error_message = [
+                'error' => "Cloudflare PDF error ({$code}): {$body}"
+            ];
+
+            write_log($error_message);
+
+            return null;
+        }
+
+        file_put_contents( $pdf_path, $body );
+
+        return array( 'filename' => $filename, 'pathname' => $pdf_path );
+    }
+}
