@@ -53,14 +53,6 @@ const whatsappButton = async () => {
     jQuery('.button-whatsapp').click(async e => {
         e.preventDefault()
 
-        if (!whatsappNumber) {
-            const nonce = await getNonce()
-
-            if (nonce?.whatsapp_number) {
-                whatsappNumber = nonce.whatsapp_number.toString()
-            }
-        }
-
         if (!whatsappNumber) return
 
         if (!href) {
