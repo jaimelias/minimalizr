@@ -145,46 +145,69 @@ const formToArray = form => {
 
 
 
- const getNonce = async () => {
+let nonceCache
+let nonceExpiresAt = 0
+
+const getNonce = async (retry = 0) => {
     const { wpJsonUrl } = dyCoreArgs
-    const now = Date.now()
 
-    const url = new URL(`${wpJsonUrl}/args`)
-
-    url.searchParams.set('timestamp', now.toString())
-
-    const headers = new Headers({
-        'pragma': 'no-cache',
-        'cache-control': 'no-cache'
-    })
-
-    const init = {
-        method: 'GET',
-        headers,
+    if (!Number.isInteger(retry) || retry < 0 || retry > 10) {
+        throw new RangeError('retry must be an integer between 0 and 10')
     }
 
-    try {
-        const response = await fetch(url, init)
+    if (Date.now() < nonceExpiresAt) {
+        return nonceCache
+    }
 
-        if (!response.ok) {
-            let errorBody = ''
+    for (let attempt = 0; attempt <= retry; attempt++) {
+        const url = new URL(`${wpJsonUrl}/args`)
 
-            try {
-            errorBody = await response.text()
-            } catch {
-            errorBody = '[unable to read response body]'
+        url.searchParams.set('timestamp', Date.now().toString())
+
+        const headers = new Headers({
+            pragma: 'no-cache',
+            'cache-control': 'no-cache'
+        })
+
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers
+            })
+
+            if (!response.ok) {
+                let errorBody = ''
+
+                try {
+                    errorBody = await response.text()
+                } catch {
+                    errorBody = '[unable to read response body]'
+                }
+
+                throw new Error(
+                    `Unable to get nonce from ${url}: ${response.status} ${response.statusText}` +
+                    `${errorBody ? ` - ${errorBody}` : ''}\n${url}`
+                )
             }
 
-            throw new Error(
-            `Unable to get nonce from ${url}: ${response.status} ${response.statusText}${errorBody ? ` - ${errorBody}` : ''}\n${url}`
-            )
-        }
+            const data = await response.json()
 
-        const data = await response.json()
-        return data
-    } catch (error) {
-        console.error('Nonce request failed:', error)
-        throw error
+            nonceCache = data
+            nonceExpiresAt = Date.now() + 10_000
+
+            return data
+        } catch (error) {
+            console.error(
+                `Nonce request failed (${attempt + 1}/${retry + 1}):`,
+                error
+            )
+
+            if (attempt >= retry) {
+                throw error
+            }
+
+            // Immediately continues to the next attempt
+        }
     }
 }
 
