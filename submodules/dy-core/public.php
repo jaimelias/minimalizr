@@ -7,7 +7,7 @@ class Dynamic_Core_Public {
     
     public function __construct()
     {
-        $this->version = '0.1.105';
+        $this->version = '0.1.108';
         $this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
         $this->dirname_file = dirname( __FILE__ );
 
@@ -17,20 +17,20 @@ class Dynamic_Core_Public {
 			$this->plugin_dir = get_template_directory().'/submodules/dy-core/';
 		}
 
-        add_shortcode('whatsapp', array($this, 'whatsapp_button'));
-        add_action( 'wp_footer', array($this, 'whatsapp_modal'));
-        add_action( 'wp_footer', array($this, 'picker_containers'));
-        add_action( 'wp_head', array($this, 'gtag_tracking_script'));
-        add_action( 'wp_footer', array($this, 'gtag_conversion_events_script'), PHP_INT_MAX);
+        add_shortcode('whatsapp', [$this, 'whatsapp_button']);
+        add_action( 'wp_footer', [$this, 'whatsapp_modal']);
+        add_action( 'wp_footer', [$this, 'picker_containers']);
+        add_action( 'wp_head', [$this, 'gtag_tracking_script']);
+        add_action( 'wp_footer', [$this, 'gtag_conversion_events_script'], PHP_INT_MAX);
 
-        add_action( 'wp_head', array($this, 'facebook_pixel_tracking_script'));
-        add_action('wp_head', array($this, 'whatsapp_modal_css'));
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
-        add_action('minimal_site_alert', array($this, 'site_alert'));
-        add_action('minimal_footer_alert', array($this, 'footer_alert'));
+        add_action( 'wp_head', [$this, 'facebook_pixel_tracking_script']);
+        add_action('wp_head', [$this, 'whatsapp_modal_css']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_styles']);
+        add_action('minimal_site_alert', [$this, 'site_alert']);
+        add_action('minimal_footer_alert', [$this, 'footer_alert']);
 
-        add_filter('wp_resource_hints', array($this, 'resource_hints'), 10, 2);
+        add_filter('wp_resource_hints', [$this, 'resource_hints'], 10, 2);
     }
 
     public function resource_hints($urls, $relation_type)
@@ -74,7 +74,6 @@ class Dynamic_Core_Public {
         }
         
         wp_enqueue_script('landing-cookies', $this->plugin_dir_url_file . 'js/cookies.js', array('jquery'), $this->version, true);
-        wp_add_inline_script('landing-cookies', $this->cookies(), 'before');
 
         wp_enqueue_script('dy-qrcode', $this->plugin_dir_url_file . 'js/qrcode.min.js', array('jquery'), 'async_defer', true);
 
@@ -111,14 +110,6 @@ class Dynamic_Core_Public {
         }
 
         
-    }
-
-    public function cookies()
-    {
-        $visit_cookies = array('device', 'landing_domain', 'landing_path', 'channel');
-        $google_ads_cookies = array('utm_source', 'utm_medium', 'utm_campaign', 'gclid');
-
-        return 'const visitCookies = '.json_encode($visit_cookies).'; const googleAdsCookies = '.json_encode($google_ads_cookies).';';
     }
 
     public function sentry()

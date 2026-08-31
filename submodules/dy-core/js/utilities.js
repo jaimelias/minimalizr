@@ -88,9 +88,9 @@ const whatsappButton = async () => {
     })
 }
 
-const formToArray = form => {
+const formToArray = thisForm => {
    
-    let data = jQuery(form)
+    let data = thisForm
         .serializeArray()
         .map(o => {
 
@@ -105,13 +105,13 @@ const formToArray = form => {
 
      });
     
-     jQuery(form).find('input:checkbox').each(function () { 
+     thisForm.find('input:checkbox').each(function () { 
         const {name, checked: value} = this;
 
          data.push({ name, value });
      });
  
-     jQuery(form).find(':disabled').each(function () { 
+     thisForm.find(':disabled').each(function () { 
         const {name, value} = this;
 
          data.push({ name, value });
@@ -188,8 +188,9 @@ const getNonce = async (retry = 0) => {
     }
 }
 
-const handleSubmitButton = form => {
-    jQuery(form).find('button').prop('disabled', true);
+const handleSubmitButton = thisForm => {
+
+    jQuery(thisForm).find('button').prop('disabled', true);
 
     if(typeof Storage !== 'undefined')
     {
@@ -200,38 +201,22 @@ const handleSubmitButton = form => {
 
 const createFormSubmit = async (form) => {
 
+
     //disable button to prevent double-click
     handleSubmitButton(form);
 
+    const formId = form.attr('id');
     const {lang} = dyCoreArgs;
 	let formFields = formToArray(form);
-	const method = String(jQuery(form).attr('data-method')).toLowerCase();
-	let action = atob(jQuery(form).attr('data-action'));  
-	const nonce = jQuery(form).attr('data-nonce') || '';  
-    const hasEmail = (typeof formFields.find(i => i.name === 'email') !== 'undefined') ? true : false;
-    let hashParams = jQuery(form).attr('data-hash-params') || '';
-    const gclid = (jQuery(form).attr('data-gclid')) ? true : false;
+	const method = String(form.attr('data-method')).toLowerCase();
+	let action = atob(form.attr('data-action'));  
+    const hasEmail = formFields.some(i => i.name === 'email');
+    let hashParams = form.attr('data-hash-params') || '';
 
-    if(nonce)
-    {
-        const { dy_nonce} = await getNonce();
-
-        if(dy_nonce)
-        {
-            if(nonce === 'slug')
-            {
-                action += `/${dy_nonce}`;
-            }
-            else if(nonce === 'param')
-            {
-                formFields.push({name: 'dy_nonce', value: dy_nonce});
-            }
-        }
-    }
+    const isStorageAvailable = typeof Storage !== 'undefined';
 
     if(method === 'post' && hasEmail)
     {
-
         //lang param
         formFields.push({name: 'lang', value: lang});
 
@@ -239,20 +224,9 @@ const createFormSubmit = async (form) => {
         formFields.forEach(o => {
             const {name, value} = o;
     
-            if(storeFieldNames.includes(name) && typeof Storage !== 'undefined')
+            if(storeFieldNames.includes(name) && isStorageAvailable)
             {
                 sessionStorage.setItem(name, value);
-            }
-        });
-
-        //tracking cookie params
-        [...visitCookies, ...googleAdsCookies].forEach(x => {
-
-            const value = getCookie(x);
-
-            if(value)
-            {
-                formFields.push({name: x, value: getCookie(x)});
             }
         });
     }
@@ -260,13 +234,17 @@ const createFormSubmit = async (form) => {
     if(hashParams)
     {
         let hashMessage = '';
-        hashParams = hashParams.split(',');
+        hashParams = hashParams.split(',').map(v => v.trim());
 
-        if(Array.isArray(hashParams))
-        {
-            hashParams.forEach(v => {
-                hashMessage += jQuery(form).find(`[name="${v}"]`).val();
-            });
+
+        for(const key of hashParams) {
+            const val = (form.find(`[name="${key}"]`).val() || '').trim();
+
+            if(!val) {
+                throw new Error(`hashParam "${key}" not found or empty in form id=${formId}`);
+            }
+
+            hashMessage += val;
         }
 
         if(hashMessage)
@@ -274,26 +252,6 @@ const createFormSubmit = async (form) => {
             const hash = await sha512(hashMessage);
 
             formFields.push({name: 'hash', value: hash});
-        }
-    }
-
-    if(gclid)
-    {
-        const gclidValue = getCookie('gclid');
-
-        if(gclidValue)
-        {
-            if(method === 'post')
-            {
-                const actionUrl = new URL(action);
-                const {searchParams} = actionUrl;
-                searchParams.set('gclid', gclidValue);
-                action = actionUrl.toString();
-            }
-            else if(method === 'get')
-            {
-                formFields.push({name: 'gclid', value: gclidValue});
-            }
         }
     }
 
@@ -329,16 +287,16 @@ const storePopulate = () => {
         jQuery('form').each(function(){
             const thisForm = jQuery(this);
 
-            if(jQuery(thisForm).attr('data-action') &&  jQuery(thisForm).attr('data-method'))
+            if(thisForm.attr('data-action') &&  thisForm.attr('data-method'))
             {
                 const formFields = formToArray(thisForm);
                 
                 formFields.forEach(i => {
                     const name = i.name;
                     const value = sessionStorage.getItem(name);
-                    const field = jQuery(thisForm).find('[name="'+name+'"]');
-                    const tag = jQuery(field).prop('tagName');
-                    const type = jQuery(field).attr('type');
+                    const field = thisForm.find('[name="'+name+'"]');
+                    const tag = field.prop('tagName');
+                    const type = field.attr('type');
                     
                     if(value && storeFieldNames.includes(name))
                     {
@@ -346,16 +304,16 @@ const storePopulate = () => {
                         {
                             if(type == 'checkbox' || type == 'radio')
                             {
-                                jQuery(field).prop('checked', true);
+                                field.prop('checked', true);
                             }
                             else
                             {
-                                jQuery(field).val(value);
+                                field.val(value);
                             }
                         }
                         else if(tag == 'TEXTAREA' || tag == 'SELECT')
                         {
-                            jQuery(field).val(value);
+                            field.val(value);
                         }			
                     }
                 });

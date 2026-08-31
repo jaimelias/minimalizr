@@ -70,44 +70,40 @@ if ( ! function_exists('write_log')) {
 		}
 	}
 	
-	function write_log($log = '', $log_headers = false, $debug = false) {
+	function write_log($log = '', $debug = false) {
 		$separator = "**************************";
-		$separator_start = "\n\n" . $separator . 'WRITE_LOG_START' . $separator . "\n";
-		$separator_end = "\n" . $separator . 'WRITE_LOG_END' . $separator . "\n\n";
+		$separator_start = sprintf("\n\n%sWRITE_LOG_START%s\n", $separator, $separator);
+		$separator_end   = sprintf("\n%sWRITE_LOG_END%s\n\n", $separator, $separator);
 
-		$output = $separator_start;
-
-		if($log_headers === true) {
-			$headers = [
-				'URI' => $_SERVER['REQUEST_URI'] ?? '',
-				'USER_AGENT' => $_SERVER['HTTP_USER_AGENT'] ?? '',
-				'IP_ADDRESS' => function_exists('get_ip_address') ? get_ip_address() : '(unknown)',
-				'TYPE' => gettype($log)
-			];
-
-			if(isset($_POST) && is_array($_POST) && !empty($_POST)) {
-				$headers['POST'] = $_POST;
-
-				// Redact the logged copy without changing the active request.
-				foreach(['CCNum', 'ExpMonth', 'ExpYear', 'CVV2'] as $sensitive) {
-					unset($headers['POST'][$sensitive]);
-				}
-			}
-
-			$output .= 'HEADERS = ' . wp_json_encode($headers, JSON_INVALID_UTF8_SUBSTITUTE);
-		}
-
-		$output .= "\nLOG = ";
+		$log_type = gettype($log);
 
 		if (is_array($log) || is_object($log)) {
 			$log = print_r(var_error_log($log), true);
 		}
 
-		$output .= "\n\n" . $log;
+		$output = sprintf(
+			"%sURI = %s\nUSER_AGENT = %s\nIP_ADDRESS = %s\nTYPE = %s\nLOG MESSAGE = \n\n%s",
+			$separator_start,
+			$_SERVER['REQUEST_URI'] ?? '',
+			$_SERVER['HTTP_USER_AGENT'] ?? '',
+			function_exists('get_ip_address') ? get_ip_address() : '(unknown)',
+			$log_type,
+			$log
+		);
 
-		if($debug === true) {
+		if (isset($_POST) && is_array($_POST) && !empty($_POST)) {
+			// remove sensitive fields
+			foreach (['CCNum', 'ExpMonth', 'ExpYear', 'CVV2'] as $sensitive) {
+				if (isset($_POST[$sensitive])) {
+					unset($_POST[$sensitive]);
+				}
+			}
+			$output .= sprintf("\nPOST = %s", print_r($_POST, true));
+		}
+
+		if ($debug === true) {
 			// ---- NEW TRACE SECTION ----
-			$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+			$trace  = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
 			$subset = array_slice($trace, 1, 7);
 
 			$lines = [];
@@ -117,19 +113,15 @@ if ( ! function_exists('write_log')) {
 				$line = $t['line'] ?? 0;
 				$lines[] = sprintf('#%d %s() @ %s:%d', $i, $func, $file, $line);
 			}
-			$output .= "\nTRACE:\n" . implode("\n", $lines);
+			$output .= sprintf("\nTRACE:\n%s", implode("\n", $lines));
 			// ---- END TRACE SECTION ----
 		}
-
-
 
 		$output .= $separator_end;
 
 		error_log($output);
 	}
-
 }
-
 
 function default_language()
 {
