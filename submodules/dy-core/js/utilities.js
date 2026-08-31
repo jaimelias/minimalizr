@@ -39,77 +39,62 @@ const sha512 = async (message)  => {
 
 
 const whatsappButton = async () => {
-
     const modal = jQuery('#dy-whatsapp-modal')
     const qrcode = jQuery('#dy-whatsapp-qrcode')
     const link = jQuery('#dy-whatsapp-link > a')
-    let whatsappNumber = ''
+
+    let { whatsappNumber } = dyCoreArgs
     let href = ''
 
+    jQuery('#dy-whatsapp-modal-close').click(() => {
+        modal.addClass('hidden')
+    })
 
-    //closes the modal
-    jQuery('#dy-whatsapp-modal-close').click(function(){
+    jQuery('.button-whatsapp').click(async e => {
+        e.preventDefault()
 
-        jQuery(modal).toggleClass('hidden');
+        if (!whatsappNumber) {
+            const nonce = await getNonce()
 
-    });
+            if (nonce?.whatsapp_number) {
+                whatsappNumber = nonce.whatsapp_number.toString()
+            }
+        }
 
-    jQuery('.button-whatsapp').each(async function(){
+        if (!whatsappNumber) return
 
-        const el = jQuery(this);
+        if (!href) {
+            const url = new URL(whatsappNumber, 'https://wa.me')
+            const pageTitle = jQuery('title').text().trim()
 
-        jQuery(el).click(async function(e){
-
-            e.preventDefault();
-
-            if(!whatsappNumber)
-            {
-                const nonce = await getNonce()
-                const dataText = jQuery('title').text().trim()
-
-                if(nonce && nonce.whatsapp_number)
-                {
-                    whatsappNumber = nonce.whatsapp_number.toString()
-                }
-
-                const url = new URL(whatsappNumber, 'https://wa.me')
-
-                if(dataText)
-                {
-                    url.searchParams.append('text', dataText)
-                }
-                
-                href = url.href
+            if (pageTitle) {
+                url.searchParams.set('text', pageTitle)
             }
 
-            if(!whatsappNumber) return
+            href = url.href
+        }
 
+        if (/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            window.location = href
+            return
+        }
 
-            if(/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
-            {
-                window.location = href;
-                return true;;
-            }
+        qrcode.empty()
 
-            jQuery(qrcode).text('');
+        new QRCode('dy-whatsapp-qrcode', {
+            text: href,
+            width: 200,
+            height: 200,
+            colorDark: '#075e54',
+            colorLight: '#dcf8c6',
+            correctLevel: QRCode.CorrectLevel.H
+        })
 
-            new QRCode("dy-whatsapp-qrcode", {
-                text: href,
-                width: 200,
-                height: 200,
-                colorDark : "#075e54",
-                colorLight : "#dcf8c6",
-                correctLevel : QRCode.CorrectLevel.H
-            });
+        link.attr('href', href)
 
-            jQuery(link).attr({href});
-
-            jQuery(modal).toggleClass('hidden');
-
-        });
-    });
-
-};
+        modal.removeClass('hidden')
+    })
+}
 
 const formToArray = form => {
    

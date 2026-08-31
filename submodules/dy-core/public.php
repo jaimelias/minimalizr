@@ -7,7 +7,7 @@ class Dynamic_Core_Public {
     
     public function __construct()
     {
-        $this->version = '0.1.100';
+        $this->version = '0.1.102';
         $this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
         $this->dirname_file = dirname( __FILE__ );
 
@@ -29,7 +29,6 @@ class Dynamic_Core_Public {
         add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
         add_action('minimal_site_alert', array($this, 'site_alert'));
         add_action('minimal_footer_alert', array($this, 'footer_alert'));
-        add_filter('dy_core_wp_json_args', array($this, 'hook_whatsapp_number'));
 
         add_filter('wp_resource_hints', array($this, 'resource_hints'), 10, 2);
     }
@@ -134,7 +133,8 @@ class Dynamic_Core_Public {
             'homeUrl' => home_url(),
             'permalink' => get_the_permalink(),
             'wpJsonUrl' => rest_url('dy-core'),
-            'lang' => current_language()
+            'lang' => current_language(),
+            'whatsappNumber' => whatsapp_number()
         );
 
         foreach($site_time as $k => $v)
@@ -505,13 +505,6 @@ class Dynamic_Core_Public {
 
         </style>
         <?php
-    }
-
-    public function hook_whatsapp_number($output = array())
-    {
-        $output['whatsapp_number'] = whatsapp_number();
-
-        return $output;
     }
 
 }
