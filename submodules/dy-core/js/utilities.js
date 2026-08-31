@@ -237,12 +237,14 @@ const createFormSubmit = async (form) => {
         hashParams = hashParams.split(',').map(v => v.trim());
 
 
-        for(const key of hashParams) {
-            const val = (form.find(`[name="${key}"]`).val() || '').trim();
+        for (const key of hashParams) {
+            const field = form.find(`[name="${key}"]`);
 
-            if(!val) {
-                throw new Error(`hashParam "${key}" not found or empty in form id=${formId}`);
+            if (!field.length) {
+                throw new Error(`hashParam "${key}" not found in form id=${formId}`);
             }
+
+            const val = String(field.val() ?? '').trim();
 
             hashMessage += val;
         }
