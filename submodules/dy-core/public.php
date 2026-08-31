@@ -7,7 +7,7 @@ class Dynamic_Core_Public {
     
     public function __construct()
     {
-        $this->version = '0.1.103';
+        $this->version = '0.1.104';
         $this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
         $this->dirname_file = dirname( __FILE__ );
 
@@ -61,26 +61,29 @@ class Dynamic_Core_Public {
             wp_enqueue_script('sentry-lazy-load', 'https://js.sentry-cdn.com/'.esc_html($sentry_api_key).'.min.js', array(), '', false);
             wp_add_inline_script('sentry-lazy-load', $this->sentry(), 'after');
         }
-        
-        wp_enqueue_script('landing-cookies', $this->plugin_dir_url_file . 'js/cookies.js', array('jquery'), $this->version, true);
-        wp_add_inline_script('landing-cookies', $this->cookies(), 'before');
 
-        wp_enqueue_script('dy-qrcode', $this->plugin_dir_url_file . 'js/qrcode.min.js', array('jquery'), 'async_defer', true);
-
-        wp_enqueue_script('dy-core-utilities', $this->plugin_dir_url_file . 'js/utilities.js', array('jquery', 'landing-cookies'), $this->version, true);
-        wp_add_inline_script('dy-core-utilities', $this->args(), 'before');
-        
-
-        if(isset($dy_load_turnstile_scripts))
+       if(isset($dy_load_turnstile_scripts))
         {
             wp_enqueue_script(
                 'turnstile-compat',
                 'https://challenges.cloudflare.com/turnstile/v0/api.js',
                 array(),
                 'async_defer',
-                true
+                false
             );
         }
+        
+        wp_enqueue_script('landing-cookies', $this->plugin_dir_url_file . 'js/cookies.js', array('jquery'), $this->version, true);
+        wp_add_inline_script('landing-cookies', $this->cookies(), 'before');
+
+        wp_enqueue_script('dy-qrcode', $this->plugin_dir_url_file . 'js/qrcode.min.js', array('jquery'), 'async_defer', true);
+
+
+ 
+
+        wp_enqueue_script('dy-core-utilities', $this->plugin_dir_url_file . 'js/utilities.js', array('jquery', 'landing-cookies'), $this->version, true);
+        wp_add_inline_script('dy-core-utilities', $this->args(), 'before');
+        
 
         //picker start
 

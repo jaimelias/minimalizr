@@ -214,10 +214,7 @@ const createFormSubmit = async (form) => {
 
     if(nonce)
     {
-        const {
-            dy_nonce,
-            unique_tx_id
-        } = await getNonce();
+        const { dy_nonce} = await getNonce();
 
         if(dy_nonce)
         {
@@ -229,14 +226,6 @@ const createFormSubmit = async (form) => {
             {
                 formFields.push({name: 'dy_nonce', value: dy_nonce});
             }
-        }
-
-        if(method === 'post' && unique_tx_id)
-        {
-            formFields.push({
-                name: 'unique_tx_id',
-                value: unique_tx_id
-            });
         }
     }
 
