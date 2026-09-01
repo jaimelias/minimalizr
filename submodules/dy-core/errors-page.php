@@ -24,7 +24,6 @@ class dy_errors {
 
         return isset($dy_request_invalids) && is_array($dy_request_invalids) && count($dy_request_invalids) > 0;
     }
-
     public static function add($input) {
 
         global $dy_request_invalids;
@@ -34,10 +33,17 @@ class dy_errors {
         }
 
         if (is_array($input) && count($input) > 0) {
-            $dy_request_invalids = array_merge($dy_request_invalids, array_values($input));
+            $dy_request_invalids = array_merge(
+                $dy_request_invalids,
+                array_values($input)
+            );
         } elseif (is_string($input) && strlen($input) > 0) {
             $dy_request_invalids[] = $input;
         }
+
+        $dy_request_invalids = array_values(
+            array_unique($dy_request_invalids)
+        );
 
         $GLOBALS['dy_request_invalids'] = $dy_request_invalids;
     }
