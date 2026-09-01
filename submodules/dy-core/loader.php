@@ -17,6 +17,7 @@ if(!class_exists('Dy_Core_Init'))
         {
             //core helpers
             require_once $this->plugin_dir_path . 'functions.php';
+            require_once $this->plugin_dir_path . 'errors-page.php';
             require_once $this->plugin_dir_path . 'security/waf.php';
             require_once $this->plugin_dir_path . 'security/queries.php';
             require_once $this->plugin_dir_path . 'controllers/abstracts/input_abstract.php';
@@ -49,10 +50,11 @@ if(!class_exists('Dy_Core_Init'))
         public function init()
         {
             new Dy_WAF();
+            new Dynamicpackages_Errors_Page();
             new Dy_Mailer();
             new Dynamic_Sitemap();
             new Dynamic_Core_Admin();
-            new Dynamic_Core_Public();
+            new Dynamic_Core_Public();  
             new Dynamic_Core_WP_JSON();
             new Dynamic_Core_Providers();
             //new Dynamic_Core_Orders();
