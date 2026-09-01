@@ -30,12 +30,15 @@ class dy_errors {
             ? array_values($input)
             : [$input];
 
-        $messages = array_values(array_filter(array_map(
-            static fn($message) => is_string($message)
-                ? trim($message)
-                : '',
-            $messages
-        )));
+        $messages = array_values(array_filter(
+            array_map(
+                static fn($message) => is_string($message)
+                    ? trim($message)
+                    : '',
+                $messages
+            ),
+            static fn($message) => $message !== ''
+        ));
 
         if(empty($messages)) {
             return;

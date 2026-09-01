@@ -117,7 +117,15 @@ if(!function_exists('validate_turnstile')) {
 				'hostname' => $data['hostname'] ?? null,
 			));
 
-			dy_errors::add(__('Turnstile validation failed.'));
+            $http_status = (
+                $status_code !== 200
+                || !is_array($data)
+            ) ? 502 : 400;
+
+			dy_errors::add(
+                __('Turnstile validation failed.'), 
+                $http_status
+            );
 
 			return false;
 		}
