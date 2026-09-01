@@ -50,7 +50,7 @@ if(!class_exists('Dy_Core_Init'))
         public function init()
         {
             new Dy_WAF();
-            new dy_error();
+            new dy_errors();
             new Dy_Mailer();
             new Dynamic_Sitemap();
             new Dynamic_Core_Admin();
