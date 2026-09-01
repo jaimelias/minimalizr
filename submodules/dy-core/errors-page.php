@@ -91,7 +91,7 @@ class dy_errors {
 
     public function the_title($title) {
 
-        return self::has_errors()
+        return self::has_errors() && in_the_loop()
             ? __('Error')
             : $title;
     }
