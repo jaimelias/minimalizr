@@ -51,7 +51,7 @@ class dy_errors {
 
 	public function meta_tags()
 	{
-		if($this::has_errors())
+		if(self::has_errors())
 		{		
             echo '<meta name="robots" content="noindex, nofollow" />';
             return;
@@ -62,7 +62,7 @@ class dy_errors {
 
         global $dy_request_invalids;
 
-		if($this::has_errors())
+		if(self::has_errors())
 		{
 			return implode('', array_map(function($message) {
 				return sprintf('<p class="minimal_alert strong">%s</p>', esc_html($message));
@@ -74,7 +74,7 @@ class dy_errors {
 
     public function wp_title($title) {
 		
-		if($this::has_errors())
+		if(self::has_errors())
 		{
 			return __('Error');
 		}
@@ -84,7 +84,7 @@ class dy_errors {
 
     public function the_title($title) {
 
-		if($this::has_errors())
+		if(self::has_errors())
 		{
 			return __('Error');
 		}
@@ -94,7 +94,7 @@ class dy_errors {
 
     public function get_the_excerpt($excerpt) {
 
-		if($this::has_errors())
+		if(self::has_errors())
 		{
 			return '';
 		}
