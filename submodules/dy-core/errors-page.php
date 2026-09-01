@@ -10,13 +10,13 @@ class dy_errors {
 
     public function __construct() {
 
-        add_action('wp_head', array($this, 'meta_tags'), PHP_INT_MAX); 
-        add_filter('the_content', array($this, 'the_content'), PHP_INT_MAX);
-        add_filter('pre_get_document_title', array($this, 'wp_title'), PHP_INT_MAX); 
-        add_filter('wp_title', array($this, 'wp_title'), PHP_INT_MAX); 
-        add_filter('the_title', array($this, 'the_title'), PHP_INT_MAX); 
-        add_filter('get_the_excerpt', array($this, 'get_the_excerpt'), PHP_INT_MAX); 
-        add_action('template_redirect', array($this, 'template_redirect'), PHP_INT_MAX);
+        add_action('wp_head', [$this, 'meta_tags'], PHP_INT_MAX); 
+        add_filter('the_content', [$this, 'the_content'], PHP_INT_MAX);
+        add_filter('pre_get_document_title', [$this, 'wp_title'], PHP_INT_MAX); 
+        add_filter('wp_title', [$this, 'wp_title'], PHP_INT_MAX); 
+        add_filter('the_title', [$this, 'the_title'], PHP_INT_MAX); 
+        add_filter('get_the_excerpt', [$this, 'get_the_excerpt'], PHP_INT_MAX); 
+        add_action('template_redirect', [$this, 'template_redirect'], PHP_INT_MAX);
     }
 
     public static function has_errors(): bool {
