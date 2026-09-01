@@ -889,5 +889,36 @@ if(!function_exists('current_url_full')) {
 	}
 }
 
+if(!function_exists('luhn_check')) {
+	function luhn_check($number)
+	{
+		$number = preg_replace('/[\s-]/', '', (string) $number);
+
+		if ($number === '' || !ctype_digit($number)) {
+			return false;
+		}
+
+		$length = strlen($number);
+		$parity = $length % 2;
+		$total = 0;
+
+		for ($i = 0; $i < $length; $i++) {
+			$digit = (int) $number[$i];
+
+			if ($i % 2 === $parity) {
+				$digit *= 2;
+
+				if ($digit > 9) {
+					$digit -= 9;
+				}
+			}
+
+			$total += $digit;
+		}
+
+		return $total % 10 === 0;
+	}
+}
+
 
 ?>
