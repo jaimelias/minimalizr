@@ -15,7 +15,8 @@ class Dy_Mailer
 		$this->email_cc = get_option('sendgrid_email_cc'); //stored one per line
 		$this->email_bcc = get_option('sendgrid_email_bcc'); //stored one per line
 
-		$this->name = (get_option('sendgrid_name')) ? get_option('sendgrid_name') : get_bloginfo('name');
+		$sendgrid_name = get_option('sendgrid_name');
+		$this->name = ($sendgrid_name) ? $sendgrid_name : get_bloginfo('name');
 		$this->settings_title = 'Mailer Config';
 		$this->init();
 	}
@@ -153,7 +154,7 @@ class Dy_Mailer
 		try {
 			//silences the script termination when the user aborts the request (e.g., closes the browser)
 			ignore_user_abort(true);
-			
+
 			$payload = $this->build_sendgrid_payload($atts);
 
 			if (is_wp_error($payload)) {
