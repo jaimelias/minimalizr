@@ -18,12 +18,13 @@ class dy_errors {
         add_filter('get_the_excerpt', array($this, 'get_the_excerpt'), PHP_INT_MAX);
     }
 
-    public function has_errors() {
+    public static function has_errors() {
         
         global $dy_request_invalids;
 
         return isset($dy_request_invalids) && is_array($dy_request_invalids) && count($dy_request_invalids) > 0;
     }
+    
     public static function add($input) {
 
         global $dy_request_invalids;
@@ -50,9 +51,7 @@ class dy_errors {
 
 	public function meta_tags()
 	{
-		global $dy_request_invalids;
-
-		if($this->has_errors())
+		if($this::has_errors())
 		{		
             echo '<meta name="robots" content="noindex, nofollow" />';
             return;
@@ -63,7 +62,7 @@ class dy_errors {
 
         global $dy_request_invalids;
 
-		if($this->has_errors())
+		if($this::has_errors())
 		{
 			return implode('', array_map(function($message) {
 				return sprintf('<p class="minimal_alert strong">%s</p>', esc_html($message));
@@ -74,12 +73,10 @@ class dy_errors {
     }
 
     public function wp_title($title) {
-
-		global $dy_request_invalids;
 		
-		if($this->has_errors())
+		if($this::has_errors())
 		{
-			return __('Error', 'dynamicpackages');
+			return __('Error');
 		}
 
         return $title;
@@ -87,11 +84,9 @@ class dy_errors {
 
     public function the_title($title) {
 
-        global $dy_request_invalids;
-
-		if($this->has_errors())
+		if($this::has_errors())
 		{
-			return __('Error', 'dynamicpackages');
+			return __('Error');
 		}
 
         return $title;
@@ -99,9 +94,7 @@ class dy_errors {
 
     public function get_the_excerpt($excerpt) {
 
-        global $dy_request_invalids;
-
-		if($this->has_errors())
+		if($this::has_errors())
 		{
 			return '';
 		}
