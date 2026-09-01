@@ -27,26 +27,28 @@ class dy_errors {
     
     public static function add($input) {
 
+        $messages = is_array($input) ? array_values($input) : [$input];
+
+        $messages = array_values(array_filter(
+            $messages,
+            static function($message) {
+                return is_string($message) && trim($message) !== '';
+            }
+        ));
+
+        if(count($messages) === 0) {
+            return;
+        }
+
         global $dy_request_invalids;
 
-        if (!isset($dy_request_invalids)) {
+        if(!isset($dy_request_invalids) || !is_array($dy_request_invalids)) {
             $dy_request_invalids = [];
         }
 
-        if (is_array($input) && count($input) > 0) {
-            $dy_request_invalids = array_merge(
-                $dy_request_invalids,
-                array_values($input)
-            );
-        } elseif (is_string($input) && strlen($input) > 0) {
-            $dy_request_invalids[] = $input;
-        }
-
-        $dy_request_invalids = array_values(
-            array_unique($dy_request_invalids)
-        );
-
-        $GLOBALS['dy_request_invalids'] = $dy_request_invalids;
+        $dy_request_invalids = array_values(array_unique(
+            array_merge($dy_request_invalids, $messages)
+        ));
     }
 
 	public function meta_tags()

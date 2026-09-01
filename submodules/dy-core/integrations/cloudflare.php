@@ -34,9 +34,7 @@ if(!function_exists('validate_turnstile')) {
 		} else {
 			if(strlen($token) > 2048) {
 
-				$GLOBALS['dy_request_invalids'] = array(
-					__('Invalid Turnstile response: token length > 2048')
-				);
+				dy_errors::add(__('Invalid Turnstile response: token length > 2048'));
 
 				return false;
 			}
@@ -48,9 +46,7 @@ if(!function_exists('validate_turnstile')) {
 		{
 			write_log('Turnstile: missing secret key');
 
-			$GLOBALS['dy_request_invalids'] = array(
-				__('Turnstile is not configured')
-			);
+			dy_errors::add(__('Turnstile is not configured'));
 
 			return false;
 		}
@@ -74,9 +70,7 @@ if(!function_exists('validate_turnstile')) {
 				. $response->get_error_message()
 			);
 
-			$GLOBALS['dy_request_invalids'] = array(
-				__('Unable to validate Turnstile')
-			);
+			dy_errors::add(__('Unable to validate Turnstile'));
 
 			return false;
 		}
@@ -118,9 +112,7 @@ if(!function_exists('validate_turnstile')) {
 				'hostname' => $data['hostname'] ?? null,
 			));
 
-			$GLOBALS['dy_request_invalids'] = array(
-				__('Invalid Turnstile')
-			);
+			dy_errors::add(__('Invalid Turnstile'));
 
 			return false;
 		}
