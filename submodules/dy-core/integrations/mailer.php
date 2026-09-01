@@ -151,11 +151,20 @@ class Dy_Mailer
 		$mail_data = $this->mail_data_defaults($atts);
 
 		try {
+			//silences the script termination when the user aborts the request (e.g., closes the browser)
+			ignore_user_abort(true);
+			
 			$payload = $this->build_sendgrid_payload($atts);
 
 			if (is_wp_error($payload)) {
 				return $this->report_mail_failure($payload, $mail_data);
 			}
+
+			//silences the curl_exec() output to the browser and flushes the output buffer
+			while (ob_get_level() > 0) {
+				ob_end_flush();
+			}
+			flush();
 
 			$response = wp_remote_post(
 				$this->api_endpoint,
