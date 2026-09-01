@@ -3,7 +3,7 @@
 if ( !defined( 'WPINC' ) ) exit;
 
 #[AllowDynamicProperties]
-class Dynamic_Core_Error_Page {
+class dy_error {
 
     private static $cache = [];
 
