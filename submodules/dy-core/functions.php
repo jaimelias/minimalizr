@@ -91,15 +91,14 @@ if ( ! function_exists('write_log')) {
 			$log
 		);
 
-		if (isset($_POST) && is_array($_POST) && !empty($_POST)) {
-			// remove sensitive fields
-			foreach (['CCNum', 'ExpMonth', 'ExpYear', 'CVV2'] as $sensitive) {
-				if (isset($_POST[$sensitive])) {
-					unset($_POST[$sensitive]);
-				}
-			}
-			$output .= sprintf("\nPOST = %s", print_r($_POST, true));
+		$post_for_log = $_POST;
+
+		foreach(['CCNum', 'ExpMonth', 'ExpYear', 'CVV2'] as $sensitive)
+		{
+			unset($post_for_log[$sensitive]);
 		}
+
+		$output .= sprintf("\nPOST = %s", print_r($post_for_log, true));
 
 		if ($debug === true) {
 			// ---- NEW TRACE SECTION ----
