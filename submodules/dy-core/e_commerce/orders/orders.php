@@ -11,27 +11,27 @@ class Dynamic_Core_Orders {
 		$this->name = 'dy-orders';
 
 
-		$valid_order_status = array(
+		$valid_order_status = [
 			'pending', 
 			'paid', 
 			'confirmed', 
 			'postponed', 
 			'cancelled'
-		);
+		];
 		
-		$valid_order_status_labels = array(
+		$valid_order_status_labels = [
 			__('Pending'), 
 			__('Paid'), 
 			__('Confirmed'), 
 			__('Postponed'), 
 			__('Cancelled')
-		);
+		];
 
 
 		$this->valid_order_status = $valid_order_status;
 		$this->valid_order_status_labels = $valid_order_status_labels;
 
-		$this->booking_fields = array(
+		$this->booking_fields = [			
 			'pax_regular',
 			'pax_discount',
 			'pax_free',
@@ -40,9 +40,8 @@ class Dynamic_Core_Orders {
 			'end_date',
 			'return_hour',
 			'booking_extra',
-			'coupon_code',
-			'hash',
-		);
+			'coupon_code'
+		];
 
 
         add_action('init', array($this, 'package_post_type'));
@@ -188,7 +187,6 @@ class Dynamic_Core_Orders {
     public function validate_data($data) {
         
         $required_fields = [
-			'hash',
             'first_name',
             'lastname',
 			'description',

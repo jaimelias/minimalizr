@@ -199,7 +199,7 @@ const handleSubmitButton = thisForm => {
     
 };
 
-const createFormSubmit = async (form) => {
+const createFormSubmit = form => {
 
 
     //disable button to prevent double-click
@@ -211,7 +211,6 @@ const createFormSubmit = async (form) => {
 	const method = String(form.attr('data-method')).toLowerCase();
 	let action = atob(form.attr('data-action'));  
     const hasEmail = formFields.some(i => i.name === 'email');
-    let hashParams = form.attr('data-hash-params') || '';
 
     const isStorageAvailable = typeof Storage !== 'undefined';
 
@@ -229,32 +228,6 @@ const createFormSubmit = async (form) => {
                 sessionStorage.setItem(name, value);
             }
         });
-    }
-
-    if(hashParams)
-    {
-        let hashMessage = '';
-        hashParams = hashParams.split(',').map(v => v.trim());
-
-
-        for (const key of hashParams) {
-            const field = form.find(`[name="${key}"]`);
-
-            if (!field.length) {
-                throw new Error(`hashParam "${key}" not found in form id=${formId}`);
-            }
-
-            const val = String(field.val() ?? '').trim();
-
-            hashMessage += val;
-        }
-
-        if(hashMessage)
-        {
-            const hash = await sha512(hashMessage);
-
-            formFields.push({name: 'hash', value: hash});
-        }
     }
 
     formSubmit({method, action, formFields});
