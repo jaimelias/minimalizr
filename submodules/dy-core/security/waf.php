@@ -12,8 +12,8 @@ class Dy_WAF {
     }
 
     private function reject_param($message) {
-        write_log($message, false);
-        wp_die(esc_html($message), 'WAF Rule - Bad Request', ['response' => 400]);
+        error_log("[WAF - Bad Request] = $message");
+        wp_die(esc_html($message), 'WAF - Bad Request', ['response' => 400]);
         exit;
     }
 
