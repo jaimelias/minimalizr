@@ -184,21 +184,6 @@ class Dynamic_Core_Providers {
 		echo '</td></tr>';
 	}
 
-	public function email_str_row_to_array($str) {
-
-		if(!$str) {
-			return [];
-		}
-
-		$emails = explode("\r\n", html_entity_decode($str));
-
-		return array_slice(
-			array_unique(array_filter(array_map('sanitize_email', $emails))),
-			0,
-			10
-		);
-	}
-
 	public function get_providers($output = []) {
 
 		$cache_key = self::TAXONOMY . 'get_providers';
@@ -234,7 +219,7 @@ class Dynamic_Core_Providers {
 				continue;
 			}
 
-			$emails = $this->email_str_row_to_array(
+			$emails = email_str_row_to_array(
 				get_term_meta($term->term_id, self::META_EMAILS, true)
 			);
 

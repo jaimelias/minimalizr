@@ -6,7 +6,6 @@ if ( ! defined( 'WPINC' ) ) exit;
 class Dynamic_Sitemap
 {
     private $query_param = null;
-    private $pll_langs = false;
 
     /** @var string|null */
     private $changefreq_override = null;
@@ -140,7 +139,7 @@ class Dynamic_Sitemap
             ? self::DEFAULT_POST_TYPES
             : $this->query_param;
 
-        $this->pll_langs = $this->polylang();
+        $get_languages = (array) get_languages();
 
         $args = [
             'post_type'              => explode(',', $post_type),
@@ -153,8 +152,8 @@ class Dynamic_Sitemap
             'post_status'            => 'publish',
         ];
 
-        if ($this->pll_langs) {
-            $args['lang'] = $this->pll_langs;
+        if (count($get_languages) > 0) {
+            $args['lang'] = $get_languages;
         }
 
         $q      = new WP_Query($args);
@@ -241,30 +240,6 @@ class Dynamic_Sitemap
         $replace = ['>', '<', '\\1'];
 
         return preg_replace($search, $replace, $buffer);
-    }
-
-    /**
-     * Return array of Polylang language slugs or false if not active.
-     */
-    public function polylang() {
-        // Using PLL() when available; avoid iterating nested structures manually.
-        if (function_exists('PLL') && PLL()->model) {
-            $langs = PLL()->model->get_languages_list();
-            if (is_array($langs) && !empty($langs)) {
-                $slugs = [];
-                foreach ($langs as $lang) {
-                    if (isset($lang->slug)) {
-                        $slugs[] = $lang->slug;
-                    } elseif (is_array($lang) && isset($lang['slug'])) {
-                        $slugs[] = $lang['slug'];
-                    }
-                }
-                if (!empty($slugs)) {
-                    return $slugs;
-                }
-            }
-        }
-        return false;
     }
 
     private function changefreq_by_id($post_id) {

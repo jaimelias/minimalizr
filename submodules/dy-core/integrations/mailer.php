@@ -7,7 +7,6 @@ class Dy_Mailer
 {
 	public function __construct()
 	{
-		$this->recipients_limit = 10;
 		$this->api_endpoint = 'https://api.sendgrid.com/v3/mail/send';
 		$this->web_api_key = get_option('sendgrid_web_api_key');
 		$this->email = get_option('sendgrid_email');
@@ -287,13 +286,13 @@ class Dy_Mailer
 		* and 10-address limit.
 		*/
 		$config_to = $this->parse_addresses(
-			$this->email_str_row_to_array($this->email_to)
+			email_str_row_to_array($this->email_to)
 		);
 		$config_cc = $this->parse_addresses(
-			$this->email_str_row_to_array($this->email_cc)
+			email_str_row_to_array($this->email_cc)
 		);
 		$config_bcc = $this->parse_addresses(
-			$this->email_str_row_to_array($this->email_bcc)
+			email_str_row_to_array($this->email_bcc)
 		);
 
 		/*
@@ -931,20 +930,6 @@ class Dy_Mailer
 		return preg_replace($search, $replace, $template);			
 	}
 
-
-	public function email_str_row_to_array($str)
-	{
-		$output = [];
-
-		if($str)
-		{
-			$emails = explode(PHP_EOL, html_entity_decode($str));		
-			$output = array_slice(array_unique(array_filter(array_map('sanitize_email', $emails))), 0, $this->recipients_limit);
-		}
-
-
-		return $output;
-	}
 	
 }
 

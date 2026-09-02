@@ -7,8 +7,7 @@ define('DY_CORE_FUNCTIONS', true);
 
 if(!function_exists('get_dy_id'))
 {
-	function get_dy_id()
-	{
+	function get_dy_id(){
 		global $post;
 
 		$dy_id      = secure_request('dy_id', null, 'absint');
@@ -35,10 +34,12 @@ if(!function_exists('get_dy_id'))
 }
 
 
+
+
+
 if ( ! function_exists('current_page_number')) {
 
-	function current_page_number()
-	{
+	function current_page_number() : int {
 		$page = 1;
 
 		if(!empty(get_query_var('page')))
@@ -51,7 +52,7 @@ if ( ! function_exists('current_page_number')) {
 			$page = get_query_var('paged');
 		}
 		
-		return $page;
+		return (int) $page;
 
 	}
 
@@ -70,7 +71,7 @@ if ( ! function_exists('write_log')) {
 		}
 	}
 	
-	function write_log($log = '', $debug = false) {
+	function write_log($log = '', $debug = false) : void {
 		$separator = "**************************";
 		$separator_start = sprintf("\n\n%sWRITE_LOG_START%s\n", $separator, $separator);
 		$separator_end   = sprintf("\n%sWRITE_LOG_END%s\n\n", $separator, $separator);
@@ -122,8 +123,7 @@ if ( ! function_exists('write_log')) {
 	}
 }
 
-function default_language()
-{
+function default_language() : string {
 	static $cache = [];
 	$cache_key = 'wp_core_default_language'; //constant
 
@@ -138,8 +138,7 @@ function default_language()
 }
 
 
-function get_languages()
-{
+function get_languages() : array {
 	static $cache = [];
 	$cache_key = 'wp_core_get_languages'; //constant
 
@@ -161,8 +160,7 @@ function get_languages()
 }
 
 
-function current_language()
-{
+function current_language() : string {
 	static $cache = [];
 	$cache_key = 'wp_core_current_language'; //constant
 
@@ -248,59 +246,60 @@ if(!function_exists('get_ip_address'))
 	
 }
 
-function home_lang()
-{
-    static $cache = [];
-    $cache_key = 'wp_core_home_lang';
-    $output = '';
+if(!function_exists('home_lang')) {
+	function home_lang() : string {
+		static $cache = [];
+		$cache_key = 'wp_core_home_lang';
+		$output = '';
 
-    if(isset($cache[$cache_key]))
-    {
-        $output = $cache[$cache_key];
-    }
-    else
-    {
-        global $polylang;
+		if(isset($cache[$cache_key]))
+		{
+			$output = $cache[$cache_key];
+		}
+		else
+		{
+			global $polylang;
 
-        if(isset($polylang))
-        {
-            $path = '';
-            $pll_url = pll_home_url();
+			if(isset($polylang))
+			{
+				$path = '';
+				$pll_url = pll_home_url();
 
-            if(!empty($pll_url))
-            {
-                $current_language = pll_current_language();
-                $parsed_url = wp_parse_url($pll_url);
-                $path_arr = array_values(array_filter(explode('/', $path)));
+				if(!empty($pll_url))
+				{
+					$current_language = pll_current_language();
+					$parsed_url = wp_parse_url($pll_url);
+					$path_arr = array_values(array_filter(explode('/', $path)));
 
-                if(in_array($current_language, $path_arr))
-                {
-                    $parsed_url['path'] = $current_language;
-                }
-            }
+					if(in_array($current_language, $path_arr))
+					{
+						$parsed_url['path'] = $current_language;
+					}
+				}
 
-            $output = $parsed_url['scheme'] . '://'
-                . $parsed_url['host']
-                . (isset($parsed_url['port']) ? ':' . $parsed_url['port'] : '')
-                . (isset($parsed_url['path']) ? $parsed_url['path'] : '')
-                . (isset($parsed_url['query']) ? '?' . $parsed_url['query'] : '')
-                . (isset($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : '');
+				$output = $parsed_url['scheme'] . '://'
+					. $parsed_url['host']
+					. (isset($parsed_url['port']) ? ':' . $parsed_url['port'] : '')
+					. (isset($parsed_url['path']) ? $parsed_url['path'] : '')
+					. (isset($parsed_url['query']) ? '?' . $parsed_url['query'] : '')
+					. (isset($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : '');
 
-            $output = normalize_url($output);
-        }
-        else
-        {
-            $output = home_url('/');
-        }
+				$output = normalize_url($output);
+			}
+			else
+			{
+				$output = home_url('/');
+			}
 
-        $cache[$cache_key] = $output;
-    }
+			$cache[$cache_key] = $output;
+		}
 
-    return $output;
+		return $output;
+	}
 }
 
 if(!function_exists('whatsapp_number')) {
-	function whatsapp_number() {
+	function whatsapp_number() : string {
 
 		$current_language = current_language();
 		$default_language = default_language();
@@ -313,10 +312,10 @@ if(!function_exists('whatsapp_number')) {
 }
 
 
+
 if(!function_exists('whatsapp_button'))
 {
-	function whatsapp_button($label = '', $text = '')
-	{
+	function whatsapp_button($label = '', $text = '') : string {
 		$output = '';
 		$number = whatsapp_number();
 
@@ -338,20 +337,18 @@ if(!function_exists('whatsapp_button'))
 
 if(!function_exists('get_inline_file'))
 {
-	function get_inline_file($dir)
-	{
+	function get_inline_file($dir) : string {
 		ob_start();
 		require_once($dir);
 		$output = ob_get_contents();
 		ob_end_clean();
-		return $output;	
+		return (string) $output;	
 	}
 }
 
 if(!function_exists('load_picker_scripts'))
 {
-    function load_picker_scripts($plugin_dir_url, $dirname_file)
-    {
+    function load_picker_scripts($plugin_dir_url, $dirname_file) : void {
         wp_enqueue_script( 'picker-js', $plugin_dir_url . 'js/picker/picker.js', array('jquery'), '3.6.2', true);
         wp_enqueue_script( 'picker-date-js', $plugin_dir_url . 'js/picker/picker.date.js', array('jquery', 'picker-js'), '3.6.2', true);
         wp_enqueue_script( 'picker-time-js', $plugin_dir_url . 'js/picker/picker.time.js',array('jquery', 'picker-js'), '3.6.2', true);	
@@ -369,8 +366,7 @@ if(!function_exists('load_picker_scripts'))
 
 if(!function_exists('load_picker_styles'))
 {
-	function load_picker_styles($plugin_dir_url)
-	{
+	function load_picker_styles($plugin_dir_url) : void {
 		wp_enqueue_style( 'picker-css', $plugin_dir_url . 'css/picker/default.css', array(), '', 'all' );
 		wp_enqueue_style( 'picker-date-css', $plugin_dir_url . 'css/picker/default.date.css', array(), '', 'all' );
 		wp_enqueue_style( 'picker-time-css', $plugin_dir_url . 'css/picker/default.time.css', array(), '', 'all' );		
@@ -379,61 +375,55 @@ if(!function_exists('load_picker_styles'))
 
 if(!function_exists('wrap_money_full'))
 {
-	function wrap_money_full($amount, $decimal = '.', $thousands = ',')
-	{
+	function wrap_money_full($amount, $decimal = '.', $thousands = ',') : string {
 		return currency_symbol() . money($amount, $decimal, $thousands) . ' ' . currency_name();
 	}
 }
 
 if(!function_exists('wrap_money'))
 {
-	function wrap_money($amount, $decimal = '.', $thousands = ',')
-	{
+	function wrap_money($amount, $decimal = '.', $thousands = ',') : string {
 		return currency_symbol() . money($amount, $decimal, $thousands);
 	}
 }
 
 if(!function_exists('money'))
 {
-	function money($amount,  $decimal = '.', $thousands = ',')
-	{
+	function money($amount,  $decimal = '.', $thousands = ',') : string {
 		return number_format((float) $amount, 2, $decimal, $thousands);
 	}
 }
 
 // New version that shows NO decimals
 if (!function_exists('money_rounded')) {
-	function money_rounded($amount, $thousands = ',') {
+	function money_rounded($amount, $thousands = ',') : string {
 		return number_format(round((float) $amount), 0, '', $thousands);
 	}
 }
 
 // Optionally, you can wrap it too:
 if (!function_exists('wrap_money_rounded')) {
-	function wrap_money_rounded($amount, $thousands = ',') {
+	function wrap_money_rounded($amount, $thousands = ',') : string {
 		return currency_symbol() . money_rounded($amount, $thousands) . ' ' . currency_name();
 	}
 }
 
 if(!function_exists('currency_symbol'))
 {
-	function currency_symbol()
-	{
+	function currency_symbol() : string {
 		return '$';
 	}
 }
 
 if(!function_exists('currency_name'))
 {
-	function currency_name()
-	{
+	function currency_name() : string {
 		return 'USD';
 	}
 }
 
 if (!function_exists("is_valid_date")) {
-    function is_valid_date($str, $formats = ["Y-m-d", "Y-m-d H:i:s"])
-    {
+    function is_valid_date($str, $formats = ["Y-m-d", "Y-m-d H:i:s"]) : bool{
         if (empty($str) || !is_string($str)) {
             return false;
         }
@@ -458,8 +448,7 @@ if (!function_exists("is_valid_date")) {
 
 if(!function_exists('is_valid_time'))
 {
-	function is_valid_time($str)
-	{
+	function is_valid_time($str) : bool {
 		static $cache = [];
 
 		if(empty($str))
@@ -480,7 +469,7 @@ if(!function_exists('is_valid_time'))
 
 if(!function_exists('is_in_theme'))
 {
-	function is_in_theme() {
+	function is_in_theme() : bool {
 		$path = dirname(__FILE__);
 		
 		// Check if the script is in a theme directory
@@ -496,8 +485,7 @@ if(!function_exists('is_in_theme'))
 
 if(!function_exists('get_site_time'))
 {
-	function get_site_time()
-	{
+	function get_site_time() : array {
         $timezone = get_option('timezone_string');
 
         if (empty($timezone)) {
@@ -510,30 +498,32 @@ if(!function_exists('get_site_time'))
         $utc_offset_minutes = abs(($utc_offset_seconds % 3600) / 60);
         $utc_offset = sprintf('%+03d:%02d', $utc_offset_hours, $utc_offset_minutes);
 
-		return array(
+		return [
 			'site_timezone' => $timezone,
 			'site_offset' => $utc_offset,
 			'site_timestamp' => round(microtime(true) * 1000)
-		);
+		];
 
 	}
 }
 
 if ( ! function_exists( 'dy_format_blocks' ) ) {
-	function dy_format_blocks( $raw_blocks = '', $format = 'html' ) {
+	function dy_format_blocks( $raw_blocks = '', $format = 'html' ) : string{
 
 		// Valid formats
 		$valid_formats = [ 'html', 'text' ];
 
 		// Check format
 		if ( ! in_array( $format, $valid_formats, true ) ) {
-			wp_die(
+			write_log(
 				sprintf(
 					'Invalid format "%s". Valid formats are: %s',
 					esc_html( $format ),
 					implode( ', ', $valid_formats )
 				)
 			);
+
+			return '';
 		}
 
 		// If no blocks passed, return empty string
@@ -560,13 +550,13 @@ if ( ! function_exists( 'dy_format_blocks' ) ) {
 			}
 		}
 
-		return implode("\n\n", $output);
+		return (count($output) > 0) ? implode("\n\n", $output) : '';
 	}
 }
 
 
 if(!function_exists('html_to_plain_text')) {
-	function html_to_plain_text($html) {
+	function html_to_plain_text($html) : string {
 		$html = strip_shortcodes($html);
 
 		// --- Convert <table> to Markdown before other replacements ---
@@ -671,10 +661,10 @@ if(!function_exists('dy_strtotime'))
 	 *
 	 * @return int Unix timestamp.
 	 *
-	 * @throws InvalidArgumentException If $str is empty or not a string.
+	 * @throws InvalidArgumentException If $str is empty (after trimming).
 	 * @throws Exception If PHP cannot parse the supplied date/time.
 	 */
-	function dy_strtotime($str) {
+	function dy_strtotime($str) : int {
 
 		if(!is_string($str) || trim($str) === '') {
 			throw new InvalidArgumentException(
@@ -721,26 +711,19 @@ if(!function_exists('dy_date'))
 	/**
 	 * Format a Unix timestamp using the WordPress site's configured timezone.
 	 *
-	 * This works similarly to PHP's date(), except the output is formatted
-	 * using the timezone configured in WordPress instead of PHP's default
-	 * runtime timezone.
+	 * The timestamp is treated as an absolute UTC instant and converted to
+	 * the site timezone (via wp_timezone()) before formatting. If no
+	 * timestamp is given, the current time is used.
 	 *
-	 * Examples:
+	 * @param string   $format    A valid PHP date() format string. Must be non-empty.
+	 * @param int|null $timestamp Unix timestamp to format, or null to use the
+	 *                            current time. Defaults to null.
 	 *
-	 * dy_date('Y-m-d H:i:s');
-	 * dy_date('Y-m-d', 1787668200);
-	 * dy_date('F j, Y', dy_strtotime('tomorrow'));
+	 * @return string The formatted date/time string.
 	 *
-	 * If no timestamp is provided, the current Unix timestamp is used.
-	 *
-	 * @param string   $format    PHP DateTime format string.
-	 * @param int|null $timestamp Unix timestamp. Defaults to current time.
-	 *
-	 * @return string Formatted date/time string.
-	 *
-	 * @throws InvalidArgumentException If $format is invalid or $timestamp
-	 *                                  is not an integer/numeric value.
+	 * @throws InvalidArgumentException If $format is an empty string.
 	 */
+
 	function dy_date($format, $timestamp = null) {
 
 		if(!is_string($format) || $format === '') {
@@ -797,7 +780,7 @@ if(!function_exists('dy_date'))
 }
 
 if(!function_exists('normalize_url')) {
-	function normalize_url($url) {
+	function normalize_url($url) : string {
 		return preg_replace('#(?<!:)/{2,}#', '/', $url);
 	}
 }
@@ -889,8 +872,7 @@ if(!function_exists('current_url_full')) {
 }
 
 if(!function_exists('luhn_check')) {
-	function luhn_check($number)
-	{
+	function luhn_check($number) : bool {
 		$number = preg_replace('/[\s-]/', '', (string) $number);
 
 		if ($number === '' || !ctype_digit($number)) {
@@ -916,6 +898,24 @@ if(!function_exists('luhn_check')) {
 		}
 
 		return $total % 10 === 0;
+	}
+}
+
+
+if (!function_exists('email_str_row_to_array')) {
+	function email_str_row_to_array($str, $recipients_limit = 10) : array {
+		if (!$str) {
+			return [];
+		}
+
+		$str    = str_replace("\r\n", "\n", html_entity_decode($str));
+		$emails = array_map('trim', explode("\n", $str));
+
+		return array_slice(
+			array_unique(array_filter(array_map('sanitize_email', $emails))),
+			0,
+			$recipients_limit
+		);
 	}
 }
 

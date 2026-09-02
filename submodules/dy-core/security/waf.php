@@ -4,106 +4,70 @@ if ( !defined( 'WPINC' ) ) exit;
 
 #[AllowDynamicProperties]
 class Dy_WAF {
+    protected $max_array_depth = 6;
+
     public function __construct() {
-        $this->valid_arrays_or_objects = ['has_published_posts'];
-
-        add_filter('dy_default_get_params', [$this, 'default_get_params']); //new params will be send from different wp plugins
-        add_filter('dy_default_post_params', [$this, 'default_post_params']);
-        add_filter('dy_default_request_params', [$this, 'default_request_params']);
-        add_filter('dy_default_cookie_params', [$this, 'default_cookie_params']);
-
-        //Priority 20 provides better automatic custom post-type/taxonomy coverage. Priority 0 provides stricter “before every init callback” ordering.
-        add_action('init', [$this, 'validate_params'], 20);
+        // Earliest hook after WordPress normalizes request slashes and creates $wp.
+        add_action('setup_theme', [$this, 'validate_params'], PHP_INT_MIN);
     }
 
-    private function should_skip_waf() {
-        if (is_admin()) {
-            return true;
+    private function reject_param($message) {
+        write_log($message, false);
+        wp_die(esc_html($message), 'WAF Rule - Bad Request', ['response' => 400]);
+        exit;
+    }
+
+    private function format_param_name($name) {
+        $name = preg_replace('/[^\x20-\x7E]/', '?', (string) $name);
+        $name = is_string($name) ? $name : '';
+
+        return $name !== '' ? substr($name, 0, 191) : '(empty)';
+    }
+
+    private function validate_non_scalar_param($param_key, $path, $value, $depth = 1) {
+        if (!is_array($value)) {
+            $message = sprintf(
+                '%s param %s type %s is not allowed',
+                $param_key,
+                $path,
+                gettype($value)
+            );
+            $this->reject_param($message);
         }
 
-        if (function_exists('wp_doing_ajax') && wp_doing_ajax()) {
-            return true;
+        $max_depth = max(1, (int) $this->max_array_depth);
+
+        if ($depth > $max_depth) {
+            $message = sprintf(
+                '%s param %s array depth > %d',
+                $param_key,
+                $path,
+                $max_depth
+            );
+            $this->reject_param($message);
         }
 
-        if (function_exists('wp_doing_cron') && wp_doing_cron()) {
-            return true;
+        foreach ($value as $key => $item) {
+            if (is_scalar($item)) {
+                continue;
+            }
+
+            $child_path = sprintf(
+                '%s[%s]',
+                $path,
+                $this->format_param_name($key)
+            );
+
+            $this->validate_non_scalar_param(
+                $param_key,
+                $child_path,
+                $item,
+                $depth + 1
+            );
         }
-
-        if (defined('WP_CLI') && WP_CLI) {
-            return true;
-        }
-
-        if (defined('XMLRPC_REQUEST') && XMLRPC_REQUEST) {
-            return true;
-        }
-
-        if (defined('REST_REQUEST') && REST_REQUEST) {
-            return true;
-        }
-
-        // Alternate REST routing. Empty values must not bypass the WAF.
-        if (!get_has('rest_route')) {
-            return true;
-        }
-
-        $uri  = isset($_SERVER['REQUEST_URI']) && is_string($_SERVER['REQUEST_URI'])
-            ? $_SERVER['REQUEST_URI']
-            : '';
-
-        $path = wp_parse_url($uri, PHP_URL_PATH);
-        $path = is_string($path) ? $path : '';
-
-        // Skip only actual directly executed WordPress endpoints.
-        $script = basename((string) ($_SERVER['SCRIPT_NAME'] ?? ''));
-
-        if (in_array($script, [
-            'wp-login.php',
-            'wp-comments-post.php',
-            'xmlrpc.php',
-            'wp-cron.php',
-        ], true)) {
-            return true;
-        }
-
-        /*
-        * Match the site's actual pretty REST base. This supports WordPress
-        * installations in subdirectories and index-based permalinks without
-        * treating arbitrary paths containing "wp-json" as REST requests.
-        */
-        $rest_url_path = wp_parse_url(rest_url(), PHP_URL_PATH);
-        $rest_url_path = is_string($rest_url_path)
-            ? untrailingslashit($rest_url_path)
-            : '';
-
-        $rest_prefix = '/' . trim(rest_get_url_prefix(), '/');
-
-        $has_pretty_rest_path = (
-            $rest_url_path !== '' &&
-            $rest_prefix !== '/' &&
-            strlen($rest_url_path) >= strlen($rest_prefix) &&
-            substr($rest_url_path, -strlen($rest_prefix)) === $rest_prefix
-        );
-
-        if (
-            $has_pretty_rest_path &&
-            (
-                $path === $rest_url_path ||
-                strncmp(
-                    $path,
-                    $rest_url_path . '/',
-                    strlen($rest_url_path) + 1
-                ) === 0
-            )
-        ) {
-            return true;
-        }
-
-        return false;
     }
 
     public function validate_params() {
-
-        if ($this->should_skip_waf()) return;
 
         // Helper: safe "starts with" for PHP 7+
         $starts_with = static function($haystack, $prefix) {
@@ -146,17 +110,8 @@ class Dy_WAF {
             return ['EXACT' => $exact, 'PREFIX' => $prefix];
         };
 
-        $valid_arrays_or_objects = is_array($this->valid_arrays_or_objects ?? null) 
-            ? $this->valid_arrays_or_objects
-        : [];
-
-        $sanitize_allowed_value = function($param_key, $key, $value, $spec) use ($valid_arrays_or_objects) {
-            if ($value === null) {
-                return null;
-            }
-
+        $sanitize_allowed_value = function($param_key, $key, $value, $spec) {
             $limit = isset($spec['max_length']) ? (int) $spec['max_length'] : 300;
-            $max_items = max(1, (int) ($spec['max_items'] ?? 100));
 
             $sanitizer = isset($spec['sanitizer']) && is_string($spec['sanitizer'])
                 ? $spec['sanitizer']
@@ -166,55 +121,38 @@ class Dy_WAF {
                 $sanitizer = 'sanitize_text_field';
             }
 
-            $sanitize_scalar = static function($item) use ($param_key, $key, $limit, $sanitizer) {
+            if (!is_scalar($value)) {
+                // Every non-scalar value was already checked by the recursive guard.
+                return $value;
+            }
+
+            $key_name = $this->format_param_name($key);
+
+            $sanitize_scalar = function($item) use ($param_key, $key_name, $limit, $sanitizer) {
                 $raw = (string) $item;
                 $len = function_exists('mb_strlen')
                     ? mb_strlen($raw, 'UTF-8')
                     : strlen($raw);
 
-                if ($len > $limit) {
-                    $message = "Invalid {$param_key} param length: {$key}";
+                if ($len === false) {
+                    $len = strlen($raw);
+                }
 
-                    wp_die($message, 'Bad Request', ['response' => 400]);
+                if ($len > $limit) {
+                    $message = "{$param_key} param {$key_name} length > {$limit}";
+                    $this->reject_param($message);
                 }
 
                 return (string) call_user_func($sanitizer, $raw);
             };
 
-            if (!is_scalar($value)) {
-                if (
-                    !is_array($value) ||
-                    !in_array($key, $valid_arrays_or_objects, true) ||
-                    count($value) > $max_items
-                ) {
-                    $message = "Invalid {$param_key} param is array or object: {$key}";
-                    write_log($message);
-                    wp_die($message, 'Bad Request', ['response' => 400]);
-                }
-
-                $clean = [];
-
-                foreach ($value as $item) {
-                    // Reject nested arrays, objects, resources, and null elements.
-                    if (!is_scalar($item)) {
-                        $message = "Invalid nested {$param_key} param: {$key}";
-                        write_log($message);
-                        wp_die($message, 'Bad Request', ['response' => 400]);
-                    }
-
-                    $clean[] = $sanitize_scalar($item);
-                }
-
-                return $clean;
-            }
-
             return $sanitize_scalar($value);
         };
 
         $default_params = [
-            'post'   => (array) apply_filters('dy_default_post_params', []),
-            'get'    => (array) apply_filters('dy_default_get_params', []),
-            'cookie' => (array) apply_filters('dy_default_cookie_params', []),
+            'post'   => (array) $this->default_post_params([]),
+            'get'    => (array) $this->default_get_params([]),
+            'cookie' => (array) $this->default_cookie_params([]),
         ];
 
         // Unslash once at the source
@@ -246,6 +184,14 @@ class Dy_WAF {
             });
 
             foreach ((array) $superglobals[$param_key] as $key => $value) {
+                if (!is_scalar($value)) {
+                    $this->validate_non_scalar_param(
+                        $param_key,
+                        $this->format_param_name($key),
+                        $value
+                    );
+                }
+
                 // Find spec: exact first, then prefix
                 $spec = $exact[$key] ?? null;
                 if ($spec === null && !empty($prefix)) {
@@ -263,10 +209,10 @@ class Dy_WAF {
         }
 
         // Cookie-free request view; POST wins over GET.
-        // Known POST/GET params are already sanitized above. Request-only filters remain supported.
+        // Known POST/GET params are already validated above.
         $request_view = $sg_post + $sg_get;
 
-        $request_allowed = $normalize_allowed((array) apply_filters('dy_default_request_params', []));
+        $request_allowed = $normalize_allowed((array) $this->default_request_params([]));
         $request_exact   = $request_allowed['EXACT'];
         $request_prefix  = $request_allowed['PREFIX'];
 
@@ -307,8 +253,7 @@ class Dy_WAF {
         global $wp;
         $public_vars = [];
         if (isset($wp) && is_array($wp->public_query_vars)) {
-            // Apply the same filter core uses so plugins that add query vars are included
-            $public_vars = (array) apply_filters('query_vars', $wp->public_query_vars);
+            $public_vars = $wp->public_query_vars;
         }
 
         // 2) Include taxonomy query vars (public taxonomies only)
@@ -481,9 +426,9 @@ class Dy_WAF {
 
     public function default_request_params($arr = []) {
         // Request is deliberately POST + GET only.
-        $get = (array) apply_filters('dy_default_get_params', []);
-        $post = (array) apply_filters('dy_default_post_params', []);
-        $cookie = (array) apply_filters('dy_default_cookie_params', []);
+        $get = (array) $this->default_get_params([]);
+        $post = (array) $this->default_post_params([]);
+        $cookie = (array) $this->default_cookie_params([]);
 
         // Merge while preserving more-specific definitions (POST > GET > COOKIE)
         // array_replace keeps rightmost duplicates; adjust order to taste.
