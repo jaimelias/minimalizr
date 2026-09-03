@@ -934,7 +934,7 @@ if (!function_exists('str_row_to_array')) {
 if (!function_exists('email_str_row_to_array')) {
 	function email_str_row_to_array(
 		string $str,
-		int $recipients_limit = null
+		int|null $recipients_limit = null
 	): array {
 		return str_row_to_array(
 			$str,
