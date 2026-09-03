@@ -923,7 +923,7 @@ if (!function_exists('str_row_to_array')) {
 
 		$items = array_map('trim', explode("\n", $str));
 		$items = array_map($sanitize_func, $items);
-		$items = array_unique(array_filter($items));
+		$items = array_values(array_unique(array_filter($items)));
 
 		return (is_int($items_limit) && $items_limit > 0) 
 			? array_slice($items, 0, $items_limit)
