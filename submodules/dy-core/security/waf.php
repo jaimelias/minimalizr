@@ -130,6 +130,18 @@ class Dy_WAF {
 
             $sanitize_scalar = function($item) use ($param_key, $key_name, $limit, $sanitizer) {
                 $raw = (string) $item;
+
+                if (
+                    $key_name === 'page' &&
+                    $param_key === 'get' &&
+                    $raw !== '' &&
+                    !ctype_digit($raw) &&
+                    is_admin() &&
+                    basename((string) ($_SERVER['SCRIPT_NAME'] ?? '')) === 'admin.php'
+                ) {
+                    $limit = 191;
+                }
+
                 $len = function_exists('mb_strlen')
                     ? mb_strlen($raw, 'UTF-8')
                     : strlen($raw);
