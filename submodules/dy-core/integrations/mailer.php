@@ -286,13 +286,13 @@ class Dy_Mailer
 		* and 10-address limit.
 		*/
 		$config_to = $this->parse_addresses(
-			email_str_row_to_array($this->email_to)
+			email_str_row_to_array($this->email_to, 10)
 		);
 		$config_cc = $this->parse_addresses(
-			email_str_row_to_array($this->email_cc)
+			email_str_row_to_array($this->email_cc, 10)
 		);
 		$config_bcc = $this->parse_addresses(
-			email_str_row_to_array($this->email_bcc)
+			email_str_row_to_array($this->email_bcc, 10)
 		);
 
 		/*

@@ -219,9 +219,7 @@ class Dynamic_Core_Providers {
 				continue;
 			}
 
-			$emails = email_str_row_to_array(
-				get_term_meta($term->term_id, self::META_EMAILS, true)
-			);
+			$emails = email_str_row_to_array(get_term_meta($term->term_id, self::META_EMAILS, true), 10);
 
 			$output[] = [
 				'id'                  => $term->term_id,
