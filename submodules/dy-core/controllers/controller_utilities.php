@@ -6,18 +6,17 @@ if(!function_exists('dy_sanitize_per_line')) {
 
     function dy_sanitize_per_line(Closure|string $sanitize_func, string $str, int|null $max_items = null) : string	{
         
-        if(!function_exists($sanitize_func)) {
-            write_log('dy_sanitize_per_line expects a valid sanitization function as the first argument. '.$sanitize_func.' given.');
-            return '';
-        }
+		if (!is_callable($sanitize_func)) {
+			$sanitize_func = 'sanitize_text_field';
+		}
 
 		if(!is_string($str)) {
-			write_log('dy_sanitize_per_line expects a string as the second argument. '.gettype($str).' given.');
+			write_log('dy_sanitize_per_line expects a string as the second param. '.gettype($str).' given.');
 			return '';
 		}
 
 		if($max_items !== null && $max_items <= 0) {
-			write_log('dy_sanitize_per_line expects a positive integer or null as the third argument. '.esc_html($max_items).' given.');
+			write_log('dy_sanitize_per_line expects a positive integer or null as the third param. '.esc_html($max_items).' given.');
 			return '';
 		}
 
