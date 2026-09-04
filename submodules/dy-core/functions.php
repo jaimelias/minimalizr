@@ -423,7 +423,13 @@ if(!function_exists('currency_name'))
 }
 
 if (!function_exists('detect_date_format')) {
-	function detect_date_format(string $str): int|null {
+	function detect_date_format(string|null $str): int|null {
+
+
+		if($str === null || $str === '') {
+			return null;
+		}
+
 		static $cache = [];
 
 		if (array_key_exists($str, $cache)) {
@@ -448,18 +454,18 @@ if (!function_exists('detect_date_format')) {
 }
 
 if (!function_exists('is_valid_date')) {
-	function is_valid_date(string $date) : bool {
+	function is_valid_date(string|null $date) : bool {
 		return detect_date_format($date) !== null;
 	}
 }
 if (!function_exists('is_valid_short_date')) {
-	function is_valid_short_date(string $date, array $formats = ['Y-m-d']) : bool {
+	function is_valid_short_date(string|null $date, array $formats = ['Y-m-d']) : bool {
 		return detect_date_format($date) === 1;
 	}
 }
 
 if (!function_exists('is_valid_long_date')) {
-	function is_valid_long_date(string $date, array $formats = ['Y-m-d H:i:s']) : bool {
+	function is_valid_long_date(string|null $date, array $formats = ['Y-m-d H:i:s']) : bool {
 		return detect_date_format($date) === 2;
 	}
 }
