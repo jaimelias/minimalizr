@@ -944,5 +944,22 @@ if (!function_exists('email_str_row_to_array')) {
 	}
 }
 
+if(!function_exists('is_safe_json')) {
+	function is_safe_json(string $jsonString): bool
+	{
+		if (trim($jsonString) === '') {
+			return false;
+		}
+
+		if (function_exists('json_validate')) {
+			return json_validate($jsonString);
+		}
+
+		// Fallback for PHP < 8.3
+		json_decode($jsonString);
+		return json_last_error() === JSON_ERROR_NONE;
+	}
+}
+
 
 ?>

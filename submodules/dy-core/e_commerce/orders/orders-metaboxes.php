@@ -23,13 +23,20 @@ class Dynamic_Core_Orders_Metaboxes {
 
 
 
-    public function render_metaboxes($post) {
+    public function render_metaboxes($post) : string {
         // Add nonce for security and authentication.
         wp_nonce_field('dy_orders_nonce_action', 'dy_orders_nonce');
 
         // Retrieve an existing value from the database.
         $order_status = get_post_meta($post->ID, 'dy_order_status', true);
-        $order_metadata = json_decode(html_entity_decode(get_post_meta($post->ID, 'dy_order_metadata', true)), true);
+        $decoded = html_entity_decode(get_post_meta($post->ID, 'dy_order_metadata', true));
+
+        if(!is_safe_json($decoded)) {
+            write_log("Invalid json string in render_metaboxes $post->ID.");
+            $order_metadata = [];
+        } else {
+            $order_metadata = json_decode($decoded, true);
+        }
 
         echo $this->select_options_arr('dy_order_status', $order_status, $this->valid_order_status, $this->valid_order_status_labels, 'Order Status');
         
@@ -38,15 +45,13 @@ class Dynamic_Core_Orders_Metaboxes {
         echo '<table class="widefat" style="width:100%;">';
         foreach ($order_metadata as $key => $value) {
 
-            //$decoded_value = json_decode('"' . $value . '"');
-
             echo '<tr>';
             echo "<td>$key</td>";
             echo "<td>$value</td>";
             echo '</tr>';
         }
         echo '</table>';
-
+        return '';
     }
 
     public function save_metabox_data($post_id) {

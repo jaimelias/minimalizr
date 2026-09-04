@@ -81,10 +81,16 @@ if(!function_exists('validate_turnstile')) {
 		}
 
 		$status_code = (int) wp_remote_retrieve_response_code($response);
-		$data = json_decode(
-			wp_remote_retrieve_body($response),
-			true
-		);
+
+        $decoded = wp_remote_retrieve_body($response);
+
+        if(!is_safe_json($decoded)) {
+            write_log(__('Invalid json string in validate_turnstile.'));
+            dy_errors::add(__('Unable to validate Turnstile.'), 502);
+            return false;
+        }
+        
+		$data = json_decode($decoded, true);
 
 		$expected_hostname = (string) wp_parse_url(
 			home_url(),
