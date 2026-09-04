@@ -422,27 +422,46 @@ if(!function_exists('currency_name'))
 	}
 }
 
-if (!function_exists("is_valid_date")) {
-    function is_valid_date($str, $formats = ["Y-m-d", "Y-m-d H:i:s"]) : bool{
-        if (empty($str) || !is_string($str)) {
-            return false;
-        }
-        static $cache = [];
-        $cache_key = implode("|", $formats) . "::" . $str;
-        if (isset($cache[$cache_key])) {
-            return $cache[$cache_key];
-        }
-        $valid = false;
-        foreach ($formats as $format) {
-            $dateTime = DateTime::createFromFormat($format, $str);
-            if ($dateTime !== false && $dateTime->format($format) === $str) {
-                $valid = true;
-                break;
-            }
-        }
-		
-        return $cache[$cache_key] = $valid;
-    }
+if (!function_exists('detect_date_format')) {
+	function detect_date_format(string $str): int|null {
+		static $cache = [];
+
+		if (array_key_exists($str, $cache)) {
+			return $cache[$str];
+		}
+
+		$formats = [
+			1 => 'Y-m-d',
+			2 => 'Y-m-d H:i:s',
+		];
+
+		foreach ($formats as $type => $format) {
+			$date_time = DateTime::createFromFormat($format, $str);
+
+			if ($date_time !== false && $date_time->format($format) === $str) {
+				return $cache[$str] = $type;
+			}
+		}
+
+		return $cache[$str] = null;
+	}
+}
+
+if (!function_exists('is_valid_date')) {
+	function is_valid_date(string $date) : bool {
+		return detect_date_format($date) !== null;
+	}
+}
+if (!function_exists('is_valid_short_date')) {
+	function is_valid_short_date(string $date, array $formats = ['Y-m-d']) : bool {
+		return detect_date_format($date) === 1;
+	}
+}
+
+if (!function_exists('is_valid_long_date')) {
+	function is_valid_long_date(string $date, array $formats = ['Y-m-d H:i:s']) : bool {
+		return detect_date_format($date) === 2;
+	}
 }
 
 
