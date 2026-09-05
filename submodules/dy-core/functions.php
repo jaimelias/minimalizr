@@ -491,6 +491,28 @@ if(!function_exists('is_valid_time'))
 	}
 }
 
+if(!function_exists('hour_to_seconds')) {
+	function hour_to_seconds(string $hour): int|false
+	{
+		$hour = strtoupper(trim($hour));
+
+		if(!preg_match('/^(1[0-2]|0?[1-9]):([0-5]\d)\s*(AM|PM)$/', $hour, $match)) {
+			return false;
+		}
+
+		$hour = (int) $match[1];
+		$minute = (int) $match[2];
+
+		if($match[3] === 'AM') {
+			$hour = $hour === 12 ? 0 : $hour;
+		} else {
+			$hour = $hour === 12 ? 12 : $hour + 12;
+		}
+
+		return ($hour * 3600) + ($minute * 60);
+	}
+}
+
 
 if(!function_exists('is_in_theme'))
 {
