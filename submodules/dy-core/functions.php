@@ -492,21 +492,28 @@ if(!function_exists('is_valid_time'))
 }
 
 if(!function_exists('hour_to_seconds')) {
-	function hour_to_seconds(string $hour): int|false
+	function hour_to_seconds(string $time): int|false
 	{
-		$hour = strtoupper(trim($hour));
+		$time = trim($time);
 
-		if(!preg_match('/^(1[0-2]|0?[1-9]):([0-5]\d)\s*(AM|PM)$/', $hour, $match)) {
+		if(
+			$time === '' ||
+			strlen($time) > 10 ||
+			preg_match('/^(0?[1-9]|1[0-2]):([0-5][0-9])\s?(AM|PM)$/i', $time, $match) !== 1
+		) {
 			return false;
 		}
 
 		$hour = (int) $match[1];
 		$minute = (int) $match[2];
+		$period = strtoupper($match[3]);
 
-		if($match[3] === 'AM') {
-			$hour = $hour === 12 ? 0 : $hour;
-		} else {
-			$hour = $hour === 12 ? 12 : $hour + 12;
+		if($hour === 12) {
+			$hour = 0;
+		}
+
+		if($period === 'PM') {
+			$hour += 12;
 		}
 
 		return ($hour * 3600) + ($minute * 60);
