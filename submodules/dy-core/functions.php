@@ -520,6 +520,49 @@ if(!function_exists('hour_to_seconds')) {
 	}
 }
 
+if(!function_exists('is_hour_in_range')) {
+	/**
+	 * @param array{0?: string, 1?: string} $range
+	 */
+	function is_hour_in_range(string $hour_string, array $range): bool
+	{
+		$min_hour_string = $range[0] ?? '';
+		$max_hour_string = $range[1] ?? '';
+
+		if(
+			!is_string($min_hour_string)
+			|| !is_string($max_hour_string)
+			|| !is_valid_time($hour_string)
+		) {
+			return false;
+		}
+
+		$hour_seconds = hour_to_seconds($hour_string);
+
+		if($hour_seconds === false) {
+			return false;
+		}
+
+		if($min_hour_string !== '') {
+			$min_hour_seconds = hour_to_seconds($min_hour_string);
+
+			if($min_hour_seconds === false || $hour_seconds < $min_hour_seconds) {
+				return false;
+			}
+		}
+
+		if($max_hour_string !== '') {
+			$max_hour_seconds = hour_to_seconds($max_hour_string);
+
+			if($max_hour_seconds === false || $hour_seconds > $max_hour_seconds) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+}
+
 
 if(!function_exists('is_in_theme'))
 {
