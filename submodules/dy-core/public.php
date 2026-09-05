@@ -31,6 +31,8 @@ class Dynamic_Core_Public {
         add_action('minimal_footer_alert', [$this, 'footer_alert']);
 
         add_filter('wp_resource_hints', [$this, 'resource_hints'], 10, 2);
+
+        add_action('send_headers', [$this, 'send_headers']);
     }
 
     public function resource_hints($urls, $relation_type)
@@ -499,6 +501,15 @@ class Dynamic_Core_Public {
 
         </style>
         <?php
+    }
+
+    public function send_headers () {
+        // Evitar admin, ajax, cron y REST API
+        if (is_admin() || wp_doing_ajax() || wp_doing_cron() || (defined('REST_REQUEST') && REST_REQUEST)) {
+            return;
+        }
+
+        header('Cache-Tag: html-pages');
     }
 
 }
