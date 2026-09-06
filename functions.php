@@ -13,68 +13,70 @@ class Minimalizr {
 
 	public function __construct()
 	{
-		$this->version = (is_array($_SERVER) && array_key_exists('SERVER_NAME', $_SERVER) && $_SERVER['SERVER_NAME'] === 'localhost') ? time() : '1.5.7';
-		$this->theme_name = 'minimalizr';
+		$this->version = (is_array($_SERVER) && array_key_exists('SERVER_NAME', $_SERVER) && $_SERVER['SERVER_NAME'] === 'localhost')
+			? time()
+			: '1.5.7';
+
+		$this->theme_name      = 'minimalizr';
 		$this->theme_directory = get_template_directory();
-		add_action('init', array(&$this, 'init'));
-		add_action( 'after_setup_theme', array(&$this, 'after_setup_theme') );
-	
 
-		add_action( 'admin_notices', array(&$this, 'dependencies'));
-		add_filter('upload_mimes', array(&$this, 'add_svg_support'));
-		add_filter( 'post_class', array(&$this, 'remove_hentry') );
-		
-		//meta tags
-		add_filter('language_attributes', array(&$this, 'doctype_opengraph'));
-		add_action( 'wp_head', array(&$this, 'meta_tags'));
+		add_action('init', [$this, 'init']);
+		add_action('after_setup_theme', [$this, 'after_setup_theme']);
 
-		//page defaults
-		add_filter('the_content', array(&$this, 'modify_content'));
-		add_filter('the_title', array(&$this, 'modify_the_title'));
-		add_filter('get_the_excerpt', array(&$this, 'modify_get_the_excerpt'));
+		add_action('admin_notices', [$this, 'dependencies']);
+		add_filter('upload_mimes', [$this, 'add_svg_support']);
+		add_filter('post_class', [$this, 'remove_hentry']);
 
-		//scripts
-		add_filter( 'script_loader_tag', array(&$this, 'async_defer_js'), 10, 3 );
-		add_filter('minimal_ld_json', array(&$this, 'ld_json_cb'), 1, 3);
-		add_action( 'wp_head', array(&$this, 'ld_json_script'));
-		add_action( 'wp_enqueue_scripts', array(&$this, 'minimalizr_styles'), 0);
-		add_action( 'wp_enqueue_scripts', array(&$this, 'minimalizr_scripts'), 0);
-		add_action( 'enqueue_block_editor_assets', array(&$this, 'minimalizr_editor_styles'), 0);
+		// meta tags
+		add_filter('language_attributes', [$this, 'doctype_opengraph']);
+		add_action('wp_head', [$this, 'meta_tags']);
 
-		//handle 404 on tags an categories
-		add_action('template_redirect', array(&$this, 'handle_404'));
+		// page defaults
+		add_filter('the_content', [$this, 'modify_content']);
+		add_filter('the_title', [$this, 'modify_the_title']);
+		add_filter('get_the_excerpt', [$this, 'modify_get_the_excerpt']);
 
+		// scripts
+		add_filter('script_loader_tag', [$this, 'async_defer_js'], 10, 3);
+		add_filter('minimal_ld_json', [$this, 'ld_json_cb'], 1, 3);
+		add_action('wp_head', [$this, 'ld_json_script']);
+		add_action('wp_enqueue_scripts', [$this, 'minimalizr_styles'], 0);
+		add_action('wp_enqueue_scripts', [$this, 'minimalizr_scripts'], 0);
+		add_action('enqueue_block_editor_assets', [$this, 'minimalizr_editor_styles'], 0);
 
-		//shortcodes
-		add_shortcode('obfuscate', array(&$this, 'hide_string'));
-		add_shortcode('translate_string', array(&$this, 'translate_string'));
+		// handle 404 en tags y categorías
+		add_action('template_redirect', [$this, 'handle_404']);
 
-		//widgets
-		add_filter( 'widget_text', 'do_shortcode');
-		add_action( 'widgets_init', array(&$this, 'widgets_init'), 100 );
+		// shortcodes
+		add_shortcode('obfuscate', [$this, 'hide_string']);
+		add_shortcode('translate_string', [$this, 'translate_string']);
 
-		//remove defaults
-		remove_action('wp_head', 'feed_links', 2 );
-		remove_action('wp_head', 'feed_links_extra', 3 ); 
+		// widgets
+		add_filter('widget_text', 'do_shortcode');
+		add_action('widgets_init', [$this, 'widgets_init'], 100);
+
+		// remover defaults
+		remove_action('wp_head', 'feed_links', 2);
+		remove_action('wp_head', 'feed_links_extra', 3);
 		remove_action('wp_head', 'rest_output_link_wp_head');
 		remove_action('wp_head', 'wp_oembed_add_discovery_links');
-		remove_action('template_redirect', 'rest_output_link_header', 11, 0 );
-		remove_action ('wp_head', 'rsd_link');
+		remove_action('template_redirect', 'rest_output_link_header', 11, 0);
+		remove_action('wp_head', 'rsd_link');
 		remove_action('wp_head', 'wlwmanifest_link');
 		remove_action('wp_head', 'wp_shortlink_wp_head');
 		remove_action('wp_head', 'wp_generator');
 		remove_action('wp_head', 'print_emoji_detection_script', 7);
 		remove_action('wp_print_styles', 'print_emoji_styles');
-		remove_action('admin_print_scripts', 'print_emoji_detection_script' );
-		remove_action('admin_print_styles', 'print_emoji_styles' );
+		remove_action('admin_print_scripts', 'print_emoji_detection_script');
+		remove_action('admin_print_styles', 'print_emoji_styles');
 		add_filter('xmlrpc_enabled', '__return_false');
 
-		//remove Beaver Builder (FLBuilder) defaults
+		// remover defaults de Beaver Builder (FLBuilder)
 		remove_action('wp_footer', 'FLBuilder::include_jquery');
 
-		//custom media sizes
-		add_action('after_switch_theme', array(&$this, 'after_switch_theme'));
-		add_filter('intermediate_image_sizes_advanced', array(&$this, 'restrict_image_sizes'), 999);
+		// tamaños de medios personalizados
+		add_action('after_switch_theme', [$this, 'after_switch_theme']);
+		add_filter('intermediate_image_sizes_advanced', [$this, 'restrict_image_sizes'], 999);
 		add_filter('big_image_size_threshold', '__return_false');
 	}
 
