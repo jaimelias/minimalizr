@@ -32,6 +32,7 @@ class Minimalizr {
 		add_action('wp_head', [$this, 'meta_tags']);
 
 		// page defaults
+		add_action( 'pre_get_document_title', [$this, 'wp_title'], 100);
 		add_filter('the_content', [$this, 'modify_content']);
 		add_filter('the_title', [$this, 'modify_the_title']);
 		add_filter('get_the_excerpt', [$this, 'modify_get_the_excerpt']);
@@ -183,6 +184,34 @@ class Minimalizr {
 		}
 	
 		return $output;
+	}
+
+	public function wp_title($title)
+	{
+		if(is_singular('post') || is_page())
+		{
+			$value = '';
+			$the_id = get_the_ID();
+			$languages = get_languages();
+			$current_language = current_language();
+			
+			for($x = 0; $x < count($languages); $x++)
+			{
+				$lang = $languages[$x];
+
+				if($lang === $current_language)
+				{
+					$value = get_post_meta($the_id, 'minimal_title_mod_'.$lang, true);
+				}
+			}
+			
+			if(!empty($value))
+			{
+				$title = $value . ' | '. get_bloginfo( 'name' );
+			}
+		}
+		
+		return $title;
 	}
 
 	function modify_content($content)
