@@ -10,8 +10,11 @@ if (!function_exists('concatenate_object_to_html')) {
         string $top_keyname_end   = '</strong> ',
         string $child_keyname_start = '<strong>',
         string $child_keyname_end   = '</strong> ',
-        bool $escape_html = true
+        bool $escape_html = true,
+        int $max_depth = 32
     ): string {
+
+        $max_depth = max(1, min(128, $max_depth));
 
         // ---------- helpers ----------
         $esc = function ($s) use ($escape_html) {
@@ -45,10 +48,22 @@ if (!function_exists('concatenate_object_to_html')) {
             return true;
         };
 
-        $renderChildren = function ($value) use (
-            &$renderChildren, $esc, $stringify, $isAssoc, $allScalars,
-            $child_keyname_start, $child_keyname_end, $seen
-        ): string {
+        $renderChildren = function ($value, int $level = 0) use (
+            &$renderChildren,
+            $esc,
+            $stringify,
+            $isAssoc,
+            $allScalars,
+            $child_keyname_start,
+            $child_keyname_end,
+            $seen,
+            $max_depth,
+        ) : string {
+
+            if ($level >= $max_depth) {
+                return '<ul><li><em>*MAX DEPTH*</em></li></ul>';
+            }
+
             if (is_scalar($value) || $value === null) {
                 return $stringify($value);
             }
@@ -90,14 +105,14 @@ if (!function_exists('concatenate_object_to_html')) {
                 foreach ($items as $k => $v) {
                     $k = $esc((string)$k);
                     $html .= '<li>' . $child_keyname_start . $k . ':' . $child_keyname_end
-                        . (is_scalar($v) || $v === null ? $stringify($v) : $renderChildren($v))
+                        . (is_scalar($v) || $v === null ? $stringify($v) : $renderChildren($v, $level + 1))
                         . '</li>';
                 }
             } else {
                 foreach ($items as $idx => $v) {
                     $idxLabel = $esc((string)$idx);
                     $html .= '<li>' . $child_keyname_start . $idxLabel . ':' . $child_keyname_end
-                        . (is_scalar($v) || $v === null ? $stringify($v) : $renderChildren($v))
+                        . (is_scalar($v) || $v === null ? $stringify($v) : $renderChildren($v, $level + 1))
                         . '</li>';
                 }
             }

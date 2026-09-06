@@ -13,7 +13,6 @@ class dy_errors {
         add_action('wp_head', [$this, 'meta_tags'], PHP_INT_MAX); 
         add_filter('the_content', [$this, 'the_content'], PHP_INT_MAX);
         add_filter('pre_get_document_title', [$this, 'wp_title'], PHP_INT_MAX); 
-        add_filter('wp_title', [$this, 'wp_title'], PHP_INT_MAX); 
         add_filter('the_title', [$this, 'the_title'], PHP_INT_MAX); 
         add_filter('get_the_excerpt', [$this, 'get_the_excerpt'], PHP_INT_MAX); 
         add_action('template_redirect', [$this, 'template_redirect'], PHP_INT_MAX);
@@ -67,7 +66,7 @@ class dy_errors {
         }
     }
 
-    public function the_content($content) {
+    public function the_content(string $content) : string {
 
         if(!self::has_errors()) {
             return $content;
@@ -82,21 +81,21 @@ class dy_errors {
         ));
     }
 
-    public function wp_title($title) {
-
+    public function wp_title(string $title): string
+    {
         return self::has_errors()
             ? __('Error')
             : $title;
     }
 
-    public function the_title($title) {
+    public function the_title(string $title) : string {
 
         return self::has_errors() && in_the_loop()
             ? __('Error')
             : $title;
     }
 
-    public function get_the_excerpt($excerpt) {
+    public function get_the_excerpt(string $excerpt) : string {
 
         return self::has_errors()
             ? ''

@@ -4,7 +4,17 @@ if ( !defined( 'WPINC' ) ) exit;
 
 if(!function_exists('concatenate_object_to_text')) {
 	
-    function concatenate_object_to_text($obj, $top_prefix = '* ', $child_prefix = '- ', $top_level_separator = "\n") {
+    function concatenate_object_to_text(
+        $obj, 
+        string $top_prefix = '* ', 
+        string $child_prefix = '- ', 
+        string $top_level_separator = "\n",
+        int $max_depth = 32
+    ) : string {
+
+        $max_depth = max(1, min(128, $max_depth));
+
+
         // --- helpers ------------------------------------------------------------
         $isAssoc = function(array $a): bool {
             return array_keys($a) !== range(0, count($a) - 1);
@@ -32,20 +42,30 @@ if(!function_exists('concatenate_object_to_text')) {
         $lines = [];
 
         $emit = function($key, $value, int $level) use (
-            &$emit, &$lines, $seen, $stringify, $isAssoc, $allScalars, $top_prefix, $child_prefix, $toUpper
-        ) {
+            &$emit,
+            &$lines,
+            $seen,
+            $stringify,
+            $isAssoc,
+            $allScalars,
+            $top_prefix,
+            $child_prefix,
+            $toUpper,
+            $max_depth,
+        ){
             $indent = str_repeat("\t", $level);
             $prefix = $level === 0 ? $top_prefix : $child_prefix;
+            $keyStr = $level === 0
+                ? $toUpper((string) $key)
+                : (string) $key;
 
-            // force top-level keys to UPPERCASE (leave deeper levels untouched)
-            $keyStr = (string) $key;
-            if ($level === 0) {
-                $keyStr = $toUpper($keyStr);
-            }
-
-            // scalars
             if (is_scalar($value) || $value === null) {
                 $lines[] = "{$indent}{$prefix}{$keyStr}: " . $stringify($value);
+                return;
+            }
+
+            if ($level >= $max_depth) {
+                $lines[] = "{$indent}{$prefix}{$keyStr}: [*MAX DEPTH*]";
                 return;
             }
 

@@ -17,6 +17,7 @@ if(!class_exists('Dy_Core_Init'))
         {
             //core helpers
             require_once $this->plugin_dir_path . 'functions.php';
+            require_once $this->plugin_dir_path . 'write_log.php';
             require_once $this->plugin_dir_path . 'errors-page.php';
             require_once $this->plugin_dir_path . 'security/waf.php';
             require_once $this->plugin_dir_path . 'security/queries.php';
