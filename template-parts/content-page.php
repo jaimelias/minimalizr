@@ -4,55 +4,52 @@
  *
  * @package minimalizr
  */
-?>
 
+	$is_tax = is_tax();
+	$title = ($is_tax) ? html_entity_decode(get_the_title()) : get_the_title();
+	$title = (is_front_page()) ?  '<h2 class="entry-title">'.$title.'</h2>' : '<h1 class="entry-title">'.$title.'</h1>';
+	$description = '';
+
+	if(is_singular() && has_excerpt())
+	{
+		$excerpt = get_the_excerpt();
+
+		if(!empty($excerpt))
+		{
+			$description = '<p itemprop="description" class="large bottom-10">'.$excerpt.'</p>';
+
+			if(!in_array('bodyfull', get_body_class()))
+			{
+				$description .= '<hr/>';
+			}
+		}
+	}
+
+	if($is_tax)
+	{
+		if(!empty(term_description()))
+		{
+			$description = '<p itemprop="description" class="large bottom-10">'.esc_html(get_term(get_queried_object()->term_id)->description).'</p>';
+		}
+	}
+
+
+
+?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 
 	<header class="entry-header">
-	<?php 
-	
-		$is_tax = is_tax();
-		$title = ($is_tax) ? html_entity_decode(get_the_title()) : get_the_title();
-		$title = (is_front_page()) ?  '<h2 class="entry-title">'.$title.'</h2>' : '<h1 class="entry-title">'.$title.'</h1>';
-		$description = '';
-		
-		if(is_singular() && has_excerpt())
-		{
-			$excerpt = get_the_excerpt();
+	<?php
 
-			if(!empty($excerpt))
-			{
-				$description = '<p itemprop="description" class="large bottom-10">'.$excerpt.'</p>';
-				
-				if(!in_array('bodyfull', get_body_class()))
-				{
-					$description .= '<hr/>';
-				}
-			}
-		}
-
-		if($is_tax)
-		{
-			if(!empty(term_description()))
-			{
-				$description = '<p itemprop="description" class="large bottom-10">'.esc_html(get_term(get_queried_object()->term_id)->description).'</p>';
-			}
-		}
-
-		
-		if(in_array('bodyfull', get_body_class()))
-		{
-			echo '<div class="minimal-box text-center"><div class="container">'.$title.$description.'</div></div>';
-		}
-		else
+		if(!in_array('bodyfull', get_body_class()))
 		{
 			echo $title.$description;
 		}
 
 	?>
 	</header><!-- .entry-header -->
-	
+
 
 	<div class="<?php echo apply_filters('entry_content_class', 'entry-content'); ?>">
 		<?php echo apply_filters( 'the_content', get_the_content() ); ?>

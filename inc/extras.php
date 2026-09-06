@@ -34,10 +34,14 @@ function minimalizr_body_classes( $classes ) {
 	}
 	if(minimalizr_get_meta( "minimalizr_width" ))
 	{
+		if(is_page() && is_front_page()) {
+			$classes[] = 'bodyfull';
+		}
 		if(minimalizr_get_meta( "minimalizr_width" ) === "full" && (is_page() || is_single()))
 		{
 			$classes[] = 'bodyfull';
 		}
+
 		else
 		{
 			$classes[] = 'bodyfixed';
