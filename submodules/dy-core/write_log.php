@@ -307,12 +307,12 @@ if ( ! function_exists('write_log')) {
 
 			if($get_data !== [])
 			{
-				$parts[] = 'GET=' . $encode($get_data);
+				$parts[] = 'get=' . $encode($get_data);
 			}
 
 			if($post_data !== [])
 			{
-				$parts[] = 'POST=' . $encode($post_data);
+				$parts[] = 'post=' . $encode($post_data);
 			}
 		}
 
@@ -344,7 +344,7 @@ if ( ! function_exists('write_log')) {
 				);
 			}
 
-			$parts[] = 'DEBUG=' . $encode($lines);
+			$parts[] = 'debug=' . $encode($lines);
 		}
 
 		$server_value = static function(string $key): string
@@ -367,7 +367,7 @@ if ( ! function_exists('write_log')) {
 			'user_agent' => $server_value('HTTP_USER_AGENT')
 		];
 
-		$parts[] = 'SERVER=' . $encode($server_data);
+		$parts[] = 'server=' . $encode($server_data);
 
 		/*
 		 * Defense in depth: normalize the complete assembled event, including
