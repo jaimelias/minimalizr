@@ -23,7 +23,6 @@ class Minimalizr {
 		add_action('init', [$this, 'init']);
 		add_action('after_setup_theme', [$this, 'after_setup_theme']);
 
-		add_action('admin_notices', [$this, 'dependencies']);
 		add_filter('upload_mimes', [$this, 'add_svg_support']);
 		add_filter('post_class', [$this, 'remove_hentry']);
 
@@ -71,9 +70,6 @@ class Minimalizr {
 		remove_action('admin_print_scripts', 'print_emoji_detection_script');
 		remove_action('admin_print_styles', 'print_emoji_styles');
 		add_filter('xmlrpc_enabled', '__return_false');
-
-		// remover defaults de Beaver Builder (FLBuilder)
-		remove_action('wp_footer', 'FLBuilder::include_jquery');
 
 		// tamaños de medios personalizados
 		add_action('after_switch_theme', [$this, 'after_switch_theme']);
@@ -544,41 +540,6 @@ class Minimalizr {
 	function add_svg_support($mimes) {
 		$mimes['svg'] = 'image/svg+xml';
 		return $mimes;
-	}
-	
-
-	function dependencies() {
-	
-		//you can add plugin dependency easy by filling this 3 arrays
-		$check_function = array("FLBuilder");
-		$functionName = array("Beaver Builder - WordPress Page Builder");
-		$functionUrl = array("plugin-install.php?tab=plugin-information&plugin=beaver-builder-lite-version");
-		
-		$count = 0;
-		$output = '';
-		
-		for($x = 0; $x < count($check_function); $x++)
-		{
-			if(!class_exists($check_function[$x]))
-			{
-				$count++;
-			}
-		}
-		
-		if($count > 0)
-		{
-			$output .= '<div class="error"><p><strong>'.__('Warning', 'minimalizr').':</strong> '.__( 'The following plugins are required by the current theme:', 'minimalizr' ).'</p><ul>';
-				for($i = 0; $i < count($check_function); $i++)
-				{
-					if(!class_exists($check_function[$i]))
-					{
-						$output .= '<li><a href="'.esc_url(admin_url($functionUrl[$i])).'" >'.$functionName[$i].'</a></li>';
-					}
-				}		
-			$output .= '</ul></div>';
-		}
-		echo $output;
-	
 	}
 	
 

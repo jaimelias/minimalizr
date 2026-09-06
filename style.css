@@ -934,33 +934,6 @@ a.button-whatsapp
 	 to {opacity: 1}
 }
 
-
-/*-------------------------------*/
-/*     Beaver Builder Plugin     */
-/*-------------------------------*/
-
-html.fl-builder-edit #minimal-header
-{
-	top: 42px !important;
-}
-.fl-builder-content
-{
-	min-height: 200px;
-}
-.fl-row-content-wrap .scroll-down
-{
-	display: inline-block;
-	text-align: center;
-	font-size: 40px;
-	cursor: pointer;
-	position: absolute;
-	left: 50%;
-	margin-left: -20px;
-	bottom: 0;
-	vertical-align: middle;
-	color: #fff;
-	z-index: 1;
-}
 /*-------------------------------*/
 /*          Block Gallery        */
 /*-------------------------------*/
