@@ -150,11 +150,6 @@ if(!function_exists('validate_turnstile')) {
 
 if (!function_exists('cloudflare_ban_ip_address')) {
     function cloudflare_ban_ip_address($ban_message = '') {
-        /*
-         * Do not use write_log() here. Its current implementation removes
-         * sensitive fields directly from $_POST and therefore mutates the
-         * active request.
-         */
         
         $log = static function(
             mixed $details,

@@ -19,6 +19,7 @@ class Dynamic_Core_Providers {
 	private const META_WHATSAPP = 'dy-providers_whatsapp';
 
 	private static $cache = [];
+	private static $syncing = false;
 
 	public function __construct() {
 
@@ -28,6 +29,56 @@ class Dynamic_Core_Providers {
 		add_action(self::TAXONOMY . '_edit_form_fields', [$this, 'form'], 10, 2);
 		add_action('create_' . self::TAXONOMY, [$this, 'handle_save'], 10, 2);
 		add_action('edited_' . self::TAXONOMY, [$this, 'handle_save'], 10, 2);
+		add_filter('pll_get_taxonomies', [$this, 'unset_from_polylang'], 10, 2);
+		add_action( 'set_object_terms', [ $this, 'sync_terms_across_translations' ], 10, 4 );
+	}
+
+	public function unset_from_polylang($taxonomies, $is_settings){
+
+		if ( array_key_exists( self::TAXONOMY, $taxonomies ) ) {
+			unset( $taxonomies[ self::TAXONOMY ] );
+		}
+
+		return $taxonomies;
+	}
+
+	public function sync_terms_across_translations( $object_id, $terms, $tt_ids, $taxonomy ) {
+		if ( self::TAXONOMY !== $taxonomy ) {
+			return;
+		}
+
+		// Corta la recursión: esto se re-dispara cuando sincronizamos las traducciones.
+		if ( self::$syncing ) {
+			return;
+		}
+
+		if ( ! function_exists( 'pll_get_post_translations' ) ) {
+			return;
+		}
+
+		$translations = pll_get_post_translations( $object_id );
+
+		if ( count( $translations ) < 2 ) {
+			return;
+		}
+
+		// Term IDs reales del post que se acaba de guardar (más confiable que $terms).
+		$term_ids = wp_get_object_terms( $object_id, self::TAXONOMY, [ 'fields' => 'ids' ] );
+
+		if ( is_wp_error( $term_ids ) ) {
+			return;
+		}
+
+		self::$syncing = true;
+
+		foreach ( $translations as $lang => $translated_id ) {
+			if ( (int) $translated_id === (int) $object_id ) {
+				continue;
+			}
+			wp_set_object_terms( $translated_id, $term_ids, self::TAXONOMY, false );
+		}
+
+		self::$syncing = false;
 	}
 
 	public function admin_head() {
