@@ -281,11 +281,7 @@ if ( ! function_exists('write_log')) {
 			? $normalized_level
 			: 'write_log';
 
-		$prefix = sprintf(
-			'[%s - %s]',
-			wp_date('Y-m-d\TH:i:sP'),
-			$ip
-		);
+		$prefix = sprintf('[%s]', $ip);
 
 		if($level !== '')
 		{
