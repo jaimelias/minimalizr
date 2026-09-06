@@ -70,10 +70,16 @@ if(!function_exists('validate_turnstile')) {
 
 		if(is_wp_error($response))
 		{
-			write_log(
-				'Turnstile validation error: '
-				. $response->get_error_message()
-			);
+            
+            write_log(
+                [
+                    'message' => 'Turnstile validation request failed.',
+                    'error'   => $response->get_error_message()
+                ],
+                false,
+                false,
+                'ERROR'
+            );
 
 			dy_errors::add(__('Unable to validate Turnstile.'), 502);
 
@@ -149,12 +155,28 @@ if (!function_exists('cloudflare_ban_ip_address')) {
          * sensitive fields directly from $_POST and therefore mutates the
          * active request.
          */
-        $log = static function($message) {
-            if (!is_scalar($message)) {
-                $message = wp_json_encode($message);
+        
+        $log = static function(
+            mixed $details,
+            string $level = 'ERROR'
+        ): void
+        {
+            if(!is_array($details))
+            {
+                $details = [
+                    'message' => (string) $details
+                ];
             }
 
-            error_log('[DynamicPackages Cloudflare] ' . (string) $message);
+            write_log(
+                array_merge(
+                    ['component' => 'cloudflare'],
+                    $details
+                ),
+                false,
+                false,
+                $level
+            );
         };
 
         $token      = trim((string) get_option('dy_cloudflare_api_token'));
@@ -425,12 +447,15 @@ if (!function_exists('cloudflare_ban_ip_address')) {
 
         set_transient($cache_key, 'blocked', DAY_IN_SECONDS);
 
-        $log(array(
-            'message' => 'IP blocked.',
-            'ip'      => $ip,
-            'rule_id' => $body['result']['id'],
-            'reason'  => $ban_message,
-        ));
+        $log(
+            [
+                'message' => 'IP blocked.',
+                'ip'      => $ip,
+                'rule_id' => $body['result']['id'],
+                'reason'  => $ban_message
+            ],
+            'INFO'
+        );
 
         return true;
     }
@@ -514,11 +539,15 @@ if(!function_exists('cloudflare_html_to_pdf')) {
 
         if ( is_wp_error( $response ) ) {
 
-            $error_message = [
-                'error' => $response->get_error_message()
-            ];
-
-            write_log($error_message);
+            write_log(
+                [
+                    'message' => 'Cloudflare PDF request could not be completed.',
+                    'error'   => $response->get_error_message()
+                ],
+                false,
+                false,
+                'ERROR'
+            );
 
             return null;
         }
@@ -526,12 +555,19 @@ if(!function_exists('cloudflare_html_to_pdf')) {
         $code = wp_remote_retrieve_response_code( $response );
         $body = wp_remote_retrieve_body( $response );
 
-        if ( $code !== 200 ) {
-            $error_message = [
-                'error' => "Cloudflare PDF error ({$code}): {$body}"
-            ];
-
-            write_log($error_message);
+        if($code !== 200)
+        {
+            write_log(
+                [
+                    'message'            => 'Cloudflare PDF request failed.',
+                    'http_status'        => $code,
+                    'response_excerpt'   => substr($body, 0, 4096),
+                    'response_truncated' => strlen($body) > 4096
+                ],
+                false,
+                false,
+                'ERROR'
+            );
 
             return null;
         }
