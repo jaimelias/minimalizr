@@ -8,8 +8,8 @@ define('DY_CORE_FUNCTIONS', true);
 if(!function_exists('get_dy_id'))
 {
 	function get_dy_id(){
-		global $post;
 
+		$is_valid_id = function ($val) {return is_int($val) && $val > 0;};
 		$dy_id      = secure_request('dy_id', null, 'absint');
 		$post_req   = secure_request('post_id', null, 'absint');
 		$admin_post = secure_request('post', null, 'absint');
@@ -18,8 +18,23 @@ if(!function_exists('get_dy_id'))
 			? $dy_id
 			: (!empty($post_req) ? $post_req : null);
 
-		$post_id = $post instanceof WP_Post
-			? $post->ID
+		$the_id = null;
+		$get_queried_object_id = get_queried_object_id();
+
+		if($is_valid_id($get_queried_object_id)) {
+			$the_id = $get_queried_object_id;
+		}
+
+		global $post;
+
+		if($post instanceof WP_Post) {
+			if($is_valid_id($post->ID) !== $the_id) {
+				$the_id = $post->ID;
+			}
+		}
+
+		$post_id = $is_valid_id($the_id)
+			? $the_id
 			: (is_admin() && !empty($admin_post) ? $admin_post : null);
 
 		if($req_id !== null && $post_id !== null && $req_id !== $post_id)
