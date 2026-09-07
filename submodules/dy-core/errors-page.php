@@ -66,9 +66,10 @@ class dy_errors {
         }
     }
 
-    public function the_content(string $content = '') : string {
+	public function the_content(mixed $content = '') : string {
+		$content = is_string($content) ? $content : '';
 
-        if(!self::has_errors()) {
+		if(!self::has_errors()) {
             return $content;
         }
 
@@ -81,23 +82,27 @@ class dy_errors {
         ));
     }
 
-    public function wp_title(string $title): string
-    {
-        return self::has_errors()
+	public function wp_title(mixed $title): string
+	{
+		$title = is_string($title) ? $title : '';
+
+		return self::has_errors()
             ? __('Error')
             : $title;
     }
 
-    public function the_title(string $title) : string {
+	public function the_title(mixed $title) : string {
+		$title = is_string($title) ? $title : '';
 
-        return self::has_errors() && in_the_loop()
+		return self::has_errors() && in_the_loop()
             ? __('Error')
             : $title;
     }
 
-    public function get_the_excerpt(string $excerpt) : string {
+	public function get_the_excerpt(mixed $excerpt) : string {
+		$excerpt = is_string($excerpt) ? $excerpt : '';
 
-        return self::has_errors()
+		return self::has_errors()
             ? ''
             : $excerpt;
     }
