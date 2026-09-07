@@ -18,10 +18,8 @@ if(!function_exists('get_dy_id'))
 			? $dy_id
 			: (!empty($post_req) ? $post_req : null);
 
-		$get_queried_object_id = get_queried_object_id();
-
-		$post_id = (is_int($get_queried_object_id) && $get_queried_object_id >= 0)
-			? $get_queried_object_id
+		$post_id = $post instanceof WP_Post
+			? $post->ID
 			: (is_admin() && !empty($admin_post) ? $admin_post : null);
 
 		if($req_id !== null && $post_id !== null && $req_id !== $post_id)
