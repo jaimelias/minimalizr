@@ -66,7 +66,7 @@ class dy_errors {
         }
     }
 
-    public function the_content(string $content) : string {
+    public function the_content(string $content = '') : string {
 
         if(!self::has_errors()) {
             return $content;

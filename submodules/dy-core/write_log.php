@@ -363,8 +363,7 @@ if ( ! function_exists('write_log')) {
 
 		$server_data = [
 			'method'     => $server_value('REQUEST_METHOD'),
-			'path'       => is_string($request_path) ? $request_path : '',
-			'user_agent' => $server_value('HTTP_USER_AGENT')
+			'path'       => is_string($request_path) ? $request_path : ''
 		];
 
 		$parts[] = 'server=' . $encode($server_data);
