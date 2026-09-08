@@ -22,7 +22,6 @@
       "phpstan": "phpstan analyse --memory-limit=1G",
       "phpcs": "phpcs",
       "phpcbf": "phpcbf",
-      "audit": "composer audit",
       "check": [
           "@lint",
           "@phpstan",
