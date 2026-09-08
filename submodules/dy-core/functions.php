@@ -7,12 +7,18 @@ define('DY_CORE_FUNCTIONS', true);
 
 if(!function_exists('get_dy_id'))
 {
-	function get_dy_id(){
+	function get_dy_id() : int|null{
+
+		static $cache = null;
+
+		if($cache !== null) {
+			return $cache;
+		}
 
 		$is_valid_id = function ($val) {return is_int($val) && $val > 0;};
-		$dy_id = secure_request('dy_id', null, 'int');
 		$the_id = null;
 		$post_id = null;
+		$get_queried_object_id = null;
 
 		if(is_main_query()) {
 			
@@ -29,34 +35,50 @@ if(!function_exists('get_dy_id'))
 
 			$post_id = $post->ID;
 
-			if($is_valid_id($post_id) !== $the_id) {
+			if($is_valid_id($post_id) && $post_id !== $the_id) {
 				$the_id = $post_id;
 			}
 		}
 
-		if(!$is_valid_id($the_id) && $is_valid_id($dy_id)) {
-			$the_id = $dy_id;
+		$dy_id = null;
+		$raw_dy_id = secure_request('dy_id', null, 'intval');
+
+		if(!$is_valid_id($the_id) && $is_valid_id($raw_dy_id)) {
+			
+			$requested_post = get_post($raw_dy_id);
+
+			if($requested_post instanceof WP_Post) {
+
+				write_log(
+					[
+						'message'            => 'get_dy_id() used the submitted dy_id before global $post was resolved.',
+						'current_hook'       => current_filter(),
+						'doing_init'         => doing_action('init'),
+						'did_wp'             => did_action('wp'),
+						'global_post_id'     => $GLOBALS['post']->ID ?? null,
+						'submitted_id'       => $raw_dy_id,
+						'requested_post_id'  => $requested_post->ID,
+						'requested_post_type'=> $requested_post->post_type,
+					],
+					true,  // Include backtrace to identify the consumer.
+					false, // Do not log the complete GET/POST request.
+					'DEBUG'
+				);
+
+				$dy_id = $raw_dy_id;
+			}
+		}
+		
+		if($is_valid_id($dy_id)) {
+			return $cache = $dy_id;
 		}
 
-
-		if($the_id !== null && $dy_id !== null && $the_id !== $dy_id)
-		{
-
-
-			write_log(sprintf(
-				'$the_id = %s (%s), $dy_id = %s (%s)',
-				var_export($the_id, true),
-				gettype($the_id),
-				var_export($dy_id, true),
-				gettype($dy_id)
-			));
-
-
-
-			$err = "the_id={$the_id}' is not equal to 'dy_id={$dy_id}";
-			write_log($err);
-			wp_die($err, 400);
-		}
+		if( $get_queried_object_id === null && $post_id === null && $dy_id === null) {
+			//it is very unlikely that this scenario will happed, but we still need to have an error handler
+			$err = "get_dy_id returned no IDs";
+			write_log($err, true, true);
+			wp_die($err, 500);
+		} 
 
 		return $the_id;
 	}
