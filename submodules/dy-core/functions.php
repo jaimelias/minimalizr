@@ -10,7 +10,7 @@ if(!function_exists('get_dy_id'))
 	function get_dy_id(){
 
 		$is_valid_id = function ($val) {return is_int($val) && $val > 0;};
-		$dy_id = secure_request('dy_id', null, 'intval');
+		$dy_id = secure_request('dy_id', null, 'int');
 		$the_id = null;
 		$post_id = null;
 
@@ -40,6 +40,17 @@ if(!function_exists('get_dy_id'))
 
 		if($the_id !== null && $dy_id !== null && $the_id !== $dy_id)
 		{
+
+
+wp_die(sprintf(
+    '$the_id = %s (%s), $dy_id = %s (%s)',
+    var_export($the_id, true),
+    gettype($the_id),
+    var_export($dy_id, true),
+    gettype($dy_id)
+));
+
+
 			$err = "the_id={$the_id}' is not equal to 'dy_id={$dy_id}";
 			write_log($err);
 			wp_die($err, 400);
