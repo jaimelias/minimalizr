@@ -31,7 +31,7 @@ if(!function_exists('get_dy_id'))
 
 		global $post;
 
-		if($post instanceof WP_Post) {
+		if($post instanceof WP_Post && $post->post_status === 'publish') {
 
 			$post_id = $post->ID;
 
@@ -47,7 +47,7 @@ if(!function_exists('get_dy_id'))
 			
 			$requested_post = get_post($raw_dy_id);
 
-			if($requested_post instanceof WP_Post) {
+			if($requested_post instanceof WP_Post && $requested_post->post_status === 'publish') {
 
 				write_log(
 					[
