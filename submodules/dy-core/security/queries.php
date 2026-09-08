@@ -22,29 +22,31 @@ if ( ! function_exists( '_secure_prepare_sanitizer' ) ) {
 				if ( is_bool( $value ) ) {
 					return null;
 				}
+				
+					switch ( $sanitize_cb ) {
+						case 'intval':
+						case 'int':
+							$validated = filter_var( $value, FILTER_VALIDATE_INT );
+							return false === $validated ? null : (int) $validated;
 
-				switch ( $sanitize_cb ) {
-					case 'intval':
-						$validated = filter_var( $value, FILTER_VALIDATE_INT );
-						return false === $validated ? null : (int) $validated;
+						case 'absint':
+							$validated = filter_var(
+								$value,
+								FILTER_VALIDATE_INT,
+								array( 'options' => array( 'min_range' => 0 ) )
+							);
+							return false === $validated ? null : absint( $validated );
 
-					case 'absint':
-						$validated = filter_var(
-							$value,
-							FILTER_VALIDATE_INT,
-							array( 'options' => array( 'min_range' => 0 ) )
-						);
-						return false === $validated ? null : absint( $validated );
+						case 'floatval':
+						case 'float':
+							$validated = filter_var( $value, FILTER_VALIDATE_FLOAT );
 
-					case 'floatval':
-						$validated = filter_var( $value, FILTER_VALIDATE_FLOAT );
+							if ( false === $validated || ! is_finite( (float) $validated ) ) {
+								return null;
+							}
 
-						if ( false === $validated || ! is_finite( (float) $validated ) ) {
-							return null;
-						}
-
-						return (float) $validated;
-				}
+							return (float) $validated;
+					}
 
 				return null;
 			};

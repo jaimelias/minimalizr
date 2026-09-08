@@ -10,41 +10,42 @@ if(!function_exists('get_dy_id'))
 	function get_dy_id(){
 
 		$is_valid_id = function ($val) {return is_int($val) && $val > 0;};
-		$dy_id      = secure_request('dy_id', null, 'absint');
-		$post_req   = secure_request('post_id', null, 'absint');
-		$admin_post = secure_request('post', null, 'absint');
-
-		$req_id = !empty($dy_id)
-			? $dy_id
-			: (!empty($post_req) ? $post_req : null);
-
+		$dy_id = secure_request('dy_id', null, 'intval');
 		$the_id = null;
-		$get_queried_object_id = get_queried_object_id();
+		$post_id = null;
 
-		if($is_valid_id($get_queried_object_id)) {
-			$the_id = $get_queried_object_id;
+		if(is_main_query()) {
+			
+			$get_queried_object_id = get_queried_object_id();
+
+			if($is_valid_id($get_queried_object_id)) {
+				$the_id = $get_queried_object_id;
+			}
 		}
 
 		global $post;
 
 		if($post instanceof WP_Post) {
-			if($is_valid_id($post->ID) !== $the_id) {
-				$the_id = $post->ID;
+
+			$post_id = $post->ID;
+
+			if($is_valid_id($post_id) !== $the_id) {
+				$the_id = $post_id;
 			}
 		}
 
-		$post_id = $is_valid_id($the_id)
-			? $the_id
-			: (is_admin() && !empty($admin_post) ? $admin_post : null);
-
-		if($req_id !== null && $post_id !== null && $req_id !== $post_id)
-		{
-			$err = "req_id={$req_id}' is not equal to 'post_id={$post_id}";
-			write_log($err);
-			wp_die($err);
+		if(!$is_valid_id($the_id) && $is_valid_id($dy_id)) {
+			$the_id = $dy_id;
 		}
 
-		return $post_id ?: ($req_id ?: null);
+		if($the_id !== null && $dy_id !== null && $the_id !== $dy_id)
+		{
+			$err = "the_id={$the_id}' is not equal to 'dy_id={$dy_id}";
+			write_log($err);
+			wp_die($err, 400);
+		}
+
+		return $the_id;
 	}
 }
 
