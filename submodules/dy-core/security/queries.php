@@ -12,7 +12,7 @@ if ( ! function_exists( '_secure_prepare_sanitizer' ) ) {
 	function _secure_prepare_sanitizer( $sanitize_cb ) {
 		$extended_numeric_sanitizers = ['int', 'float'];
 		$legacy_numeric_sanitizers = ['intval', 'absint', 'floatval'];
-		$numeric_sanitizers = [...$legacy_sanitizers, ...$extended_numeric_sanitizers];
+		$numeric_sanitizers = [...$legacy_numeric_sanitizers, ...$extended_numeric_sanitizers];
 
 		// Validate numeric input before casting. Null tells _secure_input() to use its default.
 		if (

@@ -38,10 +38,6 @@ if(!function_exists('get_dy_id'))
 			$the_id = $dy_id;
 		}
 
-		if($the_id !== null && $dy_id !== null && $the_id !== $dy_id)
-		{
-
-
 wp_die(sprintf(
     '$the_id = %s (%s), $dy_id = %s (%s)',
     var_export($the_id, true),
@@ -49,6 +45,12 @@ wp_die(sprintf(
     var_export($dy_id, true),
     gettype($dy_id)
 ));
+
+		if($the_id !== null && $dy_id !== null && $the_id !== $dy_id)
+		{
+
+
+
 
 
 			$err = "the_id={$the_id}' is not equal to 'dy_id={$dy_id}";
