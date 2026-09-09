@@ -91,7 +91,7 @@ if ( ! function_exists( 'get_host' ) ) {
 	/**
 	 * Get the normalized host from the configured WordPress home URL.
 	 */
-	function get_host(): string {
+	function get_resolved_host(): string {
 
 		static $cache = null;
 
@@ -126,7 +126,7 @@ if ( ! function_exists( 'is_local_host' ) ) {
 			return $cache;
 		}
 
-		$host = get_host();
+		$host = get_resolved_host();
 
 		if ( '' === $host ) {
 			return $cache = false;
