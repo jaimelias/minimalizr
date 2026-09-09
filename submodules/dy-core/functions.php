@@ -87,7 +87,7 @@ if(!function_exists('get_dy_id'))
 
 
 
-if ( ! function_exists( 'get_host' ) ) {
+if ( ! function_exists( 'get_resolved_host' ) ) {
 	/**
 	 * Get the normalized host from the configured WordPress home URL.
 	 */
