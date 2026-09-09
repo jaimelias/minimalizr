@@ -11,8 +11,14 @@ if ( !defined( 'WPINC' ) ) exit;
 if ( ! function_exists( '_secure_prepare_sanitizer' ) ) {
 	function _secure_prepare_sanitizer( $sanitize_cb ) {
 		$extended_numeric_sanitizers = ['int', 'float'];
-		$legacy_numeric_sanitizers = ['intval', 'absint', 'floatval'];
-		$numeric_sanitizers = [...$legacy_numeric_sanitizers, ...$extended_numeric_sanitizers];
+		$numeric_sanitizers = ['intval', 'absint', 'floatval'];
+
+		if($sanitize_cb === 'int') {
+			$sanitize_cb = 'intval';
+		}
+		else if($sanitize_cb === 'float') {
+			$sanitize_cb = 'floatval';
+		}
 
 		// Validate numeric input before casting. Null tells _secure_input() to use its default.
 		if (
@@ -27,7 +33,6 @@ if ( ! function_exists( '_secure_prepare_sanitizer' ) ) {
 				
 					switch ( $sanitize_cb ) {
 						case 'intval':
-						case 'int':
 							$validated = filter_var( $value, FILTER_VALIDATE_INT );
 							return false === $validated ? null : (int) $validated;
 
@@ -40,7 +45,6 @@ if ( ! function_exists( '_secure_prepare_sanitizer' ) ) {
 							return false === $validated ? null : absint( $validated );
 
 						case 'floatval':
-						case 'float':
 							$validated = filter_var( $value, FILTER_VALIDATE_FLOAT );
 
 							if ( false === $validated || ! is_finite( (float) $validated ) ) {

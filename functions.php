@@ -8,7 +8,7 @@
 
 if ( !defined( 'WPINC' ) ) exit;
 
-define('MINIMALIZR_VERSION', '1.5.12');
+define('MINIMALIZR_VERSION', '1.5.13');
 
 
 #[AllowDynamicProperties]
