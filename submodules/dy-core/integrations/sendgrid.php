@@ -3,7 +3,7 @@
 if ( !defined( 'WPINC' ) ) exit;
 
 #[AllowDynamicProperties]
-class Dy_Mailer
+class DY_SendGrid
 {
 	public function __construct()
 	{

@@ -8,7 +8,7 @@ if [[ $# -lt 1 || -z "$1" ]]; then
 fi
 
 message="$*"
-repo_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+repo_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 
 cd "$repo_dir"
 
@@ -87,6 +87,5 @@ PHP
 })"
 
 git add .
-git commit -m "${message} - ${new_version}"
-git push origin master
-
+git commit --quiet -m "${message} - ${new_version}"
+git push --quiet origin master

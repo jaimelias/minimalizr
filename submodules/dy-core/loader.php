@@ -30,8 +30,10 @@ if(!class_exists('Dy_Core_Init'))
 
             //third-party integrations
             require_once $this->plugin_dir_path . 'integrations/gtag.php';
-            require_once $this->plugin_dir_path . 'integrations/mailer.php';
-            require_once $this->plugin_dir_path . 'integrations/cloudflare.php';
+            require_once $this->plugin_dir_path . 'integrations/sendgrid.php';
+            require_once $this->plugin_dir_path . 'integrations/cloudflare-ban.php';
+            require_once $this->plugin_dir_path . 'integrations/cloudflare-browser-run.php';
+            require_once $this->plugin_dir_path . 'integrations/cloudflare-turnstile.php';
             require_once $this->plugin_dir_path . 'integrations/sitemap.php';
             require_once $this->plugin_dir_path . 'integrations/handsontable.php';
 
@@ -52,7 +54,7 @@ if(!class_exists('Dy_Core_Init'))
         {
             new Dy_WAF();
             new dy_errors();
-            new Dy_Mailer();
+            new DY_SendGrid();
             new Dynamic_Sitemap();
             new Dynamic_Core_Admin();
             new Dynamic_Core_Public();  
