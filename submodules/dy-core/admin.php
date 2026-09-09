@@ -5,8 +5,16 @@ if ( !defined( 'WPINC' ) ) exit;
 #[AllowDynamicProperties]
 class Dynamic_Core_Admin {
     
-    public function __construct()
+    public function __construct(int|string $version)
     {
+		$this->version = $version;
+        $this->plugin_name = 'Dynamic Core';
+        $this->slug = 'dy-core';
+        $this->setting_id = 'dy_core_settings';
+        $this->section_company = 'dy_core_section_company';
+        $this->section_security = 'dy_core_section_security';
+        $this->section_analytics = 'dy_core_section_analytics';
+
 		$this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
 		$this->plugin_dir = plugin_dir_url( __DIR__ );
 
@@ -15,13 +23,7 @@ class Dynamic_Core_Admin {
 			$this->plugin_dir_url_file = get_stylesheet_directory_uri().'/submodules/dy-core/';
 			$this->plugin_dir = get_template_directory().'/submodules/dy-core/';
 		}
-		
-        $this->plugin_name = 'Dynamic Core';
-        $this->slug = 'dy-core';
-        $this->setting_id = 'dy_core_settings';
-        $this->section_company = 'dy_core_section_company';
-        $this->section_security = 'dy_core_section_security';
-        $this->section_analytics = 'dy_core_section_analytics';
+
         add_action('admin_init', array($this, 'settings_init'), 1);
         add_action('admin_menu', array($this, 'admin_menu'), 1);
 		add_action('admin_head', array($this, 'args'));
@@ -40,7 +42,7 @@ class Dynamic_Core_Admin {
 
 		wp_enqueue_script( 'hyperFormula', 'https://cdn.jsdelivr.net/npm/hyperformula/dist/hyperformula.full.min.js', array('jquery'), '2.6.0', true );
 		wp_enqueue_script( 'handsontableJS', 'https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js', array('jquery', 'hyperFormula'), '14', true );
-		wp_enqueue_script( 'hot', $this->plugin_dir_url_file . 'js/hot.js', array('jquery', 'handsontableJS'), time(), true );
+		wp_enqueue_script( 'hot', $this->plugin_dir_url_file . 'js/hot.js', array('jquery', 'handsontableJS'), $this->version, true );
 
 	}
 	public function enqueue_styles()

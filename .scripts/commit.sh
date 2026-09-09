@@ -2,12 +2,61 @@
 
 set -euo pipefail
 
-if [[ $# -lt 1 || -z "$1" ]]; then
-	echo "Usage: $0 <commit message>" >&2
+usage() {
+	printf '%s\n' \
+		"Usage:" \
+		"  $0 --app <commit message>" \
+		"  $0 --dy-core <version> <commit message>"
+}
+
+if [[ $# -lt 1 ]]; then
+	usage >&2
 	exit 1
 fi
 
-message="$*"
+mode="$1"
+message=""
+dy_core_version=""
+
+case "$mode" in
+	--app)
+		shift
+
+		if [[ $# -lt 1 || -z "$1" ]]; then
+			usage >&2
+			exit 1
+		fi
+
+		message="$*"
+		;;
+	--dy-core)
+		shift
+
+		if [[ $# -lt 2 ]]; then
+			usage >&2
+			exit 1
+		fi
+
+		dy_core_version="$1"
+		shift
+
+		if [[ ! "$dy_core_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ || -z "$1" ]]; then
+			usage >&2
+			exit 1
+		fi
+
+		message="$*"
+		;;
+	-h|--help)
+		usage
+		exit 0
+		;;
+	*)
+		usage >&2
+		exit 1
+		;;
+esac
+
 repo_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 
 cd "$repo_dir"
@@ -17,7 +66,8 @@ if [[ "$(git branch --show-current)" != "master" ]]; then
 	exit 1
 fi
 
-new_version="$({ VERSION_REPO_DIR="$repo_dir" php <<'PHP'
+if [[ "$mode" == "--app" ]]; then
+	commit_version="$({ VERSION_REPO_DIR="$repo_dir" php <<'PHP'
 <?php
 
 $repo_dir = getenv('VERSION_REPO_DIR');
@@ -85,7 +135,10 @@ if (file_put_contents($functions_path, $functions) === false
 echo $new_version;
 PHP
 })"
+else
+	commit_version="$dy_core_version"
+fi
 
 git add .
-git commit --quiet -m "${message} - ${new_version}"
+git commit --quiet -m "${message} - ${commit_version}"
 git push --quiet origin master

@@ -4,6 +4,8 @@ if ( !defined( 'WPINC' )) exit;
 
 if(!class_exists('Dy_Core_Init'))
 {
+    define('DY_CORE_VERSION', '1.1.2');
+
     #[AllowDynamicProperties]
     class Dy_Core_Init {
 
@@ -52,12 +54,15 @@ if(!class_exists('Dy_Core_Init'))
         }
         public function init()
         {
+
+            $version = is_local_host() ? time() : DY_CORE_VERSION;
+
             new Dy_WAF();
             new dy_errors();
             new DY_SendGrid();
             new Dynamic_Sitemap();
-            new Dynamic_Core_Admin();
-            new Dynamic_Core_Public();  
+            new Dynamic_Core_Admin($version);
+            new Dynamic_Core_Public($version);  
             new Dynamic_Core_WP_JSON();
             new Dynamic_Core_Providers();
             //new Dynamic_Core_Orders();

@@ -12,7 +12,7 @@
     }
   },
   "scripts": {
-      "commit": "./.scripts/commit.sh",
+      "commit": "./.scripts/commit.sh --app",
       "start": [
           "@start-apache",
           "@sync-notion"

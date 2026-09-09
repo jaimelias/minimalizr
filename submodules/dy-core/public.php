@@ -5,9 +5,9 @@ if ( !defined( 'WPINC' ) ) exit;
 #[AllowDynamicProperties]
 class Dynamic_Core_Public {
     
-    public function __construct()
+    public function __construct(int|string $version)
     {
-        $this->version = '0.1.110';
+        $this->version = $version;
         $this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
         $this->dirname_file = dirname( __FILE__ );
 
