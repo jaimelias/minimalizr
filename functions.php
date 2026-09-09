@@ -8,14 +8,15 @@
 
 if ( !defined( 'WPINC' ) ) exit;
 
+define('MINIMALIZR_VERSION', '1.5.9');
+
+
 #[AllowDynamicProperties]
 class Minimalizr {
 
 	public function __construct()
 	{
-		$this->version = (is_array($_SERVER) && array_key_exists('SERVER_NAME', $_SERVER) && $_SERVER['SERVER_NAME'] === 'localhost')
-			? time()
-			: '1.5.7';
+		$this->version = is_local_host() ? time() : MINIMALIZR_VERSION;
 
 		$this->theme_name      = 'minimalizr';
 		$this->theme_directory = get_template_directory();

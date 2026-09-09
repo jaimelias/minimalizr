@@ -1,40 +1,36 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Check if a custom comment is provided as a command-line argument
-if [ -z "$1" ]; then
-    echo "Usage: $0 <custom_comment>"
-    exit 1
+set -euo pipefail
+
+if [[ $# -lt 1 || -z "$1" ]]; then
+	echo "Usage: $0 <commit message>" >&2
+	exit 1
 fi
 
-# Set the custom comment
-CUSTOM_COMMENT="$1"
+message="$*"
+dy_core_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+dynamicpackages_dir="$(cd -- "$dy_core_dir/.." && pwd)"
+dynamicaviation_dir="$(cd -- "$dynamicpackages_dir/../dynamicaviation" && pwd)"
+minimalizr_dir="$(cd -- "$dynamicpackages_dir/../../themes/minimalizr" && pwd)"
 
-# Function to perform the git actions
-perform_git_actions() {
-    git add .
-    git commit -m "$CUSTOM_COMMENT"
-    git push origin master --force
-}
+for script in \
+	"$dynamicpackages_dir/commit.sh" \
+	"$dynamicaviation_dir/commit.sh" \
+	"$minimalizr_dir/commit.sh"; do
+	if [[ ! -x "$script" ]]; then
+		echo "Error: missing executable script: $script" >&2
+		exit 1
+	fi
+done
 
+rm -rf -- "$dynamicaviation_dir/submodules/dy-core"
+mkdir -p -- "$dynamicaviation_dir/submodules"
+cp -R -- "$dy_core_dir" "$dynamicaviation_dir/submodules/dy-core"
 
-# Gets to /wp-content/plugins/dynamicpackages
-cd ../
+rm -rf -- "$minimalizr_dir/submodules/dy-core"
+mkdir -p -- "$minimalizr_dir/submodules"
+cp -R -- "$dy_core_dir" "$minimalizr_dir/submodules/dy-core"
 
-# Delete and redo /wp-content/plugins/dynamicaviation/submodules/dy-core
-rm -rf ../dynamicaviation/submodules/dy-core
-mkdir -p ../dynamicaviation/submodules
-cp -r dy-core ../dynamicaviation/submodules
-
-# Delete and redo /wp-content/themes/minimalizr/submodules/dy-core
-rm -rf ../../themes/minimalizr/submodules/dy-core
-mkdir -p ../../themes/minimalizr/submodules
-cp -r dy-core ../../themes/minimalizr/submodules
-
-# Return to the original directory
-cd -
-cd ../
-perform_git_actions
-cd ../dynamicaviation
-perform_git_actions
-cd ../../themes/minimalizr
-perform_git_actions
+"$dynamicpackages_dir/commit.sh" "$message"
+"$dynamicaviation_dir/commit.sh" "$message"
+"$minimalizr_dir/commit.sh" "$message"
