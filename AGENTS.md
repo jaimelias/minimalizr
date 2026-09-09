@@ -3,7 +3,7 @@
 ## Project
 `minimalizr` is the WordPress theme that provides the presentation layer and theme-level support for the `dynamicpackages` ecosystem.
 The authoritative repository-specific architecture, scope, ownership, and domain rules are in:
-`docs/project-agents/minimalizr.md`
+`docs/project-agents/PROJECT.md`
 Read that file before making code changes or architectural decisions in this repository.
 ## Instruction Loading
 Use progressive disclosure. Read only the instruction files relevant to the current task; do not load every shared document by default.
@@ -22,7 +22,7 @@ After modifying code and before reporting completion, read:
 ## Instruction Priority
 Follow the explicit task request together with these repository instructions. Where these repository documents overlap or conflict:
 1. This `AGENTS.md` defines repository-wide routing and mandatory constraints.
-2. `docs/project-agents/minimalizr.md` controls project-specific architecture, ownership, domain, and repository-scope rules.
+2. `docs/project-agents/PROJECT.md` controls project-specific architecture, ownership, domain, and repository-scope rules.
 3. Relevant files under `docs/shared-agents/` provide language, framework, workflow, and validation rules.
 A task request may activate an exception only where these instructions explicitly allow an exception when requested. Do not treat generic shared guidance as permission to violate a project-specific constraint.
 ## Core Constraints
