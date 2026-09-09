@@ -4,37 +4,6 @@ if ( !defined( 'WPINC' ) ) exit;
 
 define('DY_CORE_FUNCTIONS', true);
 
-if ( ! function_exists( 'is_local_host' ) ) {
-	/**
-	 * Determine whether the configured WordPress home URL uses a loopback host.
-	 */
-	function is_local_host(): bool {
-
-		static $cache = null;
-
-		if($cache !== null) {
-			return $cache;
-		}
-
-		$host = wp_parse_url( home_url(), PHP_URL_HOST );
-
-		if ( ! is_string( $host ) || '' === $host ) {
-			return $cache = false;
-		}
-
-		$host = trim( strtolower( rtrim( $host, '.' ) ), '[]' );
-
-		if ( 'localhost' === $host || str_ends_with( $host, '.localhost' ) || '::1' === $host ) {
-			return $cache = true;
-		}
-
-		$output = false !== filter_var( $host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 )
-			&& str_starts_with( $host, '127.' );
-
-		return $cache = $output;
-	}
-}
-
 
 if(!function_exists('get_dy_id'))
 {
@@ -115,6 +84,72 @@ if(!function_exists('get_dy_id'))
 	}
 }
 
+
+
+
+if ( ! function_exists( 'get_host' ) ) {
+	/**
+	 * Get the normalized host from the configured WordPress home URL.
+	 */
+	function get_host(): string {
+
+		static $cache = null;
+
+		if ( null !== $cache ) {
+			return $cache;
+		}
+
+		$host = wp_parse_url( home_url(), PHP_URL_HOST );
+
+		if ( ! is_string( $host ) || '' === $host ) {
+			return $cache = '';
+		}
+
+		return $cache = trim(
+			strtolower(
+				rtrim( $host, '.' )
+			),
+			'[]'
+		);
+	}
+}
+
+if ( ! function_exists( 'is_local_host' ) ) {
+	/**
+	 * Determine whether the configured WordPress home URL uses a loopback host.
+	 */
+	function is_local_host(): bool {
+
+		static $cache = null;
+
+		if ( null !== $cache ) {
+			return $cache;
+		}
+
+		$host = get_host();
+
+		if ( '' === $host ) {
+			return $cache = false;
+		}
+
+		if (
+			'localhost' === $host
+			|| str_ends_with( $host, '.localhost' )
+			|| '::1' === $host
+		) {
+			return $cache = true;
+		}
+
+		return $cache = (
+			false !== filter_var(
+				$host,
+				FILTER_VALIDATE_IP,
+				FILTER_FLAG_IPV4
+			)
+			&& str_starts_with( $host, '127.' )
+		);
+	}
+}
 
 
 
