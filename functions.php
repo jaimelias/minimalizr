@@ -16,13 +16,11 @@ class Minimalizr {
 
 	public function __construct()
 	{
+		$this->theme_name = 'minimalizr';
+		$this->theme_directory = get_template_directory();
 		$this->load_dependencies();
 
 		$this->version = is_local_host() ? time() : MINIMALIZR_VERSION;
-
-		$this->theme_name      = 'minimalizr';
-		$this->theme_directory = get_template_directory();
-
 		
 		add_action('after_setup_theme', [$this, 'after_setup_theme']);
 		add_filter('upload_mimes', [$this, 'add_svg_support']);
