@@ -205,7 +205,6 @@ const createFormSubmit = form => {
     //disable button to prevent double-click
     handleSubmitButton(form);
 
-    const formId = form.attr('id');
     const {lang} = dyCoreArgs;
 	let formFields = formToArray(form);
 	const method = String(form.attr('data-method')).toLowerCase();

@@ -10,7 +10,7 @@ if ( !defined( 'WPINC' ) ) exit;
 
 if ( ! function_exists( '_secure_prepare_sanitizer' ) ) {
 	function _secure_prepare_sanitizer( $sanitize_cb ) {
-		$extended_numeric_sanitizers = ['int', 'float'];
+
 		$numeric_sanitizers = ['intval', 'absint', 'floatval'];
 
 		if($sanitize_cb === 'int') {

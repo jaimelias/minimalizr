@@ -138,8 +138,6 @@ class Dynamic_Core_Orders {
 			wp_die('Post Type Not Set: orders.php -> save_order');
 		}
 
-        $providers = apply_filters('dy_list_providers', array());
-
 		$metadata = array_merge(
 			array(
 				'unique_id' => $unique_id,

@@ -263,7 +263,7 @@ if ( ! function_exists('write_log')) {
 			? get_ip_address()
 			: '(unknown)';
 
-		$ip = is_scalar($raw_ip) || $raw_ip === null
+		$ip = is_scalar($raw_ip)
 			? $single_line((string) $raw_ip)
 			: '(unknown)';
 

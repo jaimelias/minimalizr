@@ -163,10 +163,6 @@ class Dy_WAF {
                     ? mb_strlen($raw, 'UTF-8')
                     : strlen($raw);
 
-                if ($len === false) {
-                    $len = strlen($raw);
-                }
-
                 if ($len > $limit) {
                     $message = "{$param_key} param {$key_name} length > {$limit}";
                     $this->reject_param($message);

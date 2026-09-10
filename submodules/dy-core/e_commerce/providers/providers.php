@@ -222,7 +222,7 @@ class Dynamic_Core_Providers {
 			$terms = [];
 		}
 
-		if(property_exists($post, 'post_parent') && $post->post_parent > 0) {
+		if($post->post_parent > 0) {
 			$parent_terms = get_the_terms($post->post_parent, self::TAXONOMY);
 
 			if(!empty($parent_terms) && !is_wp_error($parent_terms)) {
