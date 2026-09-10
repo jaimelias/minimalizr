@@ -94,21 +94,21 @@
 	//input background
 	wp.customize( 'inputBg', value => {
 		value.bind( newval => {
-			jQuery('input[type=text],input[type=password],input[type=email],input[type=url],input[type=date],input[type=month],input[type=time],input[type=datetime],input[type=datetime-local],input[type=week],input[type=number],input[type=search],input[type=tel],input[type=color],select,textarea, input[type=text], select').css('background-color', newval );
+			jQuery('input[type=text],input[type=password],input[type=email],input[type=url],input[type=date],input[type=month],input[type=time],input[type=datetime],input[type=datetime-local],input[type=week],input[type=number],input[type=search],input[type=tel],input[type=color],select,textarea').css('background-color', newval );
 		} );
 	} );
 
 	//input fontFont
 	wp.customize( 'inputFont', value => {
 		value.bind( newval => {
-			jQuery('input[type=text],input[type=password],input[type=email],input[type=url],input[type=date],input[type=month],input[type=time],input[type=datetime],input[type=datetime-local],input[type=week],input[type=number],input[type=search],input[type=tel],input[type=color],select,textarea, input[type=text], select').css({'color': newval});
+			jQuery('input[type=text],input[type=password],input[type=email],input[type=url],input[type=date],input[type=month],input[type=time],input[type=datetime],input[type=datetime-local],input[type=week],input[type=number],input[type=search],input[type=tel],input[type=color],select,textarea').css({'color': newval});
 		} );
 	} );
 
 	//input border
 	wp.customize( 'inputBorder', value => {
 		value.bind( newval => {
-			jQuery('input[type=text],input[type=password],input[type=email],input[type=url],input[type=date],input[type=month],input[type=time],input[type=datetime],input[type=datetime-local],input[type=week],input[type=number],input[type=search],input[type=tel],input[type=color],select,textarea, input[type=text], select').css({'border-color': newval});
+			jQuery('input[type=text],input[type=password],input[type=email],input[type=url],input[type=date],input[type=month],input[type=time],input[type=datetime],input[type=datetime-local],input[type=week],input[type=number],input[type=search],input[type=tel],input[type=color],select,textarea').css({'border-color': newval});
 		} );
 	} );		
 

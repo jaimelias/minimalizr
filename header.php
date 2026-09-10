@@ -24,7 +24,7 @@
 
 <?php 
 
-	$layout        = minimalizr_get_meta( 'minimalizr_width' );
+	$layout = minimalizr_get_meta( 'minimalizr_width' );
 	$is_full_width = $layout === 'full' && ( is_page() || is_single() );
 
 	if ( $is_full_width ) {

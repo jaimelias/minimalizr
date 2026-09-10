@@ -5,27 +5,21 @@
  * @package minimalizr
  */
 
-	$is_tax        = is_tax();
-	$is_full_width = minimalizr_get_meta( 'minimalizr_width' ) === 'full' && ( is_page() || is_single() );
-	$title         = '';
+	$is_full_width = minimalizr_get_meta( 'minimalizr_width' ) === 'full';
 	$description   = '';
 
-	if ( ! $is_full_width ) {
-		$title = $is_tax ? html_entity_decode( get_the_title() ) : get_the_title();
-		$title = is_front_page() ? '<h2 class="entry-title">' . $title . '</h2>' : '<h1 class="entry-title">' . $title . '</h1>';
+		if ( ! $is_full_width ) {
+			$title = get_the_title();
+			$title = is_front_page() ? '<h2 class="entry-title">' . $title . '</h2>' : '<h1 class="entry-title">' . $title . '</h1>';
 
-		if ( is_singular() && has_excerpt() ) {
-			$excerpt = get_the_excerpt();
+			if ( has_excerpt() ) {
+				$excerpt = get_the_excerpt();
 
 			if ( ! empty( $excerpt ) ) {
 				$description = '<p itemprop="description" class="large bottom-10">' . $excerpt . '</p><hr/>';
 			}
 		}
-
-		if ( $is_tax && ! empty( term_description() ) ) {
-			$description = '<p itemprop="description" class="large bottom-10">' . esc_html( get_term( get_queried_object()->term_id )->description ) . '</p>';
 		}
-	}
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>

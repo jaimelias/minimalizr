@@ -13,7 +13,7 @@ get_header(); ?>
 			<div class="minimal-site-alert" data-nosnippet><?php do_action('minimal_site_alert'); ?></div>
 			
 			<div id="index"><!-- #index 600px -->
-				<?php while ( have_posts() ) : the_post(); global $post; ?>
+				<?php while ( have_posts() ) : the_post(); ?>
 
 					<?php get_template_part( 'template-parts/content', 'single' ); ?>
 

@@ -8,7 +8,7 @@
 
 if ( !defined( 'WPINC' ) ) exit;
 
-define('MINIMALIZR_VERSION', '1.5.16');
+define('MINIMALIZR_VERSION', '1.5.17');
 
 
 #[AllowDynamicProperties]
@@ -16,7 +16,6 @@ class Minimalizr {
 
 	public function __construct()
 	{
-		$this->theme_name = 'minimalizr';
 		$this->theme_directory = get_template_directory();
 		$this->load_dependencies();
 
@@ -38,7 +37,7 @@ class Minimalizr {
 
 		// scripts
 		add_filter('script_loader_tag', [$this, 'async_defer_js'], 10, 3);
-		add_filter('minimal_ld_json', [$this, 'ld_json_cb'], 1, 3);
+		add_filter('minimal_ld_json', [$this, 'ld_json_cb'], 1);
 		add_action('wp_head', [$this, 'ld_json_script']);
 		add_action('wp_enqueue_scripts', [$this, 'minimalizr_styles'], 0);
 		add_action('wp_enqueue_scripts', [$this, 'minimalizr_scripts'], 0);
@@ -57,7 +56,7 @@ class Minimalizr {
 		remove_action('wp_head', 'feed_links_extra', 3);
 		remove_action('wp_head', 'rest_output_link_wp_head');
 		remove_action('wp_head', 'wp_oembed_add_discovery_links');
-		remove_action('template_redirect', 'rest_output_link_header', 11, 0);
+		remove_action('template_redirect', 'rest_output_link_header', 11);
 		remove_action('wp_head', 'rsd_link');
 		remove_action('wp_head', 'wlwmanifest_link');
 		remove_action('wp_head', 'wp_shortlink_wp_head');
@@ -322,7 +321,6 @@ class Minimalizr {
 			// --- begin modified block ---
 
 			$post_id = get_queried_object_id();
-			$post = get_post($post_id);
 
 			$mainEntityOfPage = [
 				'@type' => 'WebPage',
@@ -364,7 +362,7 @@ class Minimalizr {
 			}
 
 			// Extra helpful fields for an Article
-			$post_lang = function_exists('get_locale') ? get_locale() : '';
+			$post_lang = get_locale();
 			$post_content = wp_strip_all_tags( get_post_field('post_content', $post_id) );
 			$post_wordcount = str_word_count( $post_content );
 
@@ -391,9 +389,7 @@ class Minimalizr {
 			];
 
 
-			if(property_exists($post, 'post_excerpt')) {
-				$article['description'] = $post->post_excerpt;
-			}
+			$article['description'] = get_post_field( 'post_excerpt', $post_id );
 
 
 			if($article_section){
@@ -403,10 +399,7 @@ class Minimalizr {
 				$article['keywords'] = $keywords;
 			}
 			
-			if(array_key_exists('name', $publisher))
-			{
-				$article['publisher'] = $publisher;
-			}
+			$article['publisher'] = $publisher;
 			
 			if(has_post_thumbnail())	
 			{
@@ -430,7 +423,7 @@ class Minimalizr {
 			return;
 		}
 
-		$scripts = ["\n"];
+		$scripts = [];
 
 		foreach ($ld as $key => $entry) {
 			if (!is_array($entry)) {
@@ -443,7 +436,7 @@ class Minimalizr {
 			);
 		}
 
-		if ($scripts) {
+		if (!empty($scripts)) {
 			echo implode("\n", $scripts);
 		}
 	}
@@ -543,8 +536,6 @@ class Minimalizr {
 
 	function minimalizr_scripts() {
 	
-		global $wp_scripts;
-		
 		if(is_admin()) return;
 		
 		$theme_url = get_template_directory_uri();
@@ -583,7 +574,7 @@ class Minimalizr {
 	
 		wp_enqueue_style( 'minimalLayout', $theme_url.'/css/minimal-layout.css', array(), $this->version);
 		wp_enqueue_style( 'minimalizr-style', get_stylesheet_uri(), array( 'minimalLayout'), $this->version);		
-		wp_add_inline_style( 'minimalizr-style', $this->get_inline_css('media-query'), $this->version);
+		wp_add_inline_style( 'minimalizr-style', $this->get_inline_css('media-query'));
 		wp_enqueue_style( 'dashicons' );
 	}
 	
@@ -693,5 +684,3 @@ class Minimalizr {
 }
 
 new Minimalizr();
-
-

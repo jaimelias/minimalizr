@@ -15,9 +15,9 @@ if (typeof jQuery === 'function' && typeof jQuery.fn.init === 'function') {
 
                 const {scrollTop} = o;
 
-                if(scrollTop)
+                if(typeof scrollTop === 'number')
                 {
-                    window.scrollTo(0, 0);
+                    window.scrollTo(0, scrollTop);
                 }
             },
         });
@@ -27,4 +27,3 @@ if (typeof jQuery === 'function' && typeof jQuery.fn.init === 'function') {
 //fix scroll top on jquery slim
 
 const $ = jQuery;
-

@@ -38,8 +38,6 @@ class Minimal_Classes
 		$header_args = $this->header_args();
 		$logo_height = $header_args->height;
 		$sidebarheight = $logo_height+($padding*2);	
-		$output = null;
-		
 		if(!empty(get_header_image()))
 		{
 			ob_start();
@@ -169,7 +167,7 @@ class Minimal_Classes
 				
 				<div class="right pure-u-1 pure-u-sm-1-2 pure-u-md-4-5 pure-u-lg-5-6">
 					<div class="pull-right"> 
-						<?php echo $this->responsive(); ?>
+						<?php $this->responsive(); ?>
 						<?php echo $this->minimal(); ?>
 					</div>
 				</div>
@@ -200,6 +198,6 @@ class Minimal_Classes
 	}
 }
 
-$min_classes = new Minimal_Classes();
+new Minimal_Classes();
 
 ?>

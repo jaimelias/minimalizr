@@ -20,8 +20,7 @@ class Minimal_Template{
 		wp_nonce_field( 'minimal_title_mod_nonce', 'minimal_title_mod_nonce');
 
 		$languages = get_languages();
-		$current_language = current_language();
-		
+
 		for($x = 0; $x < count($languages); $x++)
 		{
 			$lang = $languages[$x];

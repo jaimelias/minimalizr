@@ -154,11 +154,11 @@ class MyTheme_Customize {
 		
 		<?php self::generate_css('#minimal-wrapper form', 'color', 'formFont'); ?>
 
-		<?php self::generate_css('input[type=text],input[type=password],input[type=email],input[type=url],input[type=date],input[type=month],input[type=time],input[type=datetime],input[type=datetime-local],input[type=week],input[type=number],input[type=search],input[type=tel],input[type=color],select,textarea, input[type=text], select', 'background-color', 'inputBg'); ?>
+		<?php self::generate_css('input[type=text],input[type=password],input[type=email],input[type=url],input[type=date],input[type=month],input[type=time],input[type=datetime],input[type=datetime-local],input[type=week],input[type=number],input[type=search],input[type=tel],input[type=color],select,textarea', 'background-color', 'inputBg'); ?>
 		
-		<?php self::generate_css('input[type=text],input[type=password],input[type=email],input[type=url],input[type=date],input[type=month],input[type=time],input[type=datetime],input[type=datetime-local],input[type=week],input[type=number],input[type=search],input[type=tel],input[type=color],select,textarea, input[type=text], select', 'color', 'inputFont'); ?>
+		<?php self::generate_css('input[type=text],input[type=password],input[type=email],input[type=url],input[type=date],input[type=month],input[type=time],input[type=datetime],input[type=datetime-local],input[type=week],input[type=number],input[type=search],input[type=tel],input[type=color],select,textarea', 'color', 'inputFont'); ?>
 
-		<?php self::generate_css('input[type=text],input[type=password],input[type=email],input[type=url],input[type=date],input[type=month],input[type=time],input[type=datetime],input[type=datetime-local],input[type=week],input[type=number],input[type=search],input[type=tel],input[type=color],select,textarea, input[type=text], select', 'border-color', 'inputBorder'); ?>		
+		<?php self::generate_css('input[type=text],input[type=password],input[type=email],input[type=url],input[type=date],input[type=month],input[type=time],input[type=datetime],input[type=datetime-local],input[type=week],input[type=number],input[type=search],input[type=tel],input[type=color],select,textarea', 'border-color', 'inputBorder'); ?>
 		
 
 

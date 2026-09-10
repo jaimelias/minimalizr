@@ -11,30 +11,36 @@
 	</div><!-- #content -->	
 
 		<footer id="footer" class="clearfix">
-		
-		<?php get_sidebar(); ?>
 
 		<?php 
-				$media = array("facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google", "tiktok");
-				$svg_icons = array("tiktok");
+				get_sidebar();
+
+				$media = ["facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google", "tiktok"];
+				$svg_icons = ["tiktok"];
 				$min_sm_btn = '';
 				
 				for($x = 0; $x < count($media); $x++)
 				{
-					if(get_theme_mod($media[$x]) != null)
-					{
-						if(!filter_var(get_theme_mod($media[$x]), FILTER_VALIDATE_URL) === false)
-						{
-							if(in_array($media[$x], $svg_icons))
-							{
-								$min_sm_btn .= '<a id="mn'.esc_html($media[$x]).'" target="_blank" class="smbutton" href="'.esc_url(get_theme_mod($media[$x])).'"><span class="svgicons svgicons-'.esc_attr($media[$x]).'"></span></a>';
-							}
-							else
-							{
-								$min_sm_btn .= '<a id="mn'.esc_html($media[$x]).'" target="_blank" class="smbutton" href="'.esc_url(get_theme_mod($media[$x])).'"><span class="dashicons dashicons-'.esc_attr($media[$x]).'"></span></a>';
-							}
-						}
-					}	
+					$key = $media[$x];
+					$mod = get_theme_mod($key);
+
+					if(
+						!$mod
+						|| filter_var($mod, FILTER_VALIDATE_URL) === false	
+					) continue;
+
+					$icon_type = in_array($key, $svg_icons, true) 
+						? 'svgicons svgicons' 
+						: 'dashicons dashicons';
+
+
+					$min_sm_btn .= sprintf(
+						'<a id="mn%s" target="_blank" class="smbutton" href="%s"><span class="%s-%s"></span></a>',
+						esc_attr($key),
+						esc_url($mod),
+						esc_attr($icon_type),
+						esc_attr($key)
+					);
 				}
 		
 		?>
