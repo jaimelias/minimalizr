@@ -14,12 +14,12 @@ get_header(); ?>
 			<div class="minimal-site-alert" data-nosnippet><?php do_action('minimal_site_alert'); ?></div>
 
 			<div id="index">
-				<?php if ( have_posts() ) : ?>
+				<header class="page-header">
+					<h1 class="page-title"><?php echo apply_filters('minimal_archive_title', get_the_archive_title()); ?></h1>
+					<?php the_archive_description( '<div class="taxonomy-description">', '</div>' ); ?>
+				</header><!-- .page-header -->
 
-					<header class="page-header">
-						<h1 class="page-title"><?php echo apply_filters('minimal_archive_title', get_the_archive_title()); ?></h1>
-						<?php the_archive_description( '<div class="taxonomy-description">', '</div>' ); ?>
-					</header><!-- .page-header -->
+				<?php if ( have_posts() ) : ?>
 
 					<?php /* Start the Loop */ ?>
 					<?php while ( have_posts() ) : the_post(); ?>

@@ -10,7 +10,11 @@
 
 <section class="no-results not-found">
 	<header class="page-header">
-		<h1 class="page-title"><?php echo esc_html(__( 'Nothing Found', 'minimalizr' )); ?></h1>
+		<?php if ( is_archive() || is_search() || ( is_home() && ! is_front_page() ) ) : ?>
+			<h2 class="page-title"><?php echo esc_html( __( 'Nothing Found', 'minimalizr' ) ); ?></h2>
+		<?php else : ?>
+			<h1 class="page-title"><?php echo esc_html( __( 'Nothing Found', 'minimalizr' ) ); ?></h1>
+		<?php endif; ?>
 	</header><!-- .page-header -->
 
 	<div class="page-content">

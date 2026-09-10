@@ -5,36 +5,27 @@
  * @package minimalizr
  */
 
-	$is_tax = is_tax();
-	$title = ($is_tax) ? html_entity_decode(get_the_title()) : get_the_title();
-	$title = (is_front_page()) ?  '<h2 class="entry-title">'.$title.'</h2>' : '<h1 class="entry-title">'.$title.'</h1>';
-	$description = '';
+	$is_tax        = is_tax();
+	$is_full_width = minimalizr_get_meta( 'minimalizr_width' ) === 'full' && ( is_page() || is_single() );
+	$title         = '';
+	$description   = '';
 
-	if(is_singular() && has_excerpt())
-	{
-		$excerpt = get_the_excerpt();
+	if ( ! $is_full_width ) {
+		$title = $is_tax ? html_entity_decode( get_the_title() ) : get_the_title();
+		$title = is_front_page() ? '<h2 class="entry-title">' . $title . '</h2>' : '<h1 class="entry-title">' . $title . '</h1>';
 
-		if(!empty($excerpt))
-		{
-			$description = '<p itemprop="description" class="large bottom-10">'.$excerpt.'</p>';
+		if ( is_singular() && has_excerpt() ) {
+			$excerpt = get_the_excerpt();
 
-			if(!in_array('bodyfull', get_body_class()))
-			{
-				$description .= '<hr/>';
+			if ( ! empty( $excerpt ) ) {
+				$description = '<p itemprop="description" class="large bottom-10">' . $excerpt . '</p><hr/>';
 			}
 		}
-	}
 
-	if($is_tax)
-	{
-		if(!empty(term_description()))
-		{
-			$description = '<p itemprop="description" class="large bottom-10">'.esc_html(get_term(get_queried_object()->term_id)->description).'</p>';
+		if ( $is_tax && ! empty( term_description() ) ) {
+			$description = '<p itemprop="description" class="large bottom-10">' . esc_html( get_term( get_queried_object()->term_id )->description ) . '</p>';
 		}
 	}
-
-
-
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
@@ -42,16 +33,16 @@
 	
 	<?php
 
-		if(!in_array('bodyfull', get_body_class()))
+		if ( ! $is_full_width )
 		{
-			printf('<header class="entry-header">%s%s</header>', $title, $description);
+			echo wp_kses_post( sprintf( '<header class="entry-header">%s%s</header>', $title, $description ) );
 		}
 
 	?>
 	
 
 
-	<div class="<?php echo apply_filters('entry_content_class', 'entry-content'); ?>">
+	<div class="<?php echo esc_attr( apply_filters( 'entry_content_class', 'entry-content' ) ); ?>">
 		<?php echo apply_filters( 'the_content', get_the_content() ); ?>
 		<?php
 			wp_link_pages( array(

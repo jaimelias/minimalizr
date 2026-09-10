@@ -12,6 +12,8 @@
 
 <body <?php body_class(); ?>>
 
+<?php wp_body_open(); ?>
+
 <?php do_action('minimal_pre_body'); ?>
 
 <div id="minimal-wrapper" class="clearfix">	
@@ -22,40 +24,33 @@
 
 <?php 
 
-	$is_tax = is_tax();
-	$title = ($is_tax) ? html_entity_decode(get_the_title()) : get_the_title();
-	$title = (is_front_page()) ?  '<h2 class="entry-title">'.$title.'</h2>' : '<h1 class="entry-title">'.$title.'</h1>';
-	$description = '';
+	$layout        = minimalizr_get_meta( 'minimalizr_width' );
+	$is_full_width = $layout === 'full' && ( is_page() || is_single() );
 
-	if(is_singular() && has_excerpt())
-	{
-		$excerpt = get_the_excerpt();
+	if ( $is_full_width ) {
+		$heading_tag = is_front_page() ? 'h2' : 'h1';
+		$title       = sprintf(
+			'<%1$s class="entry-title">%2$s</%1$s>',
+			$heading_tag,
+			wp_kses_post( get_the_title() )
+		);
+		$description = '';
 
-		if(!empty($excerpt))
-		{
-			$description = '<p itemprop="description" class="large bottom-10">'.$excerpt.'</p>';
+		if ( is_singular() && has_excerpt() ) {
+			$excerpt = get_the_excerpt();
 
-			if(!in_array('bodyfull', get_body_class()))
-			{
-				$description .= '<hr/>';
+			if ( ! empty( $excerpt ) ) {
+				$description = sprintf(
+					'<p itemprop="description" class="large bottom-10">%s</p>',
+					wp_kses_post( $excerpt )
+				);
 			}
 		}
+
+		echo wp_kses_post( '<div class="minimal-box text-center"><div class="container">' . $title . $description . '</div></div>' );
 	}
 
-	if($is_tax)
-	{
-		if(!empty(term_description()))
-		{
-			$description = '<p itemprop="description" class="large bottom-10">'.esc_html(get_term(get_queried_object()->term_id)->description).'</p>';
-		}
-	}
-
-
-	if(in_array('bodyfull', get_body_class())) {
-		echo '<div class="minimal-box text-center"><div class="container">'.$title.$description.'</div></div>';
-	}
-
-	if(minimalizr_get_meta( "minimalizr_width" ) === "full" && (is_page() || is_single()))
+	if ( $is_full_width )
 	{
 		$layoutwidth = 'layoutfull';
 		$max_width = '100%';
@@ -68,4 +63,4 @@
 
 ?>
 
-<div id="content" class="site-content clearfix <?php echo $layoutwidth; ?>" style="max-width: <?php echo $max_width; ?>" >
+<div id="content" class="site-content clearfix <?php echo esc_attr( $layoutwidth ); ?>" style="max-width: <?php echo esc_attr( $max_width ); ?>" >

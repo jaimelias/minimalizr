@@ -7,22 +7,20 @@
  * @package minimalizr
  */
 
-/**
- * Adds custom classes to the array of body classes.
- *
- * @param array $classes Classes for the body element.
- * @return array
- */
- 
 add_filter( 'document_title_separator', 'modify_separator', 100);
 
-function modify_separator()
+function modify_separator(): string
 {
 	return '|';
 }
 
- 
-function minimalizr_body_classes( $classes ) {
+/**
+ * Adds custom classes to the array of body classes.
+ *
+ * @param array<int, string> $classes Classes for the body element.
+ * @return array<int, string>
+ */
+function minimalizr_body_classes( array $classes ): array {
 	
 	
 	if ( is_multi_author() ) {
@@ -32,12 +30,11 @@ function minimalizr_body_classes( $classes ) {
 	{
 		$classes[] = 'front-page';
 	}
-	if(minimalizr_get_meta( "minimalizr_width" ))
+	$layout = minimalizr_get_meta( 'minimalizr_width' );
+
+	if ( $layout )
 	{
-		if(is_page() && is_front_page()) {
-			$classes[] = 'bodyfull';
-		}
-		if(minimalizr_get_meta( "minimalizr_width" ) === "full" && (is_page() || is_single()))
+		if ( $layout === 'full' && ( is_page() || is_single() ) )
 		{
 			$classes[] = 'bodyfull';
 		}
@@ -48,14 +45,16 @@ function minimalizr_body_classes( $classes ) {
 		}
 	}
 
-	if(!is_singular('post'))
+	if ( ! is_singular( 'post' ) )
 	{
-		unset($classes[array_search('blog', $classes)]);
+		$blog_key = array_search( 'blog', $classes, true );
+
+		if ( false !== $blog_key ) {
+			unset( $classes[ $blog_key ] );
+		}
 	}
 
 
 	return $classes;
 }
 add_filter( 'body_class', 'minimalizr_body_classes', 100 );
-
-?>
