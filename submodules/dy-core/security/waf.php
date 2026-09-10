@@ -11,9 +11,43 @@ class Dy_WAF {
         add_action('setup_theme', [$this, 'validate_params'], PHP_INT_MIN);
     }
 
+    private function get_server_value(string $key) : string
+    {
+        $value = $_SERVER[$key] ?? '';
+
+        return is_scalar($value)
+            ? (string) $value
+            : '';
+    }
+
     private function reject_param($message) {
-        write_log("[WAF - Bad Request] = $message", false, true);
-        wp_die(esc_html($message), 'WAF - Bad Request', ['response' => 400]);
+
+        $prefix = '[WAF - Bad Request]';
+
+        write_log("$prefix = $message", false, true);
+
+		$server_value = static function(string $key): string
+		{
+			$value = $_SERVER[$key] ?? '';
+
+			return is_scalar($value)
+				? (string) $value
+				: '';
+		};
+
+		$request_path = wp_parse_url(
+			$this->get_server_value('REQUEST_URI'),
+			PHP_URL_PATH
+		);
+
+        //most of the common backdoors are infected root php files
+        $is_root_php = is_string($request_path) && preg_match('#^/[^/]+\.php$#i', $request_path);
+
+        if($is_root_php) {
+            cloudflare_ban_ip_address("$prefix = $message");
+        }
+
+        wp_die(esc_html($message), $prefix, ['response' => 400]);
         exit;
     }
 

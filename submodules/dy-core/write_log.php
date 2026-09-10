@@ -366,6 +366,13 @@ if ( ! function_exists('write_log')) {
 			'path'       => is_string($request_path) ? $request_path : ''
 		];
 
+		$country_code = get_request_country_code();
+
+		if($country_code !== '') {
+			$server_data['country'] = $country_code;
+			$server_data['flag'] = country_code_to_flag($country_code);
+		}
+
 		$parts[] = 'server=' . $encode($server_data);
 
 		/*

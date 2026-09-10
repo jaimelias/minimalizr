@@ -84,6 +84,48 @@ if(!function_exists('get_dy_id'))
 	}
 }
 
+if( ! function_exists('country_code_to_flag')) {
+	function country_code_to_flag(string $code): string
+	{
+		$code = strtoupper($code);
+
+		// Basic validation: must be exactly 2 letters A-Z
+		if (!preg_match('/^[A-Z]{2}$/', $code)) {
+			throw new InvalidArgumentException("Invalid country code: $code");
+		}
+
+		$flag = '';
+		foreach (str_split($code) as $char) {
+			// Regional Indicator Symbol Letter A = U+1F1E6
+			$codePoint = 0x1F1E6 + (ord($char) - ord('A'));
+			$flag .= mb_convert_encoding('&#' . $codePoint . ';', 'UTF-8', 'HTML-ENTITIES');
+		}
+
+		return $flag;
+	}
+}
+
+if ( ! function_exists( 'get_request_country_code' ) ) {
+	/**
+	 * Get the visitor country code provided by Cloudflare.
+	 *
+	 * @return string ISO 3166-1 alpha-2 country code, "XX", "T1", or an empty string.
+	 */
+	function get_request_country_code(): string {
+
+		$value = $_SERVER['HTTP_CF_IPCOUNTRY'] ?? '';
+
+		if ( ! is_scalar( $value ) ) {
+			return '';
+		}
+
+		$country = strtoupper( trim( (string) $value ) );
+
+		return preg_match( '/^[A-Z0-9]{2}$/', $country )
+			? $country
+			: '';
+	}
+}
 
 
 
