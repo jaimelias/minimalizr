@@ -16,14 +16,15 @@ class Minimalizr {
 
 	public function __construct()
 	{
+		$this->load_dependencies();
+
 		$this->version = is_local_host() ? time() : MINIMALIZR_VERSION;
 
 		$this->theme_name      = 'minimalizr';
 		$this->theme_directory = get_template_directory();
 
-		add_action('init', [$this, 'init']);
+		
 		add_action('after_setup_theme', [$this, 'after_setup_theme']);
-
 		add_filter('upload_mimes', [$this, 'add_svg_support']);
 		add_filter('post_class', [$this, 'remove_hentry']);
 
@@ -75,8 +76,15 @@ class Minimalizr {
 		add_filter('big_image_size_threshold', '__return_false');
 	}
 
-	public function init()
+	public function load_dependencies()
 	{
+
+		if(!defined('DY_CORE_FUNCTIONS'))
+		{
+			require_once $this->theme_directory . '/submodules/dy-core/loader.php';
+		}
+
+
 		require $this->theme_directory . '/inc/template-tags.php';
 
 		require $this->theme_directory . '/inc/extras.php';
@@ -91,12 +99,6 @@ class Minimalizr {
 
 		require_once $this->theme_directory . '/inc/minimal-class.php';
 		
-
-		if(!defined('DY_CORE_FUNCTIONS'))
-		{
-			require_once $this->theme_directory . '/submodules/dy-core/loader.php';
-		}
-
 	}
 
 
