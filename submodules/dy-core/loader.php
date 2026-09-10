@@ -4,7 +4,7 @@ if ( !defined( 'WPINC' )) exit;
 
 if(!class_exists('Dy_Core_Init'))
 {
-    define('DY_CORE_VERSION', '1.1.5');
+    define('DY_CORE_VERSION', '1.1.6');
 
     #[AllowDynamicProperties]
     class Dy_Core_Init {

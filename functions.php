@@ -130,8 +130,12 @@ class Minimalizr {
 	}
 	
 
-	function translate_string($attr, $content = '')
+	public function translate_string($attr, $content = ''): string
 	{
+		if ( ! is_array( $attr ) ) {
+			return '';
+		}
+
 		$output = '';
 		$languages = get_languages();
 		$current_language = current_language();
@@ -147,7 +151,7 @@ class Minimalizr {
 			{
 				if(array_key_exists($lang, $attr))
 				{
-					if(!empty($attr[$lang]))
+					if(is_string($attr[$lang]) && !empty($attr[$lang]))
 					{
 						$text = $attr[$lang];
 					}
@@ -155,15 +159,15 @@ class Minimalizr {
 	
 				if(array_key_exists('tag', $attr))
 				{
-					if(!empty($attr['tag']))
+					if ( is_string( $attr['tag'] ) && in_array( strtolower( $attr['tag'] ), [ 'div', 'span', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'em', 'b', 'i', 'small', 'label' ], true ) )
 					{
-						$tag = $attr['tag'];
+						$tag = strtolower( $attr['tag'] );
 					}
 				}
 				
 				if(array_key_exists('class', $attr))
 				{
-					if(!empty($attr['class']))
+					if(is_string($attr['class']) && !empty($attr['class']))
 					{
 						$class_attr = ' class="'.esc_attr($attr['class']).'" '; 
 					}
@@ -416,7 +420,7 @@ class Minimalizr {
 
 
 
-	function ld_json_script() {
+	public function ld_json_script(): void {
 		$ld = apply_filters('minimal_ld_json', []);
 
 		if (empty($ld) || !is_array($ld)) {
@@ -429,10 +433,14 @@ class Minimalizr {
 			if (!is_array($entry)) {
 				continue;
 			}
+			$json = wp_json_encode( $entry, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+			if ( false === $json ) {
+				continue;
+			}
 			$scripts[] = sprintf(
 				'<script type="application/ld+json" id="json_ld_%s">%s</script>',
-				$key,
-				wp_json_encode($entry, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+				esc_attr( (string) $key ),
+				$json
 			);
 		}
 

@@ -42,13 +42,25 @@ function minimalizr_width_html( $post) {
 	</p><?php
 }
 
-function minimalizr_save( $post_id ) {
-	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
-	if ( ! isset( $_POST['minimalizr_nonce'] ) || ! wp_verify_nonce( $_POST['minimalizr_nonce'], '_minimalizr_nonce' ) ) return;
-	if ( ! current_user_can( 'edit_post', $post_id ) ) return;
-	//width
-	if ( isset( $_POST['minimalizr_width'] ) )
-		update_post_meta( $post_id, 'minimalizr_width', esc_attr( $_POST['minimalizr_width'] ) );
+function minimalizr_save( $post_id ): void {
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+	if ( ! isset( $_POST['minimalizr_nonce'] ) || ! is_string( $_POST['minimalizr_nonce'] ) ) {
+		return;
+	}
+	$nonce = sanitize_text_field( wp_unslash( $_POST['minimalizr_nonce'] ) );
+	if ( ! wp_verify_nonce( $nonce, '_minimalizr_nonce' ) || ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+	if ( ! isset( $_POST['minimalizr_width'] ) || ! is_string( $_POST['minimalizr_width'] ) ) {
+		return;
+	}
+	$width = wp_unslash( $_POST['minimalizr_width'] );
+	if ( ! in_array( $width, [ 'fixed', 'full' ], true ) ) {
+		return;
+	}
+	update_post_meta( $post_id, 'minimalizr_width', $width );
 }
 add_action( 'save_post', 'minimalizr_save' );
 

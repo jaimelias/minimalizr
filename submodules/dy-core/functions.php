@@ -254,53 +254,21 @@ function current_language() : string {
 
 if(!function_exists('home_lang')) {
 	function home_lang() : string {
-		static $cache = [];
-		$cache_key = 'wp_core_home_lang';
-		$output = '';
+		static $cache = null;
 
-		if(isset($cache[$cache_key]))
-		{
-			$output = $cache[$cache_key];
-		}
-		else
-		{
-			global $polylang;
-
-			if(isset($polylang))
-			{
-				$path = '';
-				$pll_url = pll_home_url();
-
-				if(!empty($pll_url))
-				{
-					$current_language = pll_current_language();
-					$parsed_url = wp_parse_url($pll_url);
-					$path_arr = array_values(array_filter(explode('/', $path)));
-
-					if(in_array($current_language, $path_arr))
-					{
-						$parsed_url['path'] = $current_language;
-					}
-				}
-
-				$output = $parsed_url['scheme'] . '://'
-					. $parsed_url['host']
-					. (isset($parsed_url['port']) ? ':' . $parsed_url['port'] : '')
-					. (isset($parsed_url['path']) ? $parsed_url['path'] : '')
-					. (isset($parsed_url['query']) ? '?' . $parsed_url['query'] : '')
-					. (isset($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : '');
-
-				$output = normalize_url($output);
-			}
-			else
-			{
-				$output = home_url('/');
-			}
-
-			$cache[$cache_key] = $output;
+		if($cache !== null) {
+			return $cache;
 		}
 
-		return $output;
+		$url = function_exists('pll_home_url')
+			? pll_home_url()
+			: home_url('/');
+
+		if(empty($url)) {
+			$url = home_url('/');
+		}
+
+		return $cache = normalize_url($url);
 	}
 }
 
