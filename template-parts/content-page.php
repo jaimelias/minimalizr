@@ -39,16 +39,16 @@
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 
-	<header class="entry-header">
+	
 	<?php
 
 		if(!in_array('bodyfull', get_body_class()))
 		{
-			echo $title.$description;
+			printf('<header class="entry-header">%s%s</header>', $title, $description);
 		}
 
 	?>
-	</header><!-- .entry-header -->
+	
 
 
 	<div class="<?php echo apply_filters('entry_content_class', 'entry-content'); ?>">

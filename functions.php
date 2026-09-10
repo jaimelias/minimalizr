@@ -45,9 +45,6 @@ class Minimalizr {
 		add_action('wp_enqueue_scripts', [$this, 'minimalizr_scripts'], 0);
 		add_action('enqueue_block_editor_assets', [$this, 'minimalizr_editor_styles'], 0);
 
-		// handle 404 en tags y categorías
-		add_action('template_redirect', [$this, 'handle_404']);
-
 		// shortcodes
 		add_shortcode('obfuscate', [$this, 'hide_string']);
 		add_shortcode('translate_string', [$this, 'translate_string']);
@@ -670,56 +667,6 @@ class Minimalizr {
 		return $x;
 	}
 
-	function handle_404() {
-		// Only act on 404 pages
-		if ( ! is_404() ) {
-			return;
-		}
-
-		// Detect if the request is for a non-existent tag/category
-		$is_term_request =
-			get_query_var('tag') ||
-			get_query_var('category_name') ||
-			get_query_var('cat') ||
-			( get_query_var('taxonomy') === 'category' ) ||
-			( get_query_var('taxonomy') === 'post_tag' );
-
-		if ( ! $is_term_request ) {
-			return;
-		}
-
-		// Get posts page or fallback to home
-		$blog_page_id = (int) get_option('page_for_posts');
-
-		if($blog_page_id === 0) return;
-
-		$target_id = $blog_page_id > 0 ? $blog_page_id : 0;
-
-		global $polylang;
-
-		// Polylang-aware redirect
-		if ( isset( $polylang ) ) {
-			$lang = current_language();
-			if ( $lang ) {
-				$translated = pll_get_post($blog_page_id, $lang);
-				if ( $translated ) {
-					$target_id = (int) $translated;
-				}
-			}
-		}
-
-		// Build final URL
-		$redirect_url = $target_id ? get_permalink($target_id) : home_url('/');
-
-		if ( ! $redirect_url || headers_sent() ) {
-			return;
-		}
-
-		// Permanent redirect
-		wp_safe_redirect($redirect_url, 301);
-		exit;
-	}
-
 	function after_switch_theme() {
 		update_option('thumbnail_size_w', 600);
 		update_option('thumbnail_size_h', 400);
@@ -746,6 +693,5 @@ class Minimalizr {
 }
 
 new Minimalizr();
-
 
 
