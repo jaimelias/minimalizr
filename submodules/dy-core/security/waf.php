@@ -11,32 +11,15 @@ class Dy_WAF {
         add_action('setup_theme', [$this, 'validate_params'], PHP_INT_MIN);
     }
 
-    private function get_server_value(string $key) : string
-    {
-        $value = $_SERVER[$key] ?? '';
-
-        return is_scalar($value)
-            ? (string) $value
-            : '';
-    }
-
     private function reject_param($message) {
 
         $prefix = '[WAF - Bad Request]';
 
         write_log("$prefix = $message", false, true);
 
-		$server_value = static function(string $key): string
-		{
-			$value = $_SERVER[$key] ?? '';
-
-			return is_scalar($value)
-				? (string) $value
-				: '';
-		};
 
 		$request_path = wp_parse_url(
-			$this->get_server_value('REQUEST_URI'),
+			secure_server('REQUEST_URI'),
 			PHP_URL_PATH
 		);
 
