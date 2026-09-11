@@ -12,6 +12,7 @@
     }
   },
   "scripts": {
+      "nvidia-coding-api": "@php submodules/dy-core/.dev/nvidia.php",
       "commit": "./.scripts/commit.sh --app",
       "start": [
           "@start-apache"

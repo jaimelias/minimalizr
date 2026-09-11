@@ -931,5 +931,38 @@ if(!function_exists('is_safe_json')) {
 	}
 }
 
+/**
+ * Sanitizes keywords used in generated package titles.
+ *
+ * @param string $kw Raw keyword value.
+ *
+ * @return string Sanitized keyword value.
+ */
+
+if(!function_exists('dy_sanitize_keywords')) {
+	function dy_sanitize_keywords(string $kw): string
+	{
+		$kw = sanitize_text_field(wp_unslash($kw));
+
+		if ($kw === '') {
+			return '';
+		}
+
+		$kw = strtolower(trim($kw));
+
+		$kw = preg_replace(
+			[
+				'/[^a-zA-Z0-9áéíóúüñÁÉÍÓÚÜÑ\s]/',
+				'/\s+/',
+			],
+			['', ' '],
+			$kw
+		) ?? '';
+
+		return substr($kw, 0, 25);
+	}
+}
+
+
 
 ?>
