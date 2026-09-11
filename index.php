@@ -29,7 +29,7 @@
 		<div id="primary" class="content-area">
 			<main id="main" class="site-main">
 
-			<div class="minimal-site-alert" data-nosnippet><?php do_action('minimal_site_alert'); ?></div>
+			<?php do_action('minimal_site_alert'); ?>
 			
 			<?php if ( have_posts() ) : ?>
 

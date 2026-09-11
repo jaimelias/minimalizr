@@ -10,7 +10,7 @@ get_header(); ?>
 	<section id="primary" class="content-area">
 		<main id="main" class="site-main" role="main">
 
-			<div class="minimal-site-alert" data-nosnippet><?php do_action('minimal_site_alert'); ?></div>
+			<?php do_action('minimal_site_alert'); ?>
 
 			<header class="page-header">
 				<h1 class="page-title"><?php printf( esc_html__( 'Search Results for: %s', 'minimalizr' ), '<span>' . get_search_query() . '</span>' ); ?></h1>
