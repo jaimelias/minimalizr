@@ -14,11 +14,9 @@
   "scripts": {
       "commit": "./.scripts/commit.sh --app",
       "start": [
-          "@start-apache",
-          "@sync-notion"
+          "@start-apache"
       ],
       "start-apache": "/Applications/MAMP/bin/startApache.sh && /Applications/MAMP/bin/startMysql.sh",
-      "sync-notion": "php .scripts/sync-notion.php",
       "lint": "parallel-lint --exclude vendor --exclude node_modules .",
       "phpstan": "phpstan analyse --memory-limit=1G",
       "phpcs": "phpcs",
