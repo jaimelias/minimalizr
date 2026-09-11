@@ -8,7 +8,7 @@
 
 if ( !defined( 'WPINC' ) ) exit;
 
-define('MINIMALIZR_VERSION', '1.5.17');
+define('MINIMALIZR_VERSION', '1.5.18');
 
 
 #[AllowDynamicProperties]
@@ -130,7 +130,7 @@ class Minimalizr {
 	}
 	
 
-	public function translate_string($attr, $content = ''): string
+	public function translate_string($attr): string
 	{
 		if ( ! is_array( $attr ) ) {
 			return '';
@@ -463,6 +463,7 @@ class Minimalizr {
 	
 		global $wp;
 		global $post;
+		$title = '';
 		$description = null;	
 		$url =  get_permalink();
 		
@@ -680,7 +681,7 @@ class Minimalizr {
 	
 	function restrict_image_sizes ($sizes) {
 		$allowed = ['thumbnail', 'medium', 'large'];
-		foreach ($sizes as $key => $value) {
+		foreach (array_keys($sizes) as $key) {
 			if (!in_array($key, $allowed, true)) {
 				unset($sizes[$key]);
 			}

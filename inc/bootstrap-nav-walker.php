@@ -86,8 +86,6 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
     }
 
     public function display_element($element, &$children_elements, $max_depth, $depth, $args, &$output) {
-        if (!$element) return;
-
         $id_field = $this->db_fields['id'];
 
         if (is_object($args[0])) {
