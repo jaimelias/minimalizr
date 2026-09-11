@@ -54,7 +54,6 @@ if ( ! function_exists( '_secure_prepare_sanitizer' ) ) {
 							return (float) $validated;
 					}
 
-				return null;
 			};
 		}
 

@@ -31,7 +31,6 @@ class Dy_WAF {
         }
 
         wp_die(esc_html($message), $prefix, ['response' => 400]);
-        exit;
     }
 
     private function format_param_name($name) {
