@@ -939,27 +939,38 @@ if(!function_exists('is_safe_json')) {
  * @return string Sanitized keyword value.
  */
 
-if(!function_exists('dy_sanitize_keywords')) {
+if (!function_exists('dy_sanitize_keywords')) {
 	function dy_sanitize_keywords(string $kw): string
 	{
-		$kw = sanitize_text_field(wp_unslash($kw));
+		if($kw === '') {
+			return '';
+		}
+
+		static $cache = [];
+		$cache_key = 'dy_sanitize_keywords_' . $kw;
+
+		if(array_key_exists($cache_key, $cache)) {
+			return $cache[$cache_key];
+		}
+
+		$kw = trim(sanitize_text_field(wp_unslash($kw)));
 
 		if ($kw === '') {
 			return '';
 		}
 
-		$kw = strtolower(trim($kw));
+		$kw = strtolower(remove_accents($kw));
 
 		$kw = preg_replace(
 			[
-				'/[^a-zA-Z0-9áéíóúüñÁÉÍÓÚÜÑ\s]/',
+				'/[^a-z0-9\s]/',
 				'/\s+/',
 			],
 			['', ' '],
 			$kw
 		) ?? '';
 
-		return substr($kw, 0, 25);
+		return $cache[$cache_key] = substr($kw, 0, 25);
 	}
 }
 
