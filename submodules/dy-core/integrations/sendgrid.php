@@ -17,37 +17,26 @@ class DY_SendGrid
 		$sendgrid_name = get_option('sendgrid_name');
 		$this->name = ($sendgrid_name) ? $sendgrid_name : get_bloginfo('name');
 		$this->settings_title = 'Mailer Config';
-		$this->init();
-	}
-	
 
-	public function is_enabled()
-	{
-		$output = ($this->web_api_key && is_email($this->email)) ? true : false;
-		
-		return $output;
-	}
 
-	public function init()
-	{
-		add_action('admin_init', array($this, 'settings_init'), 1);
-		add_action('admin_menu', array($this, 'add_settings_page'), 1);
-		
-		if($this->is_enabled()) {
+		add_action('admin_init', [$this, 'settings_init'], 1);
+		add_action('admin_menu', [$this, 'add_settings_page'], 1);
+
+		if($this->web_api_key && is_email($this->email)) {
 			add_filter(
 				'pre_wp_mail',
-				array($this, 'pre_wp_mail'),
+				[$this, 'pre_wp_mail'],
 				10,
 				2
 			);
 		}
 
 	}
-
+	
 	
 	public function add_settings_page()
 	{
-		add_submenu_page( 'options-general.php', $this->settings_title, $this->settings_title, 'manage_options', 'sendgrid-api-mailer', array($this, 'settings_page'));
+		add_submenu_page( 'options-general.php', $this->settings_title, $this->settings_title, 'manage_options', 'sendgrid-api-mailer', [$this, 'settings_page']);
 	}	
 
 	public function settings_page()
