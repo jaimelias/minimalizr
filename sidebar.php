@@ -5,7 +5,7 @@
  * @package minimalizr
  */
 
-$sidebar = array("sidebar-1", "sidebar-2", "sidebar-3", "sidebar-4");
+$sidebar = ["sidebar-1", "sidebar-2", "sidebar-3", "sidebar-4"];
 $gridQuotient = 0;
 
 	for($x = 0; $x < count($sidebar); $x++){

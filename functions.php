@@ -8,7 +8,7 @@
 
 if ( !defined( 'WPINC' ) ) exit;
 
-define('MINIMALIZR_VERSION', '1.5.25');
+define('MINIMALIZR_VERSION', '1.5.26');
 
 
 #[AllowDynamicProperties]
@@ -245,16 +245,16 @@ class Minimalizr {
 	}
 
 
-	function hide_string($arr = '')
-	{
-		if(!is_array($arr) || empty($arr))
+	function hide_string(array $arr = []) : string {
+		
+		if(empty($arr))
 		{
 			return '';
 		}
 
 		if(array_key_exists('email', $arr))
 		{
-			$email = $arr['email'];
+			$email = sanitize_email($arr['email']);
 
 			if(is_email($email))
 			{
@@ -289,15 +289,17 @@ class Minimalizr {
 		$contactPoint['contactType'] = 'customer service';
 		$contactPoint['url'] = get_the_permalink();
 		$contactPoint['sameAs'] = [];
-		$media = array("facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google");
+		$media = ["facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google"];
 		
 		for($x = 0; $x < count($media); $x++)
 		{
-				if(get_theme_mod($media[$x]) != null)
+			$theme_val = get_theme_mod($media[$x]);
+
+				if($theme_val != null)
 				{
-					if(!filter_var(get_theme_mod($media[$x]), FILTER_VALIDATE_URL) === false)
+					if(!filter_var($theme_val, FILTER_VALIDATE_URL) === false)
 					{
-						array_push($contactPoint['sameAs'], get_theme_mod($media[$x]));
+						array_push($contactPoint['sameAs'], $theme_val);
 					}
 				}	
 		}
@@ -325,11 +327,12 @@ class Minimalizr {
 			// --- begin modified block ---
 
 			$post_id = get_queried_object_id();
+			$curr_url = get_permalink();
 
 			$mainEntityOfPage = [
 				'@type' => 'WebPage',
-				'@id' => $home_url . '#webpage',
-				'url' => $home_url,
+				'@id' => $curr_url . '#webpage',
+				'url' => $curr_url,
 			];
 			
 			$author_name = get_the_author_meta( 'display_name', get_post_field( 'post_author', $post_id ) );
@@ -372,11 +375,11 @@ class Minimalizr {
 
 			// Category -> articleSection (first category name if available)
 			$cats = get_the_category($post_id);
-			$article_section = (!empty($cats) && isset($cats[0]->name)) ? $cats[0]->name : null;
+			$article_section = (!empty($cats) && isset($cats[0]->name)) ? $cats[0]->name : '';
 
 			// Tags -> keywords (comma-separated)
 			$tags = wp_get_post_tags($post_id, ['fields' => 'names']);
-			$keywords = !empty($tags) ? implode(', ', array_map('esc_html', $tags)) : null;
+			$keywords = !empty($tags) ? implode(', ', $tags) : '';
 
 			$article = [
 				'@context' => 'http://schema.org',
@@ -397,7 +400,7 @@ class Minimalizr {
 
 
 			if($article_section){
-				$article['articleSection'] = esc_html($article_section);
+				$article['articleSection'] = $article_section;
 			}
 			if($keywords){
 				$article['keywords'] = $keywords;
