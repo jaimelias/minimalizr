@@ -341,9 +341,9 @@ if(!function_exists('load_picker_scripts'))
 if(!function_exists('load_picker_styles'))
 {
 	function load_picker_styles($plugin_dir_url) : void {
-		wp_enqueue_style( 'picker-css', $plugin_dir_url . 'css/picker/default.css', array(), '', 'all' );
-		wp_enqueue_style( 'picker-date-css', $plugin_dir_url . 'css/picker/default.date.css', array(), '', 'all' );
-		wp_enqueue_style( 'picker-time-css', $plugin_dir_url . 'css/picker/default.time.css', array(), '', 'all' );		
+		wp_enqueue_style( 'picker-css', $plugin_dir_url . 'css/picker/default.css', [], '', 'all' );
+		wp_enqueue_style( 'picker-date-css', $plugin_dir_url . 'css/picker/default.date.css', [], '', 'all' );
+		wp_enqueue_style( 'picker-time-css', $plugin_dir_url . 'css/picker/default.time.css', [], '', 'all' );		
 	}
 }
 

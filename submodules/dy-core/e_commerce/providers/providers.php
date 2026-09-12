@@ -226,7 +226,7 @@ class Dynamic_Core_Providers {
 			$parent_terms = get_the_terms($post->post_parent, self::TAXONOMY);
 
 			if(!empty($parent_terms) && !is_wp_error($parent_terms)) {
-				$terms = array_merge($terms, $parent_terms);
+				$terms = [...$terms, ...$parent_terms];
 			}
 		}
 

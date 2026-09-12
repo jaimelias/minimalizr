@@ -119,7 +119,7 @@ if(!function_exists('validate_turnstile')) {
 				&& is_array($data['error-codes'])
 			)
 				? $data['error-codes']
-				: array();
+				: [];
 
 			write_log(array(
 				'message' => 'Turnstile validation failed',

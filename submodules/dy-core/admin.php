@@ -40,9 +40,9 @@ class Dynamic_Core_Admin {
 			load_picker_scripts($this->plugin_dir_url_file, $this->plugin_dir);
 		}
 
-		wp_enqueue_script( 'hyperFormula', 'https://cdn.jsdelivr.net/npm/hyperformula/dist/hyperformula.full.min.js', array('jquery'), '2.6.0', true );
-		wp_enqueue_script( 'handsontableJS', 'https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js', array('jquery', 'hyperFormula'), '14', true );
-		wp_enqueue_script( 'hot', $this->plugin_dir_url_file . 'js/hot.js', array('jquery', 'handsontableJS'), $this->version, true );
+		wp_enqueue_script( 'hyperFormula', 'https://cdn.jsdelivr.net/npm/hyperformula/dist/hyperformula.full.min.js', ['jquery'], '2.6.0', true );
+		wp_enqueue_script( 'handsontableJS', 'https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js', ['jquery', 'hyperFormula'], '14', true );
+		wp_enqueue_script( 'hot', $this->plugin_dir_url_file . 'js/hot.js', ['jquery', 'handsontableJS'], $this->version, true );
 
 	}
 	public function enqueue_styles()
@@ -54,7 +54,7 @@ class Dynamic_Core_Admin {
 			load_picker_styles($this->plugin_dir_url_file);
 		}
 
-		wp_enqueue_style( 'handsontableCss', $this->plugin_dir_url_file . 'css/handsontable.full.min.css', array(), '14', 'all' );
+		wp_enqueue_style( 'handsontableCss', $this->plugin_dir_url_file . 'css/handsontable.full.min.css', [], '14', 'all' );
 	}
 
     public function args()
@@ -68,8 +68,7 @@ class Dynamic_Core_Admin {
 
     public function settings_init()
     {
-		$default_language = default_language();
-		$languages = get_languages();
+	
 
         //settings - company
 		register_setting($this->setting_id, 'dy_email', 'sanitize_email');
@@ -133,6 +132,9 @@ class Dynamic_Core_Admin {
 				'key' => 'dy_phone'
 			]
 		);
+
+		$default_language = default_language();
+		$languages = get_languages();
 
 		for($x = 0; $x < count($languages); $x++)
 		{

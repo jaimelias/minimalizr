@@ -16,10 +16,10 @@ if (!function_exists('cloudflare_ban_ip_address')) {
             }
 
             write_log(
-                array_merge(
-                    ['component' => 'cloudflare'],
-                    $details
-                ),
+                [
+                    'component' => 'cloudflare',
+                    ...$details,
+                ],
                 false,
                 false,
                 $level
@@ -191,8 +191,8 @@ if (!function_exists('cloudflare_ban_ip_address')) {
                 'message' => 'Cloudflare rejected the IP block.',
                 'status'  => $status_code,
                 'errors'  => is_array($body)
-                    ? ($body['errors'] ?? array())
-                    : array(),
+                    ? ($body['errors'] ?? [])
+                    : [],
             ));
 
             return false;

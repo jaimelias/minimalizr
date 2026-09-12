@@ -43,7 +43,7 @@ class Dynamic_Core_WP_JSON
     {
         $site_time = get_site_time();
 
-        $args = apply_filters('dy_core_wp_json_args', array());
+        $args = apply_filters('dy_core_wp_json_args', []);
         
         $args['dy_nonce'] = wp_create_nonce('dy_nonce');
 

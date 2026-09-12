@@ -105,14 +105,12 @@ if(!class_exists('dy_textarea_abstract')) {
 
 			$stored_value = static::get_value($args);
 
-			$args = array_merge(
-				$defaults,
-				$args,
-				[
-					'name' => $key,
-					'id'   => $key,
-				]
-			);
+			$args = [
+				...$defaults,
+				...$args,
+				'name' => $key,
+				'id'   => $key,
+			];
 
 			$attributes = [];
 			$allowed_keys = self::get_allowed_keys();

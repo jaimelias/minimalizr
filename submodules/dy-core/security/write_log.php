@@ -10,7 +10,8 @@ if ( ! function_exists('write_log')) {
 			string $replacement = '[REDACTED]'
 		): mixed
 		{
-			$sensitive_params = array_merge([
+			
+			$sensitive_params = [
 				'CCNum',
 				'ExpMonth',
 				'ExpYear',
@@ -35,8 +36,9 @@ if ( ! function_exists('write_log')) {
 				'cookie',
 				'set-cookie',
 				'nonce',
-				'_wpnonce'
-			], $sensitive_params);
+				'_wpnonce',
+				...$sensitive_params,
+			];
 
 			$sensitive_params = array_fill_keys(
 				array_map(

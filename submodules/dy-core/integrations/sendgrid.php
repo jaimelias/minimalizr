@@ -215,7 +215,7 @@ class DY_SendGrid
 			* Do not glob and delete every temp_* file in the uploads directory.
 			*/
 			$this->cleanup_owned_temp_attachments(
-				isset($atts['attachments']) ? $atts['attachments'] : array()
+				isset($atts['attachments']) ? $atts['attachments'] : []
 			);
 		}
 	}
@@ -223,16 +223,16 @@ class DY_SendGrid
 	private function mail_data_defaults($atts)
 	{
 		return array(
-			'to'          => isset($atts['to']) ? $atts['to'] : array(),
+			'to'          => isset($atts['to']) ? $atts['to'] : [],
 			'subject'     => isset($atts['subject']) ? $atts['subject'] : '',
 			'message'     => isset($atts['message']) ? $atts['message'] : '',
-			'headers'     => isset($atts['headers']) ? $atts['headers'] : array(),
+			'headers'     => isset($atts['headers']) ? $atts['headers'] : [],
 			'attachments' => isset($atts['attachments'])
 				? $atts['attachments']
-				: array(),
+				: [],
 			'embeds'      => isset($atts['embeds'])
 				? $atts['embeds']
-				: array(),
+				: [],
 		);
 	}
 
@@ -255,22 +255,22 @@ class DY_SendGrid
 	private function build_sendgrid_payload($atts)
 	{
 		$headers = $this->parse_mail_headers(
-			isset($atts['headers']) ? $atts['headers'] : array()
+			isset($atts['headers']) ? $atts['headers'] : []
 		);
 
 		/*
 		* Recipients supplied by the individual wp_mail() call.
 		*/
 		$mail_to = $this->parse_addresses(
-			isset($atts['to']) ? $atts['to'] : array()
+			isset($atts['to']) ? $atts['to'] : []
 		);
 
 		$mail_cc = $this->parse_addresses(
-			isset($headers['cc']) ? $headers['cc'] : array()
+			isset($headers['cc']) ? $headers['cc'] : []
 		);
 
 		$mail_bcc = $this->parse_addresses(
-			isset($headers['bcc']) ? $headers['bcc'] : array()
+			isset($headers['bcc']) ? $headers['bcc'] : []
 		);
 
 		/*
@@ -292,15 +292,15 @@ class DY_SendGrid
 		* Append configured business recipients to the corresponding
 		* recipients from wp_mail().
 		*/
-		$to = array_merge($mail_to, $config_to);
-		$cc = array_merge($mail_cc, $config_cc);
-		$bcc = array_merge($mail_bcc, $config_bcc);
+		$to  = [...$mail_to, ...$config_to];
+		$cc  = [...$mail_cc, ...$config_cc];
+		$bcc = [...$mail_bcc, ...$config_bcc];
 
 		/*
 		* SendGrid rejects the same email address appearing more than once
 		* in a personalization. Give roles the precedence To → CC → BCC.
 		*/
-		$seen = array();
+		$seen = [];
 
 		$to = $this->unique_addresses($to, $seen);
 		$cc = $this->unique_addresses($cc, $seen);
@@ -378,7 +378,7 @@ class DY_SendGrid
 		$reply_to = $this->parse_addresses(
 			isset($headers['reply-to'])
 				? $headers['reply-to']
-				: array()
+				: []
 		);
 
 		if (1 === count($reply_to)) {
@@ -388,7 +388,7 @@ class DY_SendGrid
 		}
 
 		$attachments = $this->build_sendgrid_attachments(
-			isset($atts['attachments']) ? $atts['attachments'] : array(),
+			isset($atts['attachments']) ? $atts['attachments'] : [],
 			'attachment'
 		);
 
@@ -397,14 +397,14 @@ class DY_SendGrid
 		}
 
 		$embeds = $this->build_sendgrid_embeds(
-			isset($atts['embeds']) ? $atts['embeds'] : array()
+			isset($atts['embeds']) ? $atts['embeds'] : []
 		);
 
 		if (is_wp_error($embeds)) {
 			return $embeds;
 		}
 
-		$attachments = array_merge($attachments, $embeds);
+		$attachments = [...$attachments, ...$embeds];
 
 		if (!empty($attachments)) {
 			$payload['attachments'] = $attachments;
@@ -416,14 +416,14 @@ class DY_SendGrid
 	private function parse_mail_headers($headers)
 	{
 		if (empty($headers)) {
-			return array();
+			return [];
 		}
 
 		if (!is_array($headers)) {
 			$headers = preg_split('/\r\n|\r|\n/', (string) $headers);
 		}
 
-		$parsed = array();
+		$parsed = [];
 
 		foreach ($headers as $key => $line) {
 			if (is_string($key)) {
@@ -445,7 +445,7 @@ class DY_SendGrid
 			}
 
 			if (!isset($parsed[$name])) {
-				$parsed[$name] = array();
+				$parsed[$name] = [];
 			}
 
 			$parsed[$name][] = $value;
@@ -482,7 +482,7 @@ class DY_SendGrid
 
 	private function unique_addresses($addresses, &$seen)
 	{
-		$output = array();
+		$output = [];
 
 		foreach ($addresses as $address) {
 			if (
@@ -510,7 +510,7 @@ class DY_SendGrid
 		$disposition = 'attachment'
 	) {
 		if (empty($attachments)) {
-			return array();
+			return [];
 		}
 
 		if (is_string($attachments)) {
@@ -532,7 +532,7 @@ class DY_SendGrid
 			);
 		}
 
-		$output = array();
+		$output = [];
 
 		foreach ($attachments as $filename => $path) {
 			if (!is_string($path)) {
@@ -622,7 +622,7 @@ class DY_SendGrid
 	private function build_sendgrid_embeds($embeds)
 	{
 		if (empty($embeds)) {
-			return array();
+			return [];
 		}
 
 		if (is_string($embeds)) {
@@ -637,7 +637,7 @@ class DY_SendGrid
 			);
 		}
 
-		$output = array();
+		$output = [];
 
 		foreach ($embeds as $key => $path) {
 			if (!is_string($path)) {
@@ -783,7 +783,7 @@ class DY_SendGrid
 	private function normalize_attachment_paths($attachments)
 	{
 		if (empty($attachments)) {
-			return array();
+			return [];
 		}
 
 		if (is_string($attachments)) {
@@ -792,10 +792,10 @@ class DY_SendGrid
 				str_replace(array("\r\n", "\r"), "\n", $attachments)
 			);
 		} elseif (!is_array($attachments)) {
-			return array();
+			return [];
 		}
 
-		$paths = array();
+		$paths = [];
 
 		foreach ($attachments as $path) {
 			if (!is_string($path)) {
@@ -836,14 +836,14 @@ class DY_SendGrid
 	private function parse_addresses($addresses)
 	{
 		if (empty($addresses)) {
-			return array();
+			return [];
 		}
 
 		$input = is_array($addresses)
 			? $addresses
 			: array($addresses);
 
-		$output = array();
+		$output = [];
 
 		foreach ($input as $value) {
 			if (!is_string($value)) {

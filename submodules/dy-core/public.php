@@ -60,7 +60,7 @@ class Dynamic_Core_Public {
 
         if(!empty($sentry_api_key))
         {
-            wp_enqueue_script('sentry-lazy-load', 'https://js.sentry-cdn.com/'.esc_html($sentry_api_key).'.min.js', array(), '', false);
+            wp_enqueue_script('sentry-lazy-load', 'https://js.sentry-cdn.com/'.esc_html($sentry_api_key).'.min.js', [], '', false);
             wp_add_inline_script('sentry-lazy-load', $this->sentry(), 'after');
         }
 
@@ -69,7 +69,7 @@ class Dynamic_Core_Public {
             wp_enqueue_script(
                 'turnstile-compat',
                 'https://challenges.cloudflare.com/turnstile/v0/api.js',
-                array(),
+                [],
                 'async_defer',
                 false
             );
@@ -230,7 +230,7 @@ class Dynamic_Core_Public {
         $events = isset($GLOBALS['dy_gtag_server_events'])
             && is_array($GLOBALS['dy_gtag_server_events'])
                 ? array_values($GLOBALS['dy_gtag_server_events'])
-                : array();
+                : [];
 
         if(empty($events))
         {
@@ -264,7 +264,7 @@ class Dynamic_Core_Public {
             )
         );
 
-        $commands = array();
+        $commands = [];
 
         foreach($events as $event)
         {

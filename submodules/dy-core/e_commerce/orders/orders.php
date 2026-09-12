@@ -138,13 +138,11 @@ class Dynamic_Core_Orders {
 			wp_die('Post Type Not Set: orders.php -> save_order');
 		}
 
-		$metadata = array_merge(
-			array(
-				'unique_id' => $unique_id,
-				'booking_query' => $this->get_booking_query($data)
-			), 
-			$data
-		);
+		$metadata = [
+			'unique_id'     => $unique_id,
+			'booking_query' => $this->get_booking_query($data),
+			...$data,
+		];
 
 		add_post_meta($order_id, 'dy_order_metadata', json_encode($metadata, JSON_UNESCAPED_UNICODE), true);
 		add_post_meta($order_id, 'dy_order_status', $order_status, true);

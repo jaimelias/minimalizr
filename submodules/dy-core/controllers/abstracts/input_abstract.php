@@ -120,18 +120,14 @@ if(!class_exists('dy_input_abstract')) {
 			
 			$stored_value = static::get_value($args);
 
-			$args = array_merge(
-				[
-					'type'  => 'text',
-					'value' => $stored_value,
-				],
-				$defaults,
-				$args,
-				[
-					'name' => $key,
-					'id'   => $key,
-				]
-			);
+			$args = [
+				'type'  => 'text',
+				'value' => $stored_value,
+				...$defaults,
+				...$args,
+				'name'  => $key,
+				'id'    => $key,
+			];
 
 
 			if($args['type'] === 'checkbox' && !array_key_exists('checked', $args)) {

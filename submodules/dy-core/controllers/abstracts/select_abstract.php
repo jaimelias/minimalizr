@@ -134,13 +134,11 @@ if(!class_exists('dy_select_abstract')) {
 
             $stored_value =  static::get_value($args);
 
-            $args = array_merge(
-                $args,
-                [
-                    'name' => $key,
-                    'id'   => $key,
-                ]
-            );
+            $args = [
+                ...$args,
+                'name' => $key,
+                'id'   => $key,
+            ];
 
             $attributes = [];
             $allowed_keys = self::get_allowed_keys();

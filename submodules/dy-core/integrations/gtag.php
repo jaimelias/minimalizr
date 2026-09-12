@@ -37,10 +37,10 @@ if(!function_exists('dy_gtag_queue_server_event'))
 		$transaction_id,
 		$value,
 		$currency,
-		$items = array()
+		$items = []
 	)
 	{
-		$allowed_events = array('purchase', 'generate_lead');
+		$allowed_events = ['purchase', 'generate_lead'];
 		$event_name = sanitize_key($event_name);
 		$transaction_id = trim((string) $transaction_id);
 		$currency = strtoupper(trim((string) $currency));
@@ -75,7 +75,7 @@ if(!function_exists('dy_gtag_queue_server_event'))
 			|| !is_array($GLOBALS['dy_gtag_server_events'])
 		)
 		{
-			$GLOBALS['dy_gtag_server_events'] = array();
+			$GLOBALS['dy_gtag_server_events'] = [];
 		}
 
 		/*
