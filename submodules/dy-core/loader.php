@@ -4,7 +4,7 @@ if ( !defined( 'WPINC' )) exit;
 
 if(!class_exists('Dy_Core_Init'))
 {
-    define('DY_CORE_VERSION', '1.1.15');
+    define('DY_CORE_VERSION', '1.1.16');
 
     #[AllowDynamicProperties]
     class Dy_Core_Init {
@@ -41,6 +41,7 @@ if(!class_exists('Dy_Core_Init'))
             require_once $this->plugin_dir_path . 'integrations/cloudflare-turnstile.php';
             require_once $this->plugin_dir_path . 'integrations/sitemap.php';
             require_once $this->plugin_dir_path . 'integrations/handsontable.php';
+            require_once $this->plugin_dir_path . 'integrations/parsedown.php';
 
             //ai training data
             require_once $this->plugin_dir_path . 'training-data/concatenate_object_to_text.php';
