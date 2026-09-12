@@ -70,7 +70,7 @@ if(!class_exists('dy_textarea_abstract')) {
 			}
 
 			if(!array_key_exists('key', $args)) {
-				write_log('Param "args" must contain a "key" in dy_input_option.');
+				write_log('Param "args" must contain a "key" in dy_textarea_abstract.');
 				return '';
 			}
 

@@ -2,6 +2,23 @@
 
 if (!defined('WPINC')) exit;
 
+if(!function_exists('get_turnstile_site_key')) {
+	function get_turnstile_site_key() : string {
+		return !is_local_host()  
+		? dy_get_option('dy_cf_turnstile_site_key') 
+		: '1x00000000000000000000AA';
+	}
+}
+
+if(!function_exists('get_turnstile_secret_key')) {
+	function get_turnstile_secret_key() : string {
+		return !is_local_host()  
+		? dy_get_option('dy_cf_turnstile_secret_key') 
+		: '1x0000000000000000000000000000000AA';
+	}
+}
+
+
 if(!function_exists('validate_turnstile')) {
 	
 	function validate_turnstile()
@@ -45,7 +62,7 @@ if(!function_exists('validate_turnstile')) {
 			}
 		}
 
-		$secret_key = get_option('dy_cf_turnstile_secret_key');
+		$secret_key = get_turnstile_secret_key();
 
 		if(empty($secret_key))
 		{

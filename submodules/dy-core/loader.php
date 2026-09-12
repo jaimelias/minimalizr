@@ -4,7 +4,7 @@ if ( !defined( 'WPINC' )) exit;
 
 if(!class_exists('Dy_Core_Init'))
 {
-    define('DY_CORE_VERSION', '1.1.18');
+    define('DY_CORE_VERSION', '1.1.19');
 
     #[AllowDynamicProperties]
     class Dy_Core_Init {
@@ -23,6 +23,7 @@ if(!class_exists('Dy_Core_Init'))
             require_once $this->plugin_dir_path . 'errors-page.php';
             require_once $this->plugin_dir_path . 'security/queries.php';
             require_once $this->plugin_dir_path . 'security/write_log.php';
+            require_once $this->plugin_dir_path . 'security/get-option.php';
             require_once $this->plugin_dir_path . 'security/ip-utilities.php';
             require_once $this->plugin_dir_path . 'security/server.php';
             require_once $this->plugin_dir_path . 'security/waf.php';
