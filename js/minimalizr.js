@@ -73,38 +73,92 @@ const toggleDropdownMenu = () => {
 
 };
 
-
-const dyAlert = (message = '', button = '') => {
-
+/**
+ * Displays a modal alert and resolves when the alert is closed.
+ *
+ * @param {*} message Alert message displayed as plain text.
+ * @param {string|false|null} button Button label, or a falsy value to hide it.
+ * @param {Function|null} btnCallback Callback executed when the button closes the alert.
+ * @returns {Promise<void>} Resolves when the alert begins closing.
+ */
+const dyAlert = (message = 'ERROR', button = 'OK', btnCallback = null) => {
 	return new Promise((resolve) => {
 		const $overlay = jQuery('.alert-overlay');
-
-		const buttonTag = btn => `<button type="button" class="pure-button rounded"><span class="dashicons dashicons-yes-alt"></span> ${btn}</button>`
+		const $previousFocus = jQuery(document.activeElement);
 
 		const $modal = jQuery(`
-		<div class="dy-alert" role="alertdialog" aria-modal="true">
-			<p class="dy-alert__message"></p>
-			${button && typeof button === 'string' ? buttonTag(button) : ''}
-		</div>
+			<div
+				class="dy-alert"
+				role="alertdialog"
+				aria-modal="true"
+				aria-label="Alert"
+				tabindex="-1"
+			>
+				<p class="dy-alert__message"></p>
+			</div>
 		`);
 
 		$modal.find('.dy-alert__message').text(message);
 
+		if (button && typeof button === 'string') {
+			const $button = jQuery('<button>', {
+				type: 'button',
+				class: 'pure-button rounded',
+			});
+
+			$button
+				.append(
+					jQuery('<span>', {
+						class: 'dashicons dashicons-yes-alt',
+					})
+				)
+				.append(document.createTextNode(` ${button}`));
+
+			$modal.append($button);
+		}
+
+		let closed = false;
+
 		const close = () => {
+			if (closed) {
+				return;
+			}
+
+			closed = true;
+
+			$overlay.off('click', close);
+
 			$modal.removeClass('dy-alert--visible');
 			$overlay.removeClass('alert-overlay--visible');
+
 			setTimeout(() => $modal.remove(), 150);
+
+			$previousFocus.trigger('focus');
+
 			resolve();
 		};
 
-		$modal.find('.pure-button').on('click', close);
+		const buttonClose = () => {
+			close();
+
+			if (typeof btnCallback === 'function') {
+				btnCallback();
+			}
+		};
+
+		$modal.find('.pure-button').one('click', buttonClose);
 		$overlay.one('click', close);
 
 		jQuery('body').append($modal);
+
 		$overlay.addClass('alert-overlay--visible');
 
-		requestAnimationFrame(() => $modal.addClass('dy-alert--visible'));
+		requestAnimationFrame(() => {
+			$modal.addClass('dy-alert--visible');
+		});
 
-		$modal.find('.pure-button').trigger('focus');
+		const $button = $modal.find('.pure-button');
+
+		($button.length ? $button : $modal).trigger('focus');
 	});
 };
