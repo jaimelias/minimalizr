@@ -87,7 +87,7 @@ class dy_errors {
 		$title = is_string($title) ? $title : '';
 
 		return self::has_errors()
-            ? __('Error')
+            ? __('Error', 'dycore')
             : $title;
     }
 
@@ -95,7 +95,7 @@ class dy_errors {
 		$title = is_string($title) ? $title : '';
 
 		return self::has_errors() && in_the_loop()
-            ? __('Error')
+            ? __('Error', 'dycore')
             : $title;
     }
 

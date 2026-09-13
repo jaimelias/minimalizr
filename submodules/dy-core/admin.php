@@ -115,14 +115,14 @@ class Dynamic_Core_Admin {
 	
 
         //section
-		add_settings_section($this->section_company, __('Company'), '', $this->page_company);
-		add_settings_section($this->section_alerts, __('Alerts'), '', $this->page_alerts);
-		add_settings_section($this->section_dev, __('Dev'), '', $this->page_dev);
-		add_settings_section($this->section_google_analytics, __('Google Analytics'), '', $this->page_google);
-		add_settings_section($this->section_google_ads, __('Google Ads'), '', $this->page_google);
-		add_settings_section($this->section_facebook, __('Facebook'), '', $this->page_facebook);
-		add_settings_section($this->section_cloudflare_turnstile, __('Cloudflare Turnstile'), '', $this->page_cloudflare);
-		add_settings_section($this->section_cloudflare_api, __('Cloudflare API'), '', $this->page_cloudflare);
+		add_settings_section($this->section_company, __('Company', 'dycore'), '', $this->page_company);
+		add_settings_section($this->section_alerts, __('Alerts', 'dycore'), '', $this->page_alerts);
+		add_settings_section($this->section_dev, __('Dev', 'dycore'), '', $this->page_dev);
+		add_settings_section($this->section_google_analytics, __('Google Analytics', 'dycore'), '', $this->page_google);
+		add_settings_section($this->section_google_ads, __('Google Ads', 'dycore'), '', $this->page_google);
+		add_settings_section($this->section_facebook, __('Facebook', 'dycore'), '', $this->page_facebook);
+		add_settings_section($this->section_cloudflare_turnstile, __('Cloudflare Turnstile', 'dycore'), '', $this->page_cloudflare);
+		add_settings_section($this->section_cloudflare_api, __('Cloudflare API', 'dycore'), '', $this->page_cloudflare);
 
         //fields
 
@@ -130,7 +130,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field( 
 			'dy_email', 
-			esc_html(__( 'Email')), 
+			esc_html(__( 'Email', 'dycore')), 
 			['dy_input_option', 'email'], 
 			$this->page_company, 
 			$this->section_company,
@@ -141,7 +141,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field( 
 			'dy_phone', 
-			esc_html(__('Phone')), 
+			esc_html(__('Phone', 'dycore')), 
 			['dy_input_option', 'text'], 
 			$this->page_company, 
 			$this->section_company,
@@ -164,7 +164,7 @@ class Dynamic_Core_Admin {
 
 			add_settings_field( 
 				'dy_whatsapp'.$lang_suffix, 
-				esc_html(__( 'Whatsapp').' '. strtoupper($lang)), 
+				esc_html(__( 'Whatsapp', 'dycore').' '. strtoupper($lang)), 
 				['dy_input_option', 'number'], 
 				$this->page_company, 
 				$this->section_company,
@@ -179,7 +179,7 @@ class Dynamic_Core_Admin {
 
 			add_settings_field( 
 				'dy_site_alert'.$lang_suffix, 
-				esc_html(__( 'Site Alert').' '. strtoupper($lang)), 
+				esc_html(__( 'Site Alert', 'dycore').' '. strtoupper($lang)), 
 				['dy_textarea_option', 'text'], 
 				$this->page_alerts, 
 				$this->section_alerts,
@@ -192,7 +192,7 @@ class Dynamic_Core_Admin {
 			);
 			add_settings_field( 
 				'dy_footer_alert'.$lang_suffix, 
-				esc_html(__( 'Footer Alert').' '. strtoupper($lang)), 
+				esc_html(__( 'Footer Alert', 'dycore').' '. strtoupper($lang)), 
 				['dy_textarea_option', 'text'],
 				$this->page_alerts, 
 				$this->section_alerts,
@@ -210,7 +210,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field( 
 			'dy_address', 
-			esc_html(__( 'Address')), 
+			esc_html(__( 'Address', 'dycore')), 
 			['dy_input_option', 'text'], 
 			$this->page_company, 
 			$this->section_company,
@@ -221,7 +221,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field( 
 			'dy_tax_id', 
-			esc_html(__( 'Tax Identification ID')), 
+			esc_html(__( 'Tax Identification ID', 'dycore')), 
 			['dy_input_option', 'text'], 
 			$this->page_company, 
 			$this->section_company,
@@ -233,7 +233,7 @@ class Dynamic_Core_Admin {
 		
 		add_settings_field( 
 			'dy_cf_turnstile_site_key', 
-			esc_html(__( 'Cloudflare Turnstile Site Key')), 
+			esc_html(__( 'Cloudflare Turnstile Site Key', 'dycore')), 
 			['dy_input_option', 'text'], 
 			$this->page_cloudflare, 
 			$this->section_cloudflare_turnstile,
@@ -244,7 +244,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field( 
 			'dy_cf_turnstile_secret_key', 
-			esc_html(__( 'Cloudflare Turnstile Secret Key')), 
+			esc_html(__( 'Cloudflare Turnstile Secret Key', 'dycore')), 
 			['dy_input_option', 'text'], 
 			$this->page_cloudflare, 
 			$this->section_cloudflare_turnstile,
@@ -256,7 +256,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field( 
 			'dy_cloudflare_account_id', 
-			esc_html(__( 'Cloudflare Account ID')), 
+			esc_html(__( 'Cloudflare Account ID', 'dycore')), 
 			['dy_input_option', 'text'], 
 			$this->page_cloudflare, 
 			$this->section_cloudflare_api,
@@ -267,7 +267,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field( 
 			'dy_cloudflare_api_token', 
-			esc_html(__( 'Cloudflare API Token')), 
+			esc_html(__( 'Cloudflare API Token', 'dycore')), 
 			['dy_input_option', 'text'], 
 			$this->page_cloudflare, 
 			$this->section_cloudflare_api,
@@ -278,7 +278,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field( 
 			'dy_cloudflare_pdf_api_token', 
-			esc_html(__( 'Cloudflare PDF API Token')), 
+			esc_html(__( 'Cloudflare PDF API Token', 'dycore')), 
 			['dy_input_option', 'text'], 
 			$this->page_cloudflare, 
 			$this->section_cloudflare_api,
@@ -290,7 +290,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field( 
 			'dy_sentry_api_key', 
-			esc_html(__( 'Sentry API Key')), 
+			esc_html(__( 'Sentry API Key', 'dycore')), 
 			['dy_input_option', 'text'], 
 			$this->page_dev, 
 			$this->section_dev,
@@ -301,7 +301,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field( 
 			'dy_gtag_tracking_id', 
-			__( 'Google - Analytics GA4 (GTAG)'), 
+			__( 'Google - Analytics GA4 (GTAG)', 'dycore'), 
 			['dy_input_option', 'text'], 
 			$this->page_google, 
 			$this->section_google_analytics,
@@ -313,7 +313,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field( 
 			'dy_bidding_conversion_percentage', 
-			__( 'Google Adds Bidding Conversion Percentage'),
+			__( 'Google Adds Bidding Conversion Percentage', 'dycore'),
 			['dy_input_option', 'percentage'], 
 			$this->page_google, 
 			$this->section_google_ads,
@@ -362,7 +362,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field( 
 			'dy_facebook_pixel_id', 
-			__( 'Facebook Pixel ID'), 
+			__( 'Facebook Pixel ID', 'dycore'), 
 			['dy_input_option', 'text'],
 			$this->page_facebook, 
 			$this->section_facebook,
@@ -384,12 +384,12 @@ class Dynamic_Core_Admin {
         );
 
 		$pages = [
-			$this->page_company => __('Company'),
-			$this->page_alerts => __('Alerts'),
-			$this->page_dev => __('Dev'),
-			$this->page_google => __('Google'),
-			$this->page_facebook => __('Facebook'),
-			$this->page_cloudflare => __('Cloudflare'),
+			$this->page_company => __('Company', 'dycore'),
+			$this->page_alerts => __('Alerts', 'dycore'),
+			$this->page_dev => __('Dev', 'dycore'),
+			$this->page_google => __('Google', 'dycore'),
+			$this->page_facebook => __('Facebook', 'dycore'),
+			$this->page_cloudflare => __('Cloudflare', 'dycore'),
 		];
 
 		foreach($pages as $page_slug => $page_title) {

@@ -59,20 +59,20 @@ class Dynamic_Core_Providers {
 
 	public function register_taxonomies() {
 
-		$singular = __('Provider');
-		$plural = __('Providers');
+		$singular = __('Provider', 'dycore');
+		$plural = __('Providers', 'dycore');
 
 		$labels = [
 			'name'              => $plural,
 			'singular_name'     => $singular,
-			'search_items'      => sprintf(__('Search %s'), $plural),
-			'all_items'         => sprintf(__('All %s'), $plural),
-			'parent_item'       => sprintf(__('Parent %s'), $singular),
-			'parent_item_colon' => sprintf(__('Parent %s'), $singular),
-			'edit_item'         => sprintf(__('Edit %s'), $singular),
-			'update_item'       => sprintf(__('Update %s'), $singular),
-			'add_new_item'      => sprintf(__('Add New %s'), $singular),
-			'new_item_name'     => sprintf(__('New %s Name'), $singular),
+			'search_items'      => sprintf(__('Search %s', 'dycore'), $plural),
+			'all_items'         => sprintf(__('All %s', 'dycore'), $plural),
+			'parent_item'       => sprintf(__('Parent %s', 'dycore'), $singular),
+			'parent_item_colon' => sprintf(__('Parent %s', 'dycore'), $singular),
+			'edit_item'         => sprintf(__('Edit %s', 'dycore'), $singular),
+			'update_item'       => sprintf(__('Update %s', 'dycore'), $singular),
+			'add_new_item'      => sprintf(__('Add New %s', 'dycore'), $singular),
+			'new_item_name'     => sprintf(__('New %s Name', 'dycore'), $singular),
 			'menu_name'         => sprintf('🤖 %s', $plural),
 		];
 
@@ -126,14 +126,14 @@ class Dynamic_Core_Providers {
 
 		$this->render_form_row(
 			self::META_OUTSTANDING_BALANCE,
-			__('Charge balance directy to customer?'),
+			__('Charge balance directy to customer?', 'dycore'),
 			static function() use ($term_id) {
 				dy_select_term_meta::custom([
 					'term_id' => $term_id,
 					'key'     => self::META_OUTSTANDING_BALANCE,
 					'options' => [
-						'0' => __('No'),
-						'1' => __('Yes'),
+						'0' => __('No', 'dycore'),
+						'1' => __('Yes', 'dycore'),
 					],
 				]);
 			}
@@ -147,7 +147,7 @@ class Dynamic_Core_Providers {
 
 		$this->render_form_row(
 			self::META_LANGUAGE,
-			__('Provider Language'),
+			__('Provider Language', 'dycore'),
 			static function() use ($term_id, $language_options) {
 				dy_select_term_meta::custom([
 					'term_id' => $term_id,
@@ -159,7 +159,7 @@ class Dynamic_Core_Providers {
 
 		$this->render_form_row(
 			self::META_WHATSAPP,
-			__('Whatsapp'),
+			__('Whatsapp', 'dycore'),
 			static function() use ($term_id) {
 				dy_input_term_meta::number([
 					'term_id' => $term_id,
@@ -170,7 +170,7 @@ class Dynamic_Core_Providers {
 
 		$this->render_form_row(
 			self::META_EMAILS,
-			__('Provider Emails'),
+			__('Provider Emails', 'dycore'),
 			static function() use ($term_id) {
 				dy_textarea_term_meta::text([
 					'term_id' => $term_id,
@@ -178,7 +178,7 @@ class Dynamic_Core_Providers {
 					'rows'    => 10,
 				]);
 			},
-			__('1 email per line. Up to 10 emails maximum.')
+			__('1 email per line. Up to 10 emails maximum.', 'dycore')
 		);
 	}
 

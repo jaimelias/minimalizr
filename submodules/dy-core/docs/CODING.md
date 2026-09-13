@@ -6,3 +6,9 @@
 - For Javascript preferences read `JS.md`.
 - For WordPress specific inquiries read `WORDPRESS.md`.
 - For Polylang specific inquiries read `POLYLANG.md`.
+
+## Keep final responses concise.
+- files changed
+- behavioral change
+- validation result
+Do not reproduce code that is already present in the diff.

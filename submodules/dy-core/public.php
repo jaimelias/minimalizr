@@ -442,7 +442,7 @@ class Dynamic_Core_Public {
                 <div id="dy-whatsapp-modal-content">
                     <span id="dy-whatsapp-modal-close">&times;</span>
                     <div id="dy-whatsapp-qrcode"></div>
-                    <div id="dy-whatsapp-link" class="pure-button small"><a href="#" target="_blank" rel="noopener noreferrer"><?php echo esc_html__('Web Whatsapp'); ?></a></div>
+                    <div id="dy-whatsapp-link" class="pure-button small"><a href="#" target="_blank" rel="noopener noreferrer"><?php echo esc_html__('Web Whatsapp', 'dycore'); ?></a></div>
                 </div>
             </div>
 
@@ -533,7 +533,9 @@ class Dynamic_Core_Public {
 
         $args = [
             'turnstileSiteKey' => get_turnstile_site_key(),
-            'translations' => []
+            'translations' => [
+                'contact_support' => __('Contact Support', 'dycore')
+            ]
         ];
         
         return sprintf('const turnstileArgs=%s;', wp_json_encode($args));

@@ -49,7 +49,7 @@ if(!function_exists('validate_turnstile')) {
 		} else {
 			if(strlen($token) > 2048) {
 
-				dy_errors::add(__('Invalid Turnstile response: token length > 2048.'));
+				dy_errors::add(__('Invalid Turnstile response: token length > 2048.', 'dycore'));
 
 				return false;
 			}
@@ -61,7 +61,7 @@ if(!function_exists('validate_turnstile')) {
 		{
 			write_log('Turnstile: missing secret key');
 
-			dy_errors::add(__('Turnstile is not configured.'), 500);
+			dy_errors::add(__('Turnstile is not configured.', 'dycore'), 500);
 
 			return false;
 		}
@@ -91,7 +91,7 @@ if(!function_exists('validate_turnstile')) {
                 'ERROR'
             );
 
-			dy_errors::add(__('Unable to validate Turnstile.'), 502);
+			dy_errors::add(__('Unable to validate Turnstile.', 'dycore'), 502);
 
 			return false;
 		}
@@ -101,8 +101,8 @@ if(!function_exists('validate_turnstile')) {
         $decoded = wp_remote_retrieve_body($response);
 
         if(!is_safe_json($decoded)) {
-            write_log(__('Invalid json string in validate_turnstile.'));
-            dy_errors::add(__('Unable to validate Turnstile.'), 502);
+            write_log(__('Invalid json string in validate_turnstile.', 'dycore'));
+            dy_errors::add(__('Unable to validate Turnstile.', 'dycore'), 502);
             return false;
         }
         
@@ -169,7 +169,7 @@ if(!function_exists('validate_turnstile')) {
             ) ? 502 : 400;
 
 			dy_errors::add(
-                __('Turnstile validation failed.'), 
+                __('Turnstile validation failed.', 'dycore'), 
                 $http_status
             );
 

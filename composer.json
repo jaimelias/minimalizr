@@ -14,8 +14,10 @@
   "scripts": {
       "commit": "./.scripts/commit.sh --app",
       "start": [
-          "@start-apache"
+          "@start-apache",
+          "@map"
       ],
+      "map" : "php .scripts/map.php",
       "start-apache": "/Applications/MAMP/bin/startApache.sh && /Applications/MAMP/bin/startMysql.sh",
       "lint": "parallel-lint --exclude vendor --exclude node_modules .",
       "phpstan": "phpstan analyse --memory-limit=1G",

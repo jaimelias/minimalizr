@@ -20,11 +20,11 @@ class Dynamic_Core_Orders {
 		];
 		
 		$valid_order_status_labels = [
-			__('Pending'), 
-			__('Paid'), 
-			__('Confirmed'), 
-			__('Postponed'), 
-			__('Cancelled')
+			__('Pending', 'dycore'), 
+			__('Paid', 'dycore'), 
+			__('Confirmed', 'dycore'), 
+			__('Postponed', 'dycore'), 
+			__('Cancelled', 'dycore')
 		];
 
 
@@ -55,31 +55,31 @@ class Dynamic_Core_Orders {
 	public function package_post_type() {
 	
 		$labels = array(
-			'name' => __( 'Orders'),
-			'singular_name' => __( 'Order'),
-			'menu_name' => __( 'Orders'),
-			'name_admin_bar' => __( 'Order'),
-			'parent_item_colon' => __( 'Parent Order:'),
-			'all_items' => __( 'All Orders'),
-			'add_new_item' => __( 'Add New Order'),
-			'add_new' => __( 'Add New'),
-			'new_item' => __( 'New Order'),
-			'edit_item' => __( 'Edit Order'),
-			'update_item' => __( 'Update Order'),
-			'view_item' => __( 'View Order'),
-			'search_items' => __( 'Search Order'),
-			'not_found' => __( 'Not found'),
-			'not_found_in_trash' => __( 'Not found in Trash'),
-			'locations_list' => __( 'Orders list'),
-			'locations_list_navigation' => __( 'Orders list navigation'),
-			'filter_items_list' => __( 'Filter locations list'),
+			'name' => __( 'Orders', 'dycore'),
+			'singular_name' => __( 'Order', 'dycore'),
+			'menu_name' => __( 'Orders', 'dycore'),
+			'name_admin_bar' => __( 'Order', 'dycore'),
+			'parent_item_colon' => __( 'Parent Order:', 'dycore'),
+			'all_items' => __( 'All Orders', 'dycore'),
+			'add_new_item' => __( 'Add New Order', 'dycore'),
+			'add_new' => __( 'Add New', 'dycore'),
+			'new_item' => __( 'New Order', 'dycore'),
+			'edit_item' => __( 'Edit Order', 'dycore'),
+			'update_item' => __( 'Update Order', 'dycore'),
+			'view_item' => __( 'View Order', 'dycore'),
+			'search_items' => __( 'Search Order', 'dycore'),
+			'not_found' => __( 'Not found', 'dycore'),
+			'not_found_in_trash' => __( 'Not found in Trash', 'dycore'),
+			'locations_list' => __( 'Orders list', 'dycore'),
+			'locations_list_navigation' => __( 'Orders list navigation', 'dycore'),
+			'filter_items_list' => __( 'Filter locations list', 'dycore'),
 		);
 		
 		$args = array(
-			'label' => __( 'Order'),
-			'description' => __( 'Order Description'),
+			'label' => __( 'Order', 'dycore'),
+			'description' => __( 'Order Description', 'dycore'),
 			'labels' => $labels,
-			'supports' => array( 'title'),
+			'supports' => ['title'],
 			'hierarchical' => true,
 			'public' => true,
 			'show_ui' => true,
