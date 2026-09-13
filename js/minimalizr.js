@@ -74,12 +74,12 @@ const toggleDropdownMenu = () => {
 };
 
 
-const dyAlert = (message = '', button = 'OK') => {
+const dyAlert = (message = '', button = '') => {
 
 	return new Promise((resolve) => {
 		const $overlay = jQuery('.alert-overlay');
 
-		const buttonTag = btn => `<button type="button" class="pure-button rounded">${btn}</button>`
+		const buttonTag = btn => `<button type="button" class="pure-button rounded"><span class="dashicons dashicons-yes-alt"></span> ${btn}</button>`
 
 		const $modal = jQuery(`
 		<div class="dy-alert" role="alertdialog" aria-modal="true">
@@ -97,7 +97,7 @@ const dyAlert = (message = '', button = 'OK') => {
 			resolve();
 		};
 
-		$modal.find('.dy-alert__ok').on('click', close);
+		$modal.find('.pure-button').on('click', close);
 		$overlay.one('click', close);
 
 		jQuery('body').append($modal);
@@ -105,6 +105,6 @@ const dyAlert = (message = '', button = 'OK') => {
 
 		requestAnimationFrame(() => $modal.addClass('dy-alert--visible'));
 
-		$modal.find('.dy-alert__ok').trigger('focus');
+		$modal.find('.pure-button').trigger('focus');
 	});
 };
