@@ -21,7 +21,7 @@ const handleScrollPaddingTop = () => {
 
 const toggleMinimalModal = () => {
 
-	jQuery('[data-toggle="offcanvas"], .overlay').click(() => {
+	jQuery('[data-toggle="offcanvas"], .menu-overlay').click(() => {
 
 		jQuery('body').toggleClass('toggled');
 		jQuery('.minimal-menu-bar > .dashicons').toggleClass('dashicons-menu dashicons-no')
@@ -74,14 +74,17 @@ const toggleDropdownMenu = () => {
 };
 
 
-const dyAlert = (message = '') => {
+const dyAlert = (message = '', button = 'OK') => {
+
 	return new Promise((resolve) => {
-		const $overlay = jQuery('.overlay');
+		const $overlay = jQuery('.alert-overlay');
+
+		const buttonTag = btn => `<button type="button" class="pure-button rounded">${btn}</button>`
 
 		const $modal = jQuery(`
 		<div class="dy-alert" role="alertdialog" aria-modal="true">
 			<p class="dy-alert__message"></p>
-			<button type="button" class="dy-alert__ok">OK</button>
+			${button && typeof button === 'string' ? buttonTag(button) : ''}
 		</div>
 		`);
 
@@ -89,7 +92,7 @@ const dyAlert = (message = '') => {
 
 		const close = () => {
 			$modal.removeClass('dy-alert--visible');
-			jQuery('body').removeClass('toggled');
+			$overlay.removeClass('alert-overlay--visible');
 			setTimeout(() => $modal.remove(), 150);
 			resolve();
 		};
@@ -97,7 +100,8 @@ const dyAlert = (message = '') => {
 		$modal.find('.dy-alert__ok').on('click', close);
 		$overlay.one('click', close);
 
-		jQuery('body').append($modal).addClass('toggled');
+		jQuery('body').append($modal);
+		$overlay.addClass('alert-overlay--visible');
 
 		requestAnimationFrame(() => $modal.addClass('dy-alert--visible'));
 

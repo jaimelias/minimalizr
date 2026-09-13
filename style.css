@@ -5,7 +5,7 @@ Author: Jaimelias.com
 Author URI: http://jaimelias.com/
 GitHub Theme URI: jaimelias/minimalizr
 Description: Description
-Version: 1.5.28
+Version: 1.5.29
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: minimalizr
@@ -653,7 +653,8 @@ a.dropdown-toggle > .caret
 /*            Overlay            */
 /*-------------------------------*/
 
-.overlay {
+.menu-overlay,
+.alert-overlay {
     position: fixed;
     inset: 0;
     display: none;
@@ -663,8 +664,8 @@ a.dropdown-toggle > .caret
     z-index: 1;
 }
 
-
-body.toggled .overlay {
+body.toggled .menu-overlay,
+.alert-overlay.alert-overlay--visible {
     display: block;
 }
 
@@ -700,22 +701,6 @@ body.toggled .overlay {
     color: #1d1d1f;
     word-wrap: break-word;
   }
-
-  .dy-alert__ok {
-    display: inline-block;
-    min-width: 88px;
-    padding: 8px 20px;
-    border: none;
-    border-radius: 6px;
-    background: #1d1d1f;
-    color: #fff;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-  }
-
-  .dy-alert__ok:hover { background: #000; }
-  .dy-alert__ok:focus-visible { outline: 2px solid #0a84ff; outline-offset: 2px; }
 
 
 

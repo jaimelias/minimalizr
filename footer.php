@@ -61,11 +61,13 @@
 	
 </div><!-- #page-content-wrapper -->
 
-<div class="overlay"></div>
+<div class="menu-overlay"></div>
 
 </div><!-- #minimal-wrapper -->
 
 <?php do_action('minimal_footer_alert'); ?>
+
+<div class="alert-overlay"></div>
 
 <?php wp_footer(); ?>
 
