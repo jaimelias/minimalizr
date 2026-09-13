@@ -75,7 +75,7 @@ class Dynamic_Core_Public {
 
             wp_add_inline_script(
                 'cloudflare-turnstile',
-                sprintf('const turnstileSiteKey="%s";', get_turnstile_site_key()),
+                $this->turnstileArgs(),
                 'before'
             );
 
@@ -527,6 +527,16 @@ class Dynamic_Core_Public {
         }
 
         header('Cache-Tag: html-pages');
+    }
+
+    public function turnstileArgs() : string {
+
+        $args = [
+            'turnstileSiteKey' => get_turnstile_site_key(),
+            'translations' => []
+        ];
+        
+        return sprintf('const turnstileArgs=%s;', wp_json_encode($args));
     }
 
 }

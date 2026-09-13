@@ -41,7 +41,7 @@ if(!function_exists('validate_turnstile')) {
 		{
 
             dy_errors::add(
-                __('The Turnstile response is missing.', 'dynamicpackages')
+                __('The Turnstile response is missing.', 'dycore')
             );
 
 			return false;

@@ -4,7 +4,11 @@ if ( !defined( 'WPINC' )) exit;
 
 if(!class_exists('Dy_Core_Init'))
 {
-    define('DY_CORE_VERSION', '1.1.20');
+    define('DY_CORE_VERSION', '1.1.21');
+
+    if ( !defined( 'DY_CORE_TEXTDOMAIN' ) ) {
+        define( 'DY_CORE_TEXTDOMAIN', 'dycore' );
+    }
 
     #[AllowDynamicProperties]
     class Dy_Core_Init {
@@ -13,8 +17,19 @@ if(!class_exists('Dy_Core_Init'))
         {
             $this->plugin_dir_path = plugin_dir_path( __FILE__ );
             $this->load_dependencies();
+            add_action( 'init', [$this, 'load_textdomain'], PHP_INT_MAX );
             $this->init();
         }
+
+        public function load_textdomain(): void
+        {
+            load_plugin_textdomain(
+                DY_CORE_TEXTDOMAIN,
+                false,
+                dirname( plugin_basename( dirname( __FILE__ ) ) ) . '/languages'
+            );
+        }
+
         public function load_dependencies()
         {
             //core helpers

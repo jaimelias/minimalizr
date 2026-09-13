@@ -481,3 +481,4 @@ const sendGa4Event = (eventName, eventParams = {}) => {
 
 	return true;
 };
+

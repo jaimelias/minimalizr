@@ -329,7 +329,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field(
 			'dy_google_ads_id',
-			__('Google Ads Conversion ID (AW-...)', 'dynamicpackages'),
+			__('Google Ads Conversion ID (AW-...)', 'dycore'),
 			['dy_input_option', 'text'],
 			$this->page_google,
 			$this->section_google_ads,
@@ -340,7 +340,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field(
 			'dy_google_ads_purchase_label',
-			__('Google Ads Purchase Label', 'dynamicpackages'),
+			__('Google Ads Purchase Label', 'dycore'),
 			['dy_input_option', 'text'],
 			$this->page_google,
 			$this->section_google_ads,
@@ -351,7 +351,7 @@ class Dynamic_Core_Admin {
 
 		add_settings_field(
 			'dy_google_ads_lead_label',
-			__('Google Ads Lead Label', 'dynamicpackages'),
+			__('Google Ads Lead Label', 'dycore'),
 			['dy_input_option', 'text'],
 			$this->page_google,
 			$this->section_google_ads,

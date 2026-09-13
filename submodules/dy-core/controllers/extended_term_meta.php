@@ -24,7 +24,7 @@ if(!function_exists('dy_taxonomy_form_row')) {
      *
      *     $row = dy_taxonomy_form_row(
      *         'tax_add_ons_max',
-     *         __('Maximum Number of participants', 'dynamicpackages')
+     *         __('Maximum Number of participants', 'dycore')
      *     );
      *
      *     dy_select_term_meta::min_max([

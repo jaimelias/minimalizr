@@ -25,6 +25,8 @@ const createTurnstileWidget = ({
 	appearance
 }) => {
 
+	const {turnstileSiteKey} = turnstileArgs;
+
 	window.dyTurnstileWidgets[id] = turnstile.render(container, {
 		sitekey: turnstileSiteKey,
 		action,
