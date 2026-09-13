@@ -323,16 +323,16 @@ if(!function_exists('get_inline_file'))
 if(!function_exists('load_picker_scripts'))
 {
     function load_picker_scripts($plugin_dir_url, $dirname_file) : void {
-        wp_enqueue_script( 'picker-js', $plugin_dir_url . 'js/picker/picker.js', array('jquery'), '3.6.2', true);
-        wp_enqueue_script( 'picker-date-js', $plugin_dir_url . 'js/picker/picker.date.js', array('jquery', 'picker-js'), '3.6.2', true);
-        wp_enqueue_script( 'picker-time-js', $plugin_dir_url . 'js/picker/picker.time.js',array('jquery', 'picker-js'), '3.6.2', true);	
-        wp_enqueue_script( 'picker-legacy', $plugin_dir_url . 'js/picker/legacy.js', array('jquery', 'picker-js'), '3.6.2', true);
+        wp_enqueue_script( 'picker-js', $plugin_dir_url . 'js/picker/picker.js', ['jquery'], '3.6.2', true);
+        wp_enqueue_script( 'picker-date-js', $plugin_dir_url . 'js/picker/picker.date.js', ['jquery', 'picker-js'], '3.6.2', true);
+        wp_enqueue_script( 'picker-time-js', $plugin_dir_url . 'js/picker/picker.time.js',['jquery', 'picker-js'], '3.6.2', true);	
+        wp_enqueue_script( 'picker-legacy', $plugin_dir_url . 'js/picker/legacy.js', ['jquery', 'picker-js'], '3.6.2', true);
 
         $picker_translation = 'js/picker/translations/'.get_locale().'.js';
                 
         if(file_exists($dirname_file.'/'.$picker_translation))
         {
-            wp_enqueue_script( 'picker-time-translation', $plugin_dir_url.$picker_translation, array('jquery', 'picker-js'), '3.6.2', true);
+            wp_enqueue_script( 'picker-time-translation', $plugin_dir_url.$picker_translation, ['jquery', 'picker-js'], '3.6.2', true);
         }	
         //picker end  
     }

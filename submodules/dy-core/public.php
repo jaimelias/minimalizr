@@ -64,25 +64,38 @@ class Dynamic_Core_Public {
             wp_add_inline_script('sentry-lazy-load', $this->sentry(), 'after');
         }
 
-       if(isset($dy_load_turnstile_scripts))
-        {
+        if (isset($dy_load_turnstile_scripts)) {
             wp_enqueue_script(
-                'turnstile-compat',
-                'https://challenges.cloudflare.com/turnstile/v0/api.js',
+                'cloudflare-turnstile',
+                'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',
                 [],
-                'async_defer',
-                false
+                null,
+                true
+            );
+
+            wp_add_inline_script(
+                'cloudflare-turnstile',
+                sprintf('const turnstileSiteKey="%s";', get_turnstile_site_key()),
+                'before'
+            );
+
+            wp_enqueue_script(
+                'cloudflare-turnstile-widgets',
+                $this->plugin_dir_url_file . 'js/turnstile-widgets.js',
+                ['cloudflare-turnstile'],
+                $this->version,
+                true
             );
         }
         
-        wp_enqueue_script('landing-cookies', $this->plugin_dir_url_file . 'js/cookies.js', array('jquery'), $this->version, true);
+        wp_enqueue_script('landing-cookies', $this->plugin_dir_url_file . 'js/cookies.js', ['jquery'], $this->version, true);
 
-        wp_enqueue_script('dy-qrcode', $this->plugin_dir_url_file . 'js/qrcode.min.js', array('jquery'), 'async_defer', true);
+        wp_enqueue_script('dy-qrcode', $this->plugin_dir_url_file . 'js/qrcode.min.js', ['jquery'], 'async_defer', true);
 
 
  
 
-        wp_enqueue_script('dy-core-utilities', $this->plugin_dir_url_file . 'js/utilities.js', array('jquery', 'landing-cookies'), $this->version, true);
+        wp_enqueue_script('dy-core-utilities', $this->plugin_dir_url_file . 'js/utilities.js', ['jquery', 'landing-cookies'], $this->version, true);
         wp_add_inline_script('dy-core-utilities', $this->args(), 'before');
         
 

@@ -21,8 +21,7 @@ if(!function_exists('get_turnstile_secret_key')) {
 
 if(!function_exists('validate_turnstile')) {
 	
-	function validate_turnstile()
-	{
+	function validate_turnstile(string $token = '', string $expected_action = '') : bool {
 		static $cache = [];
 		$cache_key = 'dy_valid_turnstile';
 
@@ -37,12 +36,6 @@ if(!function_exists('validate_turnstile')) {
 		}
 
 		$cache[$cache_key] = false;
-
-		/*
-		* Compatibility mode keeps the reCAPTCHA field name.
-		* Change this to cf-turnstile-response only during Phase 2.
-		*/
-		$token = secure_post('cf-turnstile-response');
 
 		if(empty($token))
 		{
@@ -120,13 +113,37 @@ if(!function_exists('validate_turnstile')) {
 			PHP_URL_HOST
 		);
 
+		/**
+		 * Validate the Turnstile response.
+		 *
+		 * Local environments accept successful test-key responses without action
+		 * validation. Remote environments require the expected hostname and action.
+		 */
+		$is_valid_data = is_array($data);
+		$is_local_host = is_local_host();
+
+		$is_valid_action = (
+			$is_valid_data
+			&& isset($data['action'])
+			&& $data['action'] === $expected_action
+		);
+
+		$is_valid_remote_host = (
+			$is_valid_data
+			&& isset($data['hostname'])
+			&& $data['hostname'] === $expected_hostname
+		);
+
 		$valid = (
 			$status_code === 200
-			&& is_array($data)
+			&& $is_valid_data
 			&& !empty($data['success'])
-			&& isset($data['hostname'])
-			&& in_array($data['hostname'], [$expected_hostname, 'example.com'])
+			&& (
+				$is_local_host
+				|| ($is_valid_remote_host && $is_valid_action)
+			)
 		);
+
 
 		if(!$valid)
 		{

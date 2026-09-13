@@ -199,14 +199,138 @@ const handleSubmitButton = thisForm => {
     
 };
 
-const createFormSubmit = form => {
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+const executeTurnstileWithRetry = async (
+    widgetId,
+    {
+        maxRetries = 5,
+        timeoutMs = 10000,
+        retryDelayMs = 1000
+    } = {}
+) => {
+    let lastError;
+
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+        try {
+            const token = await new Promise((resolve, reject) => {
+                let settled = false;
+                let timeoutId;
+
+                const finish = (callback, value) => {
+                    if (settled) return;
+
+                    settled = true;
+                    clearTimeout(timeoutId);
+                    delete window.dyTurnstileWaiters[widgetId];
+                    callback(value);
+                };
+
+                timeoutId = setTimeout(() => {
+                    finish(reject, new Error('Turnstile token request timed out.'));
+                }, timeoutMs);
+
+                window.dyTurnstileWaiters[widgetId] = {
+                    resolve: token => token
+                        ? finish(resolve, token)
+                        : finish(reject, new Error('Turnstile returned an empty token.')),
+                    reject: error => finish(reject, error)
+                };
+
+                try {
+                    turnstile.reset(widgetId);
+                    turnstile.execute(widgetId);
+                } catch (error) {
+                    finish(reject, error);
+                }
+            });
+
+            return token;
+        } catch (error) {
+            lastError = error;
+
+            if (attempt === maxRetries) break;
+
+            console.warn(
+                `Turnstile attempt ${attempt + 1}/${maxRetries + 1} failed. Retrying...`,
+                error
+            );
+
+            await sleep(retryDelayMs);
+        }
+    }
+
+    throw lastError || new Error('Unable to obtain a Turnstile token.');
+};
+
+const signDyTransaction = async ({signUrl, signRequest, widgetId, maxRetries = 2}) => {
+    let unique_tx_id;
+    let lastSignError;
+
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+        try {
+            if (attempt > 0) {
+                await sleep(10000);
+            }
+
+            // Turnstile tokens are single-use, so retries need fresh tokens.
+            const signTransactionToken = await executeTurnstileWithRetry(widgetId);
+            const signBody = new URLSearchParams({
+                ...signRequest,
+                'cf-turnstile-response': signTransactionToken
+            });
+
+            const signResponse = await fetch(signUrl, {
+                method: 'POST',
+                body: signBody
+            });
+
+            if (!signResponse.ok) {
+                throw new Error(`Transaction signing failed: ${signResponse.status}`);
+            }
+
+            ({unique_tx_id} = await signResponse.json());
+
+            if (!unique_tx_id) {
+                throw new Error('Transaction signing returned no transaction ID.');
+            }
+
+            return unique_tx_id;
+        } catch (error) {
+            lastSignError = error;
+
+            if (attempt === maxRetries) {
+                throw new Error(
+                    `Transaction signing failed after ${maxRetries + 1} attempts.`,
+                    {cause: error}
+                );
+            }
+
+            console.warn(
+                `Transaction signing attempt ${attempt + 1}/${maxRetries + 1} failed. Retrying in 10 seconds...`,
+                error
+            );
+        }
+    }
+
+    throw new Error('Transaction signing failed.', {cause: lastSignError});
+};
+
+const hasTurnstileWidgets = () => (
+    typeof turnstile !== 'undefined'
+    && typeof window?.dyTurnstileWidgets?.turnstileWidget1 !== 'undefined'
+    && typeof window?.dyTurnstileWidgets?.turnstileWidget2 !== 'undefined'
+    && window.dyTurnstileWaiters
+);
+
+const createFormSubmit = async form => {
 
 
     //disable button to prevent double-click
     handleSubmitButton(form);
 
     const {lang} = dyCoreArgs;
-	let formFields = formToArray(form);
+    let formFields = formToArray(form);
 	const method = String(form.attr('data-method')).toLowerCase();
 	let action = atob(form.attr('data-action'));  
     const hasEmail = formFields.some(i => i.name === 'email');
@@ -227,10 +351,51 @@ const createFormSubmit = form => {
                 sessionStorage.setItem(name, value);
             }
         });
+
+        if (hasTurnstileWidgets()) {
+            try {
+
+                const {turnstileWidget1, turnstileWidget2} = window.dyTurnstileWidgets || {};
+
+                
+
+                const { wpJsonUrl, post_id } = dyCoreArgs;
+                const signUrl = new URL(`${wpJsonUrl}/transactions/${post_id}`);
+                const signRequest = {
+                    dy_request: form.find('[name="dy_request"]').val() || '',
+                    email: form.find('[name="email"]').val() || '',
+                    action: 'sign-transaction'
+                };
+                const unique_tx_id = await signDyTransaction({
+                    signUrl,
+                    signRequest,
+                    widgetId: turnstileWidget1
+                });
+
+                formFields = formFields.filter(({ name }) => (
+                    name !== 'cf-turnstile-response' && name !== 'unique_tx_id'
+                ));
+                formFields.push({ name: 'unique_tx_id', value: unique_tx_id });
+
+                const submitTransactionToken = await executeTurnstileWithRetry(turnstileWidget2);
+
+                console.log({submitTransactionToken})
+
+                formFields.push({
+                    name: 'cf-turnstile-response',
+                    value: submitTransactionToken
+                });
+
+            } catch (error) {
+                console.error('Turnstile submission failed:', error);
+                form.find('button').prop('disabled', false);
+                alert(error.message || 'Unable to submit the form. Please try again.');
+                return false;
+            }
+        }
     }
 
     formSubmit({method, action, formFields});
-	
 };
 
 const formSubmit = ({method, action, formFields}) => {
