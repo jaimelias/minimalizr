@@ -8,7 +8,7 @@
 
 if ( !defined( 'WPINC' ) ) exit;
 
-define('MINIMALIZR_VERSION', '1.5.27');
+define('MINIMALIZR_VERSION', '1.5.28');
 
 
 #[AllowDynamicProperties]
@@ -486,7 +486,7 @@ class Minimalizr {
 		{
 			$tax = get_taxonomy( get_queried_object()->taxonomy );
 			$title = $tax->labels->singular_name.': '. single_term_title( '', false );
-			$url = home_url(add_query_arg(array(),$wp->request));
+			$url = home_url(add_query_arg([] ,$wp->request));
 			
 			$Parsedown = new Parsedown();
 			$description = get_term(get_queried_object()->term_id)->description;
@@ -552,7 +552,7 @@ class Minimalizr {
 		
 		$theme_url = get_template_directory_uri();
 		
-		if(!isset($_GET['fl_builder']) && !is_user_logged_in())
+		if(!is_user_logged_in())
 		{
 			wp_deregister_script('jquery');
 			wp_register_script('jquery', $theme_url.'/js/jquery-3.6.1.slim.min.js', false, null, true);
@@ -563,7 +563,7 @@ class Minimalizr {
 		}
 
 
-		wp_enqueue_script( 'minimalizr-sidebar-menuJS', esc_url($theme_url . '/js/sidebar-menu.js?async_defer=true'), array('jquery'), $this->version, true );	
+		wp_enqueue_script( 'minimalizr', esc_url($theme_url . '/js/minimalizr.js?async_defer=true'), ['jquery'], $this->version, true );	
 	}
 	
 
@@ -572,7 +572,7 @@ class Minimalizr {
 		if(is_admin())
 		{
 			$theme_url = get_template_directory_uri();
-			wp_enqueue_style( 'minimalLayout', $theme_url.'/css/minimal-layout.css', array(), $this->version);
+			wp_enqueue_style( 'minimalLayout', $theme_url.'/css/minimal-layout.css', [], $this->version);
 		}
 	}
 
@@ -584,7 +584,7 @@ class Minimalizr {
 
 		$theme_url = get_template_directory_uri();
 	
-		wp_enqueue_style( 'minimalLayout', $theme_url.'/css/minimal-layout.css', array(), $this->version);
+		wp_enqueue_style( 'minimalLayout', $theme_url.'/css/minimal-layout.css', [], $this->version);
 		wp_enqueue_style( 'minimalizr-style', get_stylesheet_uri(), array( 'minimalLayout'), $this->version);		
 		wp_add_inline_style( 'minimalizr-style', $this->get_inline_css('media-query'));
 		wp_enqueue_style( 'dashicons' );

@@ -73,3 +73,34 @@ const toggleDropdownMenu = () => {
 
 };
 
+
+const dyAlert = (message = '') => {
+	return new Promise((resolve) => {
+		const $overlay = jQuery('.overlay');
+
+		const $modal = jQuery(`
+		<div class="dy-alert" role="alertdialog" aria-modal="true">
+			<p class="dy-alert__message"></p>
+			<button type="button" class="dy-alert__ok">OK</button>
+		</div>
+		`);
+
+		$modal.find('.dy-alert__message').text(message);
+
+		const close = () => {
+			$modal.removeClass('dy-alert--visible');
+			jQuery('body').removeClass('toggled');
+			setTimeout(() => $modal.remove(), 150);
+			resolve();
+		};
+
+		$modal.find('.dy-alert__ok').on('click', close);
+		$overlay.one('click', close);
+
+		jQuery('body').append($modal).addClass('toggled');
+
+		requestAnimationFrame(() => $modal.addClass('dy-alert--visible'));
+
+		$modal.find('.dy-alert__ok').trigger('focus');
+	});
+};

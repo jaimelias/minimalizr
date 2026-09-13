@@ -5,7 +5,7 @@ Author: Jaimelias.com
 Author URI: http://jaimelias.com/
 GitHub Theme URI: jaimelias/minimalizr
 Description: Description
-Version: 1.5.27
+Version: 1.5.28
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: minimalizr
@@ -654,25 +654,68 @@ a.dropdown-toggle > .caret
 /*-------------------------------*/
 
 .overlay {
-    position: absolute;
+    position: fixed;
+    inset: 0;
     display: none;
-    width: 0;
-    height: 0;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0,0,0,0.6);
-    z-index: 0;
+    width: auto;
+    height: auto;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1;
 }
 
 
 body.toggled .overlay {
-	display: block;
-    width: 100%;
-    height: 100%;
-	z-index: 1;
+    display: block;
 }
+
+ /* --- dyAlert modal --- */
+  .dy-alert {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.96);
+    z-index: 2;
+    width: 90%;
+    max-width: 360px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+    padding: 24px 24px 16px;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+
+  .dy-alert.dy-alert--visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+  }
+
+  .dy-alert__message {
+    margin: 0 0 20px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #1d1d1f;
+    word-wrap: break-word;
+  }
+
+  .dy-alert__ok {
+    display: inline-block;
+    min-width: 88px;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 6px;
+    background: #1d1d1f;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .dy-alert__ok:hover { background: #000; }
+  .dy-alert__ok:focus-visible { outline: 2px solid #0a84ff; outline-offset: 2px; }
 
 
 

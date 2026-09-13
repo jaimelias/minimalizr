@@ -13,17 +13,17 @@
 #[AllowDynamicProperties]
 class wp_bootstrap_navwalker extends Walker_Nav_Menu {
 
-    public function start_lvl(&$output, $depth = 0, $args = array()) {
+    public function start_lvl(&$output, $depth = 0, $args = []) {
         $indent = str_repeat("\t", $depth);
         $output .= "\n$indent<ul role=\"menu\" class=\" dropdown-menu hidden\">\n";
     }
 
-    public function start_el(&$output, $item, $depth = 0, $args = array(), $id = 0) {
+    public function start_el(&$output, $item, $depth = 0, $args = [], $id = 0) {
 
         $indent = $depth ? str_repeat("\t", $depth) : '';
         $class_names = '';
 
-        $classes = empty($item->classes) ? array() : (array) $item->classes;
+        $classes = empty($item->classes) ? [] : (array) $item->classes;
         $classes[] = 'menu-item-' . $item->ID;
 
         if ($depth === 0) {

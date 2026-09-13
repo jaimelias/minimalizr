@@ -65,11 +65,9 @@
 
 </div><!-- #minimal-wrapper -->
 
-
+<?php do_action('minimal_footer_alert'); ?>
 
 <?php wp_footer(); ?>
-
-<?php do_action('minimal_footer_alert'); ?>
 
 </body>
 </html>
