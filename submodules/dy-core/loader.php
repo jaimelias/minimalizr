@@ -4,7 +4,7 @@ if ( !defined( 'WPINC' )) exit;
 
 if(!class_exists('Dy_Core_Init'))
 {
-    define('DY_CORE_VERSION', '1.1.29');
+    define('DY_CORE_VERSION', '1.1.30');
 
     if ( !defined( 'DY_CORE_TEXTDOMAIN' ) ) {
         define( 'DY_CORE_TEXTDOMAIN', 'dycore' );
@@ -16,7 +16,7 @@ if(!class_exists('Dy_Core_Init'))
         public function __construct()
         {
 
-            add_action('wp_loaded', [$this, 'dy_core_maybe_flush_rewrite_rules'], PHP_INT_MAX);
+            add_action('wp_loaded', 'dy_core_maybe_flush_rewrite_rules', PHP_INT_MAX);
 
             $this->load_dependencies();
 
@@ -32,19 +32,6 @@ if(!class_exists('Dy_Core_Init'))
             new Dynamic_Core_Public($version);  
             new Dynamic_Core_WP_JSON();
             new Dynamic_Core_Providers();
-        }
-
-        function dy_core_schedule_rewrite_flush() : void {
-            update_option('dy_core_rewrite_flush', 1, false);
-        }
-
-        function dy_core_maybe_flush_rewrite_rules() : void {
-            if (!get_option('dy_core_rewrite_flush')) {
-                return;
-            }
-
-            flush_rewrite_rules(false);
-            delete_option('dy_core_rewrite_flush');
         }
 
         public function load_textdomain(): void

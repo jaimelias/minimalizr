@@ -974,6 +974,25 @@ if (!function_exists('dy_sanitize_keywords')) {
 	}
 }
 
+if(!function_exists('dy_core_schedule_rewrite_flush')) {
+	function dy_core_schedule_rewrite_flush() : void {
+		update_option('dy_core_rewrite_flush', 1, false);
+	}
+}
+
+
+if(!function_exists('dy_core_maybe_flush_rewrite_rules'))  {
+	function dy_core_maybe_flush_rewrite_rules() : void {
+		if (!get_option('dy_core_rewrite_flush')) {
+			return;
+		}
+
+		flush_rewrite_rules(false);
+		delete_option('dy_core_rewrite_flush');
+	}
+
+}
+
 
 
 ?>
