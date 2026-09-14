@@ -132,7 +132,7 @@ class Minimal_Alert
         $attr = esc_attr("{$alert_id}-alert");
 
         return sprintf(
-            '<div class="minimal-site-alert" data-nosnippet><div class="dy-%1$s"><div class="dy-%1$s-content container">%2$s</div></div></div>',
+            '<div class="minimal-%1$s" data-nosnippet><div class="minimal-%1$s-container container">%2$s</div></div>',
             $attr,
             $parsed_notification,
         );
