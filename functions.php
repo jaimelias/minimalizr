@@ -95,7 +95,8 @@ class Minimalizr {
 		require $this->theme_directory . '/inc/minimal.php';
 
 		require_once $this->theme_directory . '/inc/minimal-class.php';
-		
+
+		require_once $this->theme_directory . '/inc/minimal-alert.php';
 	}
 
 
