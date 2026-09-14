@@ -98,10 +98,10 @@ class MyTheme_Customize {
 	public static function social_media($wp_customize)
 	{
 		// social media links
-		$settingId = array("facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google", "tiktok");
-		$settingLabel = array("Facebook URL", "Twitter URL", "LinkedIn URL", "Youtube URL", "Instagram URL", "Pinterest URL", "Google My Business URL", "TikTok URL");
-		$settingDefault = array("https://", "https://", "https://", "https://", "https://", "https://", "https://", "https://");
-		$settingSanitize = array("esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url");
+		$settingId = ["facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google", "tiktok"];
+		$settingLabel = ["Facebook URL", "Twitter URL", "LinkedIn URL", "Youtube URL", "Instagram URL", "Pinterest URL", "Google My Business URL", "TikTok URL"];
+		$settingDefault = ["https://", "https://", "https://", "https://", "https://", "https://", "https://", "https://"];
+		$settingSanitize = ["esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url", "esc_url"];
 		
 		for($x = 0; $x < count($settingId); $x++)
 		{
@@ -111,12 +111,13 @@ class MyTheme_Customize {
 				'capability' => 'edit_theme_options',
 				'sanitize_callback' => $settingSanitize[$x]
 				));
-			$wp_customize->add_control( $settingId[$x], array(
+
+			$wp_customize->add_control( $settingId[$x], [
 				'label' => $settingLabel[$x],
 				'section' => 'minimalizr',
 				'settings' => $settingId[$x],
 				'type' => 'text'
-			));
+			]);
 		}		
 	}
 
@@ -140,18 +141,12 @@ class MyTheme_Customize {
 		<?php self::generate_css('#minimal-header', 'background-color', 'topBg'); ?>
 		<?php self::generate_css('#minimal-header .site-title > a, #minimal-header .site-title > a:visited, #minimal-header', 'color', 'topFont'); ?>
 		<?php self::generate_css('.minimal-top-menu > li.dropdown > ul.dropdown-menu li', 'background-color', 'sidebarBg'); ?>
-		
-		
-
-
 		<?php self::generate_css('.minimal-top-menu > li.dropdown > ul.dropdown-menu, .minimal-top-menu > li.dropdown > ul.dropdown-menu li > a', 'color', 'sidebarFont'); ?>
-		
 		<?php self::generate_css('#footer', 'background-color', 'footerBg'); ?>	   		   
 		<?php self::generate_css('#footer', 'color', 'footerFont'); ?>	   		   
 		<?php self::generate_css('#footer a:not(.pure-button)', 'color', 'footerLink'); ?>
 		<?php self::generate_css('#minimal-wrapper form', 'background-color', 'formBg'); ?>
-		
-		
+	
 		<?php self::generate_css('#minimal-wrapper form', 'color', 'formFont'); ?>
 
 		<?php self::generate_css('input[type=text],input[type=password],input[type=email],input[type=url],input[type=date],input[type=month],input[type=time],input[type=datetime],input[type=datetime-local],input[type=week],input[type=number],input[type=search],input[type=tel],input[type=color],select,textarea', 'background-color', 'inputBg'); ?>
