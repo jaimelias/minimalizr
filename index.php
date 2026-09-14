@@ -29,7 +29,7 @@
 		<div id="primary" class="content-area">
 			<main id="main" class="site-main">
 
-			<?php do_action('minimal_site_alert'); ?>
+			
 			
 			<?php if ( have_posts() ) : ?>
 

@@ -11,7 +11,7 @@ get_header(); ?>
 
 	<div id="primary" class="content-area">
 		<main id="main" class="site-main" role="main">
-			<?php do_action('minimal_site_alert'); ?>
+			
 
 			<div id="index">
 				<header class="page-header">

@@ -17,8 +17,6 @@ $show_sidebar = is_active_sidebar( 'sidebar-5' ) && minimalizr_get_meta( 'minima
 
 	<div id="primary" class="content-area">
 		<main id="main" class="site-main">
-
-			<?php do_action('minimal_site_alert'); ?>
 		
 			<?php if ( $show_sidebar ) : ?>
 			<div class="pure-g">

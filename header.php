@@ -19,6 +19,7 @@
 <div id="minimal-wrapper" class="clearfix">	
 	
 <?php do_action('minimal_menu'); ?>
+<?php do_action('minimal_site_alert'); ?>
 
 <div id="page-content-wrapper" class="clearfix custom-background">
 
