@@ -5,7 +5,7 @@ Author: Jaimelias.com
 Author URI: http://jaimelias.com/
 GitHub Theme URI: jaimelias/minimalizr
 Description: Description
-Version: 1.5.33
+Version: 1.5.34
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: minimalizr
@@ -647,6 +647,7 @@ a.dropdown-toggle > .caret
 	padding: 60px 0 !important;
 	background-color: #dddddd;
 	text-align: center;
+	margin-bottom: 40px;
 }
 .minimal-box h1, .minimal-box h2
 {
