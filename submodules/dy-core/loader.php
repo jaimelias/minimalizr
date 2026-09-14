@@ -4,7 +4,7 @@ if ( !defined( 'WPINC' )) exit;
 
 if(!class_exists('Dy_Core_Init'))
 {
-    define('DY_CORE_VERSION', '1.1.30');
+    define('DY_CORE_VERSION', '1.1.31');
 
     if ( !defined( 'DY_CORE_TEXTDOMAIN' ) ) {
         define( 'DY_CORE_TEXTDOMAIN', 'dycore' );
@@ -84,8 +84,9 @@ if(!class_exists('Dy_Core_Init'))
             require_once $plugin_dir_path . 'admin.php';
 
             //e-commerce
-            require_once $plugin_dir_path . 'e_commerce/providers/providers.php';
-            //require_once $plugin_dir_path . 'e_commerce/orders/orders.php';
+            require_once $plugin_dir_path . 'e_commerce/transactions.php';
+            require_once $plugin_dir_path . 'e_commerce/providers.php';
+            //require_once $plugin_dir_path . 'e_commerce/orders.php';
         }
     }
 
