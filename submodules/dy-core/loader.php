@@ -4,7 +4,7 @@ if ( !defined( 'WPINC' )) exit;
 
 if(!class_exists('Dy_Core_Init'))
 {
-    define('DY_CORE_VERSION', '1.1.28');
+    define('DY_CORE_VERSION', '1.1.29');
 
     if ( !defined( 'DY_CORE_TEXTDOMAIN' ) ) {
         define( 'DY_CORE_TEXTDOMAIN', 'dycore' );
@@ -16,7 +16,7 @@ if(!class_exists('Dy_Core_Init'))
         public function __construct()
         {
 
-            add_action('wp_loaded', 'dy_core_maybe_flush_rewrite_rules', PHP_INT_MAX);
+            add_action('wp_loaded', [$this, 'dy_core_maybe_flush_rewrite_rules'], PHP_INT_MAX);
 
             $this->load_dependencies();
 
