@@ -41,7 +41,7 @@ if(!function_exists('get_dy_id'))
 		}
 
 		$dy_id = null;
-		$raw_dy_id = secure_request('dy_id', null, 'intval');
+		$raw_dy_id = secure_post('dy_id', null, 'intval');
 
 		if(!$is_valid_id($the_id) && $is_valid_id($raw_dy_id)) {
 			

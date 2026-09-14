@@ -2,7 +2,7 @@ jQuery(() => {
     
 	fixInputSpecialTypes();
 
-	jQuery(window).on('load', function () {
+	jQuery(window).on('load', () => {
 		countryDropdown();
 	});
 });
@@ -276,7 +276,7 @@ const isValidCard = value => {
 
 	let nCheck = 0;
 	let bEven = false;
-	value = value.replace(/\D/g, null);
+	value = value.replace(/\D/g, '');
 
 	for (let n = value.length - 1; n >= 0; n--)
 	{

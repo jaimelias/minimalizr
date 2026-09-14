@@ -259,7 +259,7 @@ const getColType = containerId => {
 		else if(columns[x] == 'date')
 		{
 			row.type = 'date';
-			row.dateFormat = 'YYYY-MM-DD',
+			row.dateFormat = 'YYYY-MM-DD';
 			row.correctFormat = true;
 		}
 		else if(columns[x] == 'dropdown')

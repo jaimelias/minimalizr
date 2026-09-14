@@ -27,9 +27,6 @@ class Dynamic_Core_Public {
         add_action('wp_head', [$this, 'whatsapp_modal_css']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_styles']);
-        add_action('minimal_site_alert', [$this, 'site_alert']);
-        add_action('minimal_footer_alert', [$this, 'footer_alert']);
-
         add_filter('wp_resource_hints', [$this, 'resource_hints'], 10, 2);
 
         add_action('send_headers', [$this, 'send_headers']);
@@ -110,7 +107,7 @@ class Dynamic_Core_Public {
         
         if(isset($dy_load_request_form_utilities_scripts))
         {
-            wp_enqueue_script('dy-core-request-form-utilities', $this->plugin_dir_url_file . 'js/request-form-utilities.js', array('jquery', 'landing-cookies'), $this->version, false);
+            wp_enqueue_script('dy-core-request-form-utilities', $this->plugin_dir_url_file . 'js/request-form-utilities.js', ['jquery', 'landing-cookies'], $this->version, false);
         }
     }
 
@@ -389,43 +386,6 @@ class Dynamic_Core_Public {
 	{
 		return whatsapp_button();
 	}
-    public function site_alert() {
-        echo $this->render_alert('site');
-    }
-
-    public function footer_alert() {
-        echo $this->render_alert('footer');
-    }
-
-    public function render_alert($alert_id = '')
-    {
-        $current_language = current_language();
-        $default_language = default_language();
-        $prefix = ($current_language === $default_language) ? '' : '_' . $current_language;
-
-        $decoded = trim(get_option('dy_' . $alert_id . '_alert' . $prefix));
-
-        if($decoded === '') {
-            return '';
-        }
-
-        $notification_raw = html_entity_decode($decoded);
-
-        if ($notification_raw === '') {
-            return '';
-        }
-
-        $parsed_notification = do_shortcode($notification_raw);
-
-        $attr = esc_attr("{$alert_id}-alert");
-
-        return sprintf(
-            '<div class="minimal-site-alert" data-nosnippet><div class="dy-%1$s"><div class="dy-%1$s-content container">%2$s</div></div></div>',
-            $attr,
-            $parsed_notification,
-        );
-    }
-
     public function picker_containers()
     {
         ?>

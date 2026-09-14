@@ -12,7 +12,6 @@ class Dynamic_Core_Admin {
         $this->slug = 'dy-core';
         $this->setting_id = 'dy_core_settings';
         $this->section_company = 'dy_core_section_company';
-        $this->section_alerts = 'dy_core_section_alerts';
         $this->section_dev = 'dy_core_section_dev';
         $this->section_google_analytics = 'dy_core_section_google_analytics';
         $this->section_google_ads = 'dy_core_section_google_ads';
@@ -21,7 +20,6 @@ class Dynamic_Core_Admin {
         $this->section_cloudflare_turnstile = 'dy_core_section_cloudflare_turnstile';
 
         $this->page_company = $this->slug . '-company';
-        $this->page_alerts = $this->slug . '-alerts';
         $this->page_dev = $this->slug . '-dev';
         $this->page_google = $this->slug . '-google';
         $this->page_facebook = $this->slug . '-facebook';
@@ -116,7 +114,6 @@ class Dynamic_Core_Admin {
 
         //section
 		add_settings_section($this->section_company, __('Company', 'dycore'), '', $this->page_company);
-		add_settings_section($this->section_alerts, __('Alerts', 'dycore'), '', $this->page_alerts);
 		add_settings_section($this->section_dev, __('Dev', 'dycore'), '', $this->page_dev);
 		add_settings_section($this->section_google_analytics, __('Google Analytics', 'dycore'), '', $this->page_google);
 		add_settings_section($this->section_google_ads, __('Google Ads', 'dycore'), '', $this->page_google);
@@ -173,39 +170,6 @@ class Dynamic_Core_Admin {
 				]
 			);
 			
-			//site notification multy languages
-			register_setting($this->setting_id, 'dy_site_alert'.$lang_suffix, 'wp_kses_post');
-			register_setting($this->setting_id, 'dy_footer_alert'.$lang_suffix, 'wp_kses_post');
-
-			add_settings_field( 
-				'dy_site_alert'.$lang_suffix, 
-				esc_html(__( 'Site Alert', 'dycore').' '. strtoupper($lang)), 
-				['dy_textarea_option', 'text'], 
-				$this->page_alerts, 
-				$this->section_alerts,
-				[
-					'key' => 'dy_site_alert'.$lang_suffix,
-					'rows' => 5,
-					'cols' => 50,
-					'klass' => 'width-100',
-				]
-			);
-			add_settings_field( 
-				'dy_footer_alert'.$lang_suffix, 
-				esc_html(__( 'Footer Alert', 'dycore').' '. strtoupper($lang)), 
-				['dy_textarea_option', 'text'],
-				$this->page_alerts, 
-				$this->section_alerts,
-				[
-					'key' => 'dy_footer_alert'.$lang_suffix,
-					'rows' => 5,
-					'cols' => 50,
-					'klass' => 'width-100',
-				]
-			);
-			
-
-
 		}
 
 		add_settings_field( 
@@ -385,7 +349,6 @@ class Dynamic_Core_Admin {
 
 		$pages = [
 			$this->page_company => __('Company', 'dycore'),
-			$this->page_alerts => __('Alerts', 'dycore'),
 			$this->page_dev => __('Dev', 'dycore'),
 			$this->page_google => __('Google', 'dycore'),
 			$this->page_facebook => __('Facebook', 'dycore'),

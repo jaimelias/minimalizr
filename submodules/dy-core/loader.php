@@ -4,7 +4,7 @@ if ( !defined( 'WPINC' )) exit;
 
 if(!class_exists('Dy_Core_Init'))
 {
-    define('DY_CORE_VERSION', '1.1.23');
+    define('DY_CORE_VERSION', '1.1.24');
 
     if ( !defined( 'DY_CORE_TEXTDOMAIN' ) ) {
         define( 'DY_CORE_TEXTDOMAIN', 'dycore' );
@@ -82,6 +82,7 @@ if(!class_exists('Dy_Core_Init'))
             new DY_SendGrid();
             new Dynamic_Sitemap();
             new Dynamic_Core_Admin($version);
+            new MinimalAlert();
             new Dynamic_Core_Public($version);  
             new Dynamic_Core_WP_JSON();
             new Dynamic_Core_Providers();
