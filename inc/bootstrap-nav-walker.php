@@ -96,7 +96,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
     }
 
     public static function fallback($args) {
-        if (!current_user_can('manage_options')) {
+        if (!current_user_can('edit_theme_options')) {
             return;
         }
 
@@ -104,20 +104,26 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
         $menu_class = isset($args['menu_class']) ? $args['menu_class'] : '';
         $items_wrap = isset($args['items_wrap']) ? $args['items_wrap'] : '';
 
-        $fb_output = '<ul';
+        $fallback_item = '<li><a href="' . esc_url(admin_url('nav-menus.php')) . '"><span class="dashicons dashicons-plus"></span>' . esc_html(__('Menu', 'minimalizr')) . '</a></li>';
 
+        if ($items_wrap) {
+            echo sprintf(
+                $items_wrap,
+                esc_attr($menu_id),
+                esc_attr($menu_class),
+                $fallback_item
+            );
+            return;
+        }
+
+        $attributes = '';
         if ($menu_id) {
-            $fb_output .= ' id="' . esc_attr($menu_id) . '"';
+            $attributes .= ' id="' . esc_attr($menu_id) . '"';
         }
-
         if ($menu_class) {
-            $fb_output .= ' class="' . esc_attr($menu_class) . '"';
+            $attributes .= ' class="' . esc_attr($menu_class) . '"';
         }
 
-        $fb_output .= '>';
-        $fb_output .= '<li><a href="' . esc_url(admin_url('nav-menus.php')) . '"><span class="dashicons dashicons-plus"></span>' . esc_html(__('Menu', 'minimalizr')) . '</a></li>';
-        $fb_output .= '</ul>';
-
-        echo sprintf($items_wrap, '', '', $fb_output);
+        echo '<ul' . $attributes . '>' . $fallback_item . '</ul>';
     }
 }

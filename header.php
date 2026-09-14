@@ -2,9 +2,9 @@
 <html <?php language_attributes(); ?>>
 <head>
 <meta charset="<?php bloginfo( 'charset' ); ?>">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<link rel="profile" href="http://gmpg.org/xfn/11">
-<link href="<?php echo esc_url(home_url()); ?>" rel="home" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="profile" href="https://gmpg.org/xfn/11">
+<link rel="home" href="<?php echo esc_url(home_url('/')); ?>" />
 <?php do_action('minimal_menu_css'); ?>
 <?php wp_head(); ?>
 </head>

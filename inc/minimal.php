@@ -129,7 +129,7 @@ class Minimal_Classes
 			ob_start();
 			?>
 				<style type="text/css">
-					@media screen and (min-width:1em){#minimal-header{height:50px}#minimal-header .site-title,.minimal-menu-bar{font-size:20px;height:20px;margin:15px 0}.minimal-top-menu>.minimal-side-brand a{padding:14px 15px 15px 15px}body.bodyfull #minimal-wrapper,body:not(.bodyfull) #minimal-wrapper{margin-top:50px}}@media screen and (min-width:783px){#minimal-header{height:70px}#minimal-header .site-title,.minimal-menu-bar{font-size:30px;height:30px;margin:20px 0}.minimal-top-menu>.minimal-side-brand a{padding:24px 25px 25px 25px}body.bodyfull #minimal-wrapper,body:not(.bodyfull) #minimal-wrapper{margin-top:70px}}@media screen and (min-width:1024px){.minimal-navigator{padding:27px 0}}
+					@media screen and (min-width:1em){#minimal-header{height:50px}#minimal-header .site-title,.minimal-menu-bar{font-size:20px;height:20px;margin:15px 0}.minimal-top-menu>.minimal-side-brand a{padding:14px 15px 15px 15px}body.bodyfull #minimal-wrapper,body:not(.bodyfull) #minimal-wrapper{margin-top:50px}}@media screen and (min-width:783px){#minimal-header{height:70px}#minimal-header .site-title,.minimal-menu-bar{font-size:30px;height:30px;margin:20px 0}.minimal-top-menu>.minimal-side-brand a{padding:24px 25px 25px 25px}body.bodyfull #minimal-wrapper,body:not(.bodyfull) #minimal-wrapper{margin-top:70px}}@media screen and (min-width:1025px){.minimal-navigator{padding:27px 0}}
 				</style>			
 			<?php
 			$output = ob_get_contents();
@@ -186,12 +186,11 @@ class Minimal_Classes
 	public  function responsive()
 	{
 		wp_nav_menu( array(
-			'menu' => 'primary',
 			'theme_location' => 'primary',
 			'depth' => 2,
 			'menu_class' => 'minimal-top-menu',
 			'container' => false,
-			'items_wrap' => '<nav class="minimal-navigator"><ul class="minimal-top-menu"><li class="minimal-side-brand"><a href="'.home_url().'"><span class="dashicons dashicons-admin-home"></span></a></li>%3$s</ul></nav>',
+			'items_wrap' => '<nav class="minimal-navigator"><ul class="minimal-top-menu"><li class="minimal-side-brand"><a href="' . esc_url( home_url( '/' ) ) . '"><span class="dashicons dashicons-admin-home"></span></a></li>%3$s</ul></nav>',
 			'fallback_cb' => 'wp_bootstrap_navwalker::fallback',
 			'walker' => new wp_bootstrap_navwalker())
 		);

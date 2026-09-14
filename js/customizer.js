@@ -1,115 +1,113 @@
 /**
- * Theme Customizer enhancements for a better user experience.
- *
- * Contains handlers to make Theme Customizer preview reload changes asynchronously.
+ * Theme Customizer live-preview bindings.
  */
 
- jQuery(() => {
+jQuery( () => {
+	const $ = jQuery;
+	const customize = wp.customize;
+	const inputSelector = 'input[type=text],input[type=password],input[type=email],input[type=url],input[type=date],input[type=month],input[type=time],input[type=datetime],input[type=datetime-local],input[type=week],input[type=number],input[type=search],input[type=tel],input[type=color],select,textarea';
+	const isDesktop = () => window.matchMedia( '(min-width: 1025px)' ).matches;
 
-	// Update the site title in real time...
-	wp.customize( 'blogname', value => {
-		value.bind( newval => {
-			jQuery( '.site-title a' ).text( newval );
+	let topFontValue = '';
+	let sidebarFontValue = '';
+	let sidebarBackgroundValue = '';
+
+	const bindStyle = ( settingId, selector, property, formatValue = value => value ) => {
+		customize( settingId, setting => {
+			setting.bind( value => {
+				$( selector ).css( property, formatValue( value ) );
+			} );
 		} );
-	} );
-	
-	//Update site background color...
-	wp.customize( 'background_color', value => {
-		value.bind( newval => {
-			jQuery('.custom-background').css('background-color', newval );
-		} );
-	} );
-	
-	//Update content color...
-	wp.customize( 'contentFont', value => {
-		value.bind( newval => {
-			jQuery('#content').css('color', newval );
-		} );
-	} );	
-	
-	//Update site link color in real time...
-	wp.customize( 'link_textcolor', value => {
-		value.bind( newval => {
-			jQuery('a:not(.btn), a:visited:not(.btn), .linkcolor').css('color', newval );
-			jQuery('.entry-footer > span:not(.tags-links):hover').css('background-color', newval );
-		} );
-	} );
-	
-	wp.customize( 'topFont', value => {
-		value.bind( newval => {
-			jQuery('#minimal-header, .minimal-top-menu > li > a, .minimal-top-menu > li > a:visited').css('color', newval );
-		} );
-	} );
-	
-	wp.customize( 'sidebarFont', value => {
-		value.bind( newval => {
-			jQuery('#minimal-top-menu.minimal-top-menu > li.dropdown > ul.dropdown-menu a, body.toggled .minimal-navigator a').css('color', newval );
-		} );
-	} );
-	
-	wp.customize( 'topBg', value => {
-		value.bind( newval => {
-			jQuery('#minimal-header').css('background-color', newval );
-		} );
+	};
+
+	const applyTopFont = () => {
+		if ( ! topFontValue ) {
+			return;
+		}
+
+		$( '#minimal-header, #minimal-header .site-title > a' ).css( 'color', topFontValue );
+		$( '.minimal-top-menu > li > a' ).css( 'color', isDesktop() ? topFontValue : '' );
+	};
+
+	const applySidebarFont = () => {
+		if ( ! sidebarFontValue ) {
+			return;
+		}
+
+		if ( ! isDesktop() ) {
+			$( '.minimal-navigator a' ).css( 'color', sidebarFontValue );
+		}
+		$( '.minimal-top-menu > li.dropdown > ul.dropdown-menu li > a' ).css( 'color', sidebarFontValue );
+	};
+
+	const applySidebarBackground = () => {
+		if ( ! sidebarBackgroundValue ) {
+			return;
+		}
+
+		$( '.minimal-navigator' ).css( 'background-color', isDesktop() ? '' : sidebarBackgroundValue );
+		$( '.minimal-top-menu > li.dropdown > ul.dropdown-menu li' ).css( 'background-color', sidebarBackgroundValue );
+	};
+
+	$( window ).on( 'resize', () => {
+		applyTopFont();
+		applySidebarFont();
+		applySidebarBackground();
 	} );
 
-	wp.customize( 'sidebarBg', value => {
-		value.bind( newval => {
-			jQuery('#minimal-top-menu.minimal-top-menu > li.dropdown > ul.dropdown-menu li, body.toggled .minimal-navigator').css('background-color', newval );
-		} );
-	} );
-	
-	wp.customize( 'footerBg', value => {
-		value.bind( newval => {
-			jQuery('#footer').css('background-color', newval );
-		} );
-	} );	
+	customize( 'blogname', setting => {
+		setting.bind( value => {
+			const $siteTitle = $( '.site-title a' );
 
-
-	wp.customize( 'footerFont', value => {
-		value.bind( newval => {
-			jQuery('#footer').css('color', newval );
-		} );
-	} );		
-
-	wp.customize( 'footerLink', value => {
-		value.bind( newval => {
-			jQuery('#footer a:not(.pure-button)').css('color', newval );
+			if ( ! $siteTitle.find( 'img' ).length ) {
+				$siteTitle.text( value );
+			}
 		} );
 	} );
 
-	//form
-	wp.customize( 'formBg', value => {
-		value.bind( newval => {
-			jQuery("#minimal-wrapper").find("form").css('background-color', newval);
+	[
+		[ 'background_color', '.custom-background', 'background-color' ],
+		[ 'contentFont', '#content', 'color' ],
+		[ 'link_textcolor', '#content a:not(.pure-button), #content a:visited:not(.pure-button), #content .linkcolor', 'color' ],
+		[ 'topBg', '#minimal-header', 'background-color' ],
+		[ 'footerBg', '#footer', 'background-color' ],
+		[ 'footerFont', '#footer', 'color' ],
+		[ 'footerLink', '#footer a:not(.pure-button)', 'color' ],
+		[ 'formBg', '#minimal-wrapper form', 'background-color' ],
+		[ 'formFont', '#minimal-wrapper form', 'color' ],
+		[ 'inputBg', inputSelector, 'background-color' ],
+		[ 'inputFont', inputSelector, 'color' ],
+		[ 'inputBorder', inputSelector, 'border-color' ],
+		[ 'minimalizr_minimal_box_background_color', '.minimal-box', 'background-color' ],
+		[ 'minimalizr_minimal_box_margin_bottom', '.minimal-box, h2.minimal-box, h3.minimal-box', 'margin-bottom', value => `${value}px` ],
+		[ 'minimalizr_minimal_box_color', '.minimal-box > .container > h1, .minimal-box > .container > h2, .minimal-box > .container > p', 'color' ],
+		[ 'minimalizr_minimal_site_alert_background_color', '.minimal-site-alert', 'background-color' ],
+		[ 'minimalizr_minimal_site_alert_color', '.minimal-site-alert, .minimal-site-alert > .container > a', 'color' ],
+		[ 'minimalizr_minimal_footer_alert_background_color', '.minimal-footer-alert', 'background-color' ],
+		[ 'minimalizr_minimal_footer_alert_color', '.minimal-footer-alert, .minimal-footer-alert > .container > a', 'color' ],
+	].forEach( ( [ settingId, selector, property, formatValue ] ) => {
+		bindStyle( settingId, selector, property, formatValue );
+	} );
+
+	customize( 'topFont', setting => {
+		setting.bind( value => {
+			topFontValue = value;
+			applyTopFont();
+			applySidebarFont();
 		} );
 	} );
 
-	wp.customize( 'formFont', value => {
-		value.bind( newval => {
-			jQuery('#minimal-wrapper form').css({'color': newval});
-		} );
-	} );	
-
-	//input background
-	wp.customize( 'inputBg', value => {
-		value.bind( newval => {
-			jQuery('input[type=text],input[type=password],input[type=email],input[type=url],input[type=date],input[type=month],input[type=time],input[type=datetime],input[type=datetime-local],input[type=week],input[type=number],input[type=search],input[type=tel],input[type=color],select,textarea').css('background-color', newval );
+	customize( 'sidebarFont', setting => {
+		setting.bind( value => {
+			sidebarFontValue = value;
+			applySidebarFont();
 		} );
 	} );
 
-	//input fontFont
-	wp.customize( 'inputFont', value => {
-		value.bind( newval => {
-			jQuery('input[type=text],input[type=password],input[type=email],input[type=url],input[type=date],input[type=month],input[type=time],input[type=datetime],input[type=datetime-local],input[type=week],input[type=number],input[type=search],input[type=tel],input[type=color],select,textarea').css({'color': newval});
+	customize( 'sidebarBg', setting => {
+		setting.bind( value => {
+			sidebarBackgroundValue = value;
+			applySidebarBackground();
 		} );
 	} );
-
-	//input border
-	wp.customize( 'inputBorder', value => {
-		value.bind( newval => {
-			jQuery('input[type=text],input[type=password],input[type=email],input[type=url],input[type=date],input[type=month],input[type=time],input[type=datetime],input[type=datetime-local],input[type=week],input[type=number],input[type=search],input[type=tel],input[type=color],select,textarea').css({'border-color': newval});
-		} );
-	} );		
-
- });
+} );

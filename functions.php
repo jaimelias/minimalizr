@@ -8,7 +8,7 @@
 
 if ( !defined( 'WPINC' ) ) exit;
 
-define('MINIMALIZR_VERSION', '1.5.37');
+define('MINIMALIZR_VERSION', '1.5.38');
 
 
 #[AllowDynamicProperties]
@@ -36,7 +36,6 @@ class Minimalizr {
 		add_filter('get_the_excerpt', [$this, 'modify_get_the_excerpt']);
 
 		// scripts
-		add_filter('script_loader_tag', [$this, 'async_defer_js'], 10, 3);
 		add_filter('minimal_ld_json', [$this, 'ld_json_cb'], 1);
 		add_action('wp_head', [$this, 'ld_json_script']);
 		add_action('wp_enqueue_scripts', [$this, 'minimalizr_styles'], 0);
@@ -110,27 +109,6 @@ class Minimalizr {
 	}
 	
 	
-	function async_defer_js($tag, $handle, $src)
-	{
-		if(preg_match("/async/i", $src) || preg_match("/defer/i", $src))
-		{
-			$method = '';
-			
-			if(preg_match("/async/i", $src))
-			{
-				$method .= ' async ';
-			}
-			if(preg_match("/defer/i", $src))
-			{
-				$method .= ' defer ';
-			}
-			
-			$tag = '<script id="'.esc_attr($handle).'" type="text/javascript" '.esc_attr($method).' src="'.esc_url($src).'"></script>';
-		}
-		return $tag;
-	}
-	
-
 	public function translate_string($attr): string
 	{
 		if ( ! is_array( $attr ) ) {
@@ -285,28 +263,29 @@ class Minimalizr {
 	function ld_json_cb($json = [])
 	{
 		$home_url = home_url();
-		$contactPoint = [];
-		$contactPoint['@type'] = 'ContactPoint';
-		$contactPoint['contactType'] = 'customer service';
-		$contactPoint['url'] = get_the_permalink();
-		$contactPoint['sameAs'] = [];
-		$media = ["facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google"];
+		$contactPoint = [
+			'@type' => 'ContactPoint',
+			'contactType' => 'customer service',
+		];
+		$contact_url = get_the_permalink();
+		if ($contact_url) {
+			$contactPoint['url'] = $contact_url;
+		}
+		$social_urls = [];
+		$media = ["facebook", "twitter", "linkedin", "youtube", "instagram", "pinterest", "google", "tiktok"];
 		
-		for($x = 0; $x < count($media); $x++)
+		foreach ($media as $media_id)
 		{
-			$theme_val = get_theme_mod($media[$x]);
+			$theme_val = get_theme_mod($media_id, '');
 
-				if($theme_val != null)
-				{
-					if(!filter_var($theme_val, FILTER_VALIDATE_URL) === false)
-					{
-						array_push($contactPoint['sameAs'], $theme_val);
-					}
-				}	
+			if (false !== filter_var($theme_val, FILTER_VALIDATE_URL))
+			{
+				$social_urls[] = $theme_val;
+			}
 		}
 
 		$organization = [
-			'@context' => 'http://schema.org',
+			'@context' => 'https://schema.org',
 			'@type' => 'Organization',
 			'url' => $home_url,
 			'name' => get_bloginfo('name'),
@@ -320,6 +299,9 @@ class Minimalizr {
 			$organization['logo'] = $site_icon;
 		}		
 		
+		if (!empty($social_urls)) {
+			$organization['sameAs'] = $social_urls;
+		}
 		$organization['contactPoint'] = $contactPoint;
 		$json['organization'] = $organization;
 		
@@ -356,14 +338,14 @@ class Minimalizr {
 				];
 			}
 			
-			$image = [];
-			if(has_post_thumbnail())
-			{
-				$image_data = wp_get_attachment_image_src( get_post_thumbnail_id( get_the_ID() ), 'full');
-
-				$image = [
-					'@type' => 'ImageObject',
-					'url' => get_the_post_thumbnail_url(),
+				$image = [];
+				$thumbnail_id = get_post_thumbnail_id($post_id);
+				$image_data = $thumbnail_id ? wp_get_attachment_image_src($thumbnail_id, 'full') : false;
+				if ($image_data)
+				{
+					$image = [
+						'@type' => 'ImageObject',
+						'url' => get_the_post_thumbnail_url($post_id, 'full'),
 					'width' => $image_data[1],
 					'height' => $image_data[2],
 				];	
@@ -383,7 +365,7 @@ class Minimalizr {
 			$keywords = !empty($tags) ? implode(', ', $tags) : '';
 
 			$article = [
-				'@context' => 'http://schema.org',
+					'@context' => 'https://schema.org',
 				'@type'  => 'BlogPosting',
 				'headline' => get_the_title(),
 				'url'    => get_the_permalink(),
@@ -409,8 +391,8 @@ class Minimalizr {
 			
 			$article['publisher'] = $publisher;
 			
-			if(has_post_thumbnail())	
-			{
+				if (!empty($image))	
+				{
 				$article['image'] = $image;
 			}
 
@@ -458,7 +440,7 @@ class Minimalizr {
 
 
 	function doctype_opengraph($output) {
-		$output = $output ."\r\n\t".'prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#"';
+		$output = $output ."\r\n\t".'prefix="og: https://ogp.me/ns# fb: https://ogp.me/ns/fb#"';
 		return $output;
 	}
 	
@@ -504,14 +486,14 @@ class Minimalizr {
 		?>
 			<?php if(is_singular() || is_tax()): ?>
 	
-				<meta property="og:site_name" content="<?php bloginfo('name');?>" />
-				<meta property="og:type" content="website" />
-				<meta property="og:title" content="<?php echo esc_html($title); ?>" />
+				<meta property="og:site_name" content="<?php echo esc_attr(get_bloginfo('name'));?>" />
+				<meta property="og:type" content="<?php echo esc_attr(is_singular('post') ? 'article' : 'website'); ?>" />
+				<meta property="og:title" content="<?php echo esc_attr($title); ?>" />
 				<meta property="og:url" content="<?php echo esc_url($url); ?>" />
 				
 				<?php if($description != null): ?>
-					<meta name="description" content="<?php esc_html_e($description);?>" />
-					<meta property="og:description" content="<?php esc_html_e($description);?>" />
+					<meta name="description" content="<?php echo esc_attr($description);?>" />
+					<meta property="og:description" content="<?php echo esc_attr($description);?>" />
 				<?php endif; ?>
 	
 				<?php if(has_post_thumbnail() && !is_tax()): ?>
@@ -553,18 +535,16 @@ class Minimalizr {
 		
 		$theme_url = get_template_directory_uri();
 		
-		if(!is_user_logged_in())
-		{
-			wp_deregister_script('jquery');
-			wp_register_script('jquery', $theme_url.'/js/jquery-3.6.1.slim.min.js', false, null, true);
-			wp_enqueue_script('jquery');
-
-			//temp jquery slim fixes and $ fixes
-			wp_add_inline_script('jquery', $this->js_temp_fixes(), 'after');
-		}
-
-
-		wp_enqueue_script( 'minimalizr', esc_url($theme_url . '/js/minimalizr.js?async_defer=true'), ['jquery'], $this->version, true );	
+		wp_enqueue_script(
+			'minimalizr',
+			$theme_url . '/js/minimalizr.js',
+			['jquery'],
+			$this->version,
+			[
+				'in_footer' => true,
+				'strategy' => 'defer',
+			]
+		);
 	}
 	
 
