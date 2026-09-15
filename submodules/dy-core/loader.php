@@ -4,7 +4,7 @@ if ( !defined( 'WPINC' )) exit;
 
 if(!class_exists('Dy_Core_Init'))
 {
-    define('DY_CORE_VERSION', '1.1.34');
+    define('DY_CORE_VERSION', '1.1.35');
 
     if ( !defined( 'DY_CORE_TEXTDOMAIN' ) ) {
         define( 'DY_CORE_TEXTDOMAIN', 'dycore' );
@@ -32,6 +32,7 @@ if(!class_exists('Dy_Core_Init'))
             new Dynamic_Core_Public($version);  
             new Dynamic_Core_WP_JSON();
             new Dynamic_Core_Providers();
+            new Dy_Confirmation_Page();
         }
 
         public function load_textdomain(): void
@@ -84,8 +85,9 @@ if(!class_exists('Dy_Core_Init'))
             require_once $plugin_dir_path . 'admin.php';
 
             //e-commerce
-            require_once $plugin_dir_path . 'e_commerce/transactions.php';
-            require_once $plugin_dir_path . 'e_commerce/providers.php';
+            require_once $plugin_dir_path . 'e-commerce/transactions.php';
+            require_once $plugin_dir_path . 'e-commerce/providers.php';
+            require_once $plugin_dir_path . 'e-commerce/confirmation-page.php';
         }
     }
 

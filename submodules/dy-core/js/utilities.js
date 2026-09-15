@@ -360,7 +360,7 @@ const createFormSubmit = async form => {
                 
 
                 const { wpJsonUrl, post_id } = dyCoreArgs;
-                const signUrl = new URL(`${wpJsonUrl}/transactions/${post_id}`);
+                const signUrl = new URL(`${wpJsonUrl}/tx/${post_id}`);
                 const signRequest = {
                     dy_request: form.find('[name="dy_request"]').val() || '',
                     email: form.find('[name="email"]').val() || '',
