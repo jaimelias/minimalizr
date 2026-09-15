@@ -586,4 +586,29 @@ class dy_tx
 		return $flat_payload[$key] ?? null;
 	}
 
+	public static function all_dy_request_types(): array
+	{
+		$request_types = apply_filters(
+			'all_dy_request_types',
+			['contact']
+		);
+
+		if (!is_array($request_types)) {
+			return ['contact'];
+		}
+
+		$request_types = array_filter(
+			$request_types,
+			static fn(mixed $request_type): bool =>
+				is_string($request_type) && $request_type !== ''
+		);
+
+		$request_types = array_map(
+			'sanitize_key',
+			$request_types
+		);
+
+		return array_values(array_unique($request_types));
+	}
+
 }
