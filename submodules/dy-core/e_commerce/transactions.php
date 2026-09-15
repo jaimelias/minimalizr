@@ -5,7 +5,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 #[AllowDynamicProperties]
-class dy_transactions
+class dy_tx
 {
 	public static ?object $transaction_obj = null;
 
