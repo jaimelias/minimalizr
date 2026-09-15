@@ -264,7 +264,7 @@ const executeTurnstileWithRetry = async (
 };
 
 const signDyTransaction = async ({signUrl, signRequest, widgetId, maxRetries = 2}) => {
-    let unique_tx_id;
+    let tx_id;
     let lastSignError;
 
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
@@ -289,13 +289,13 @@ const signDyTransaction = async ({signUrl, signRequest, widgetId, maxRetries = 2
                 throw new Error(`Transaction signing failed: ${signResponse.status}`);
             }
 
-            ({unique_tx_id} = await signResponse.json());
+            ({tx_id} = await signResponse.json());
 
-            if (!unique_tx_id) {
+            if (!tx_id) {
                 throw new Error('Transaction signing returned no transaction ID.');
             }
 
-            return unique_tx_id;
+            return tx_id;
         } catch (error) {
             lastSignError = error;
 
@@ -366,16 +366,16 @@ const createFormSubmit = async form => {
                     email: form.find('[name="email"]').val() || '',
                     action: 'sign-transaction'
                 };
-                const unique_tx_id = await signDyTransaction({
+                const tx_id = await signDyTransaction({
                     signUrl,
                     signRequest,
                     widgetId: turnstileWidget1
                 });
 
                 formFields = formFields.filter(({ name }) => (
-                    name !== 'cf-turnstile-response' && name !== 'unique_tx_id'
+                    name !== 'cf-turnstile-response' && name !== 'tx_id'
                 ));
-                formFields.push({ name: 'unique_tx_id', value: unique_tx_id });
+                formFields.push({ name: 'tx_id', value: tx_id });
 
                 const submitTransactionToken = await executeTurnstileWithRetry(turnstileWidget2);
 

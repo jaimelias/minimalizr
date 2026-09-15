@@ -9,7 +9,7 @@ class dy_transactions
 {
 	public static ?object $transaction_obj = null;
 
-	private const TRANSIENT_PREFIX = 'secret_tx_id_';
+	private const TRANSIENT_PREFIX = 'tx_id_';
 
 	private const PAYLOAD_FIELDS = [
 		'booking_details' => [
@@ -40,15 +40,15 @@ class dy_transactions
 	/**
 	 * Create the initial transaction record.
 	 */
-	public static function create(string $unique_tx_id, array $arr = []): bool
+	public static function create(string $tx_id, array $arr = []): bool
 	{
-		$unique_tx_id = trim($unique_tx_id);
+		$tx_id = trim($tx_id);
 
-		if ($unique_tx_id === '') {
+		if ($tx_id === '') {
 			return false;
 		}
 
-		$identity = self::identity_values($unique_tx_id, $arr);
+		$identity = self::identity_values($tx_id, $arr);
 
 		if (
 			$identity['email'] === ''
@@ -60,9 +60,9 @@ class dy_transactions
 		}
 
 		$transaction = (object) [
-			'unique_tx_id'    => $unique_tx_id,
+			'tx_id'    => $tx_id,
 			'secret_tx_id'    => self::sign_secret([
-				$unique_tx_id,
+				$tx_id,
 				$identity['email'],
 				$identity['dy_request'],
 				$identity['dy_id'],
@@ -78,7 +78,7 @@ class dy_transactions
 		self::$transaction_obj = $transaction;
 
 		return (bool) set_transient(
-			self::transient_key($unique_tx_id),
+			self::transient_key($tx_id),
 			$transaction,
 			HOUR_IN_SECONDS
 		);
@@ -101,10 +101,10 @@ class dy_transactions
 	/**
 	 * Validate both the transaction signature and its identity fields.
 	 */
-	public static function validate(string $unique_tx_id, array $expected_arr = []): bool
+	public static function validate(string $tx_id, array $expected_arr = []): bool
 	{
-		$unique_tx_id = trim($unique_tx_id);
-		$transaction = self::get($unique_tx_id);
+		$tx_id = trim($tx_id);
+		$transaction = self::get($tx_id);
 
 		if ($transaction === null) {
 			return false;
@@ -112,40 +112,40 @@ class dy_transactions
 
 		if ($expected_arr === []) {
 			$expected_arr = [
-				$unique_tx_id,
+				$tx_id,
 				(string) secure_post('email', '', 'sanitize_email'),
 				(string) secure_post('dy_request', '', 'sanitize_key'),
 				(int) secure_post('dy_id', 0, 'absint'),
 			];
 		}
 
-		if (array_key_exists('unique_tx_id', $expected_arr)) {
-			$expected_unique_tx_id = $expected_arr['unique_tx_id'];
-			if (! is_scalar($expected_unique_tx_id) || (string) $expected_unique_tx_id !== $unique_tx_id) {
+		if (array_key_exists('tx_id', $expected_arr)) {
+			$expected_unique_tx_id = $expected_arr['tx_id'];
+			if (! is_scalar($expected_unique_tx_id) || (string) $expected_unique_tx_id !== $tx_id) {
 				return false;
 			}
 		} elseif (count($expected_arr) >= 4) {
 			$expected_values = array_values($expected_arr);
-			if (! is_scalar($expected_values[0]) || (string) $expected_values[0] !== $unique_tx_id) {
+			if (! is_scalar($expected_values[0]) || (string) $expected_values[0] !== $tx_id) {
 				return false;
 			}
 		}
 
-		$expected = self::identity_values($unique_tx_id, $expected_arr);
+		$expected = self::identity_values($tx_id, $expected_arr);
 		$stored = [
-			'unique_tx_id' => (string) ($transaction->unique_tx_id ?? ''),
+			'tx_id' => (string) ($transaction->tx_id ?? ''),
 			'email'       => (string) ($transaction->email ?? ''),
 			'dy_request'  => (string) ($transaction->dy_request ?? ''),
 			'dy_id'       => (int) ($transaction->dy_id ?? 0),
 		];
 		$expected_values = [
-			$expected['unique_tx_id'],
+			$expected['tx_id'],
 			$expected['email'],
 			$expected['dy_request'],
 			$expected['dy_id'],
 		];
 		$stored_values = [
-			$stored['unique_tx_id'],
+			$stored['tx_id'],
 			$stored['email'],
 			$stored['dy_request'],
 			$stored['dy_id'],
@@ -162,15 +162,15 @@ class dy_transactions
 	/**
 	 * Retrieve a transaction record from its transient.
 	 */
-	public static function get(string $unique_tx_id): ?object
+	public static function get(string $tx_id): ?object
 	{
-		$unique_tx_id = trim($unique_tx_id);
+		$tx_id = trim($tx_id);
 
-		if ($unique_tx_id === '') {
+		if ($tx_id === '') {
 			return null;
 		}
 
-		$stored = get_transient(self::transient_key($unique_tx_id));
+		$stored = get_transient(self::transient_key($tx_id));
 
 		if (! is_array($stored) && ! is_object($stored)) {
 			return null;
@@ -178,7 +178,7 @@ class dy_transactions
 
 		$transaction = is_object($stored) ? $stored : (object) $stored;
 
-		if ((string) ($transaction->unique_tx_id ?? '') !== $unique_tx_id) {
+		if ((string) ($transaction->tx_id ?? '') !== $tx_id) {
 			return null;
 		}
 
@@ -191,12 +191,12 @@ class dy_transactions
 	 * Update a transaction status and, on success only, its whitelisted payload.
 	 */
 	public static function update(
-		string $unique_tx_id = '',
+		string $tx_id = '',
 		string $new_status = '',
 		array $payload = [],
 		int $expiration_in_seconds = 0
 	): bool {
-		$transaction = self::get($unique_tx_id);
+		$transaction = self::get($tx_id);
 
 		if ($transaction === null) {
 			return false;
@@ -235,23 +235,23 @@ class dy_transactions
 		self::$transaction_obj = $transaction;
 
 		return (bool) set_transient(
-			self::transient_key($unique_tx_id),
+			self::transient_key($tx_id),
 			$transaction,
 			$expiration
 		);
 	}
 
-	private static function transient_key(string $unique_tx_id): string
+	private static function transient_key(string $tx_id): string
 	{
-		return self::TRANSIENT_PREFIX . $unique_tx_id;
+		return self::TRANSIENT_PREFIX . $tx_id;
 	}
 
 	/**
 	 * Normalize either a positional identity array or named identity fields.
 	 *
-	 * @return array{unique_tx_id: string, email: string, dy_request: string, dy_id: int}
+	 * @return array{tx_id: string, email: string, dy_request: string, dy_id: int}
 	 */
-	private static function identity_values(string $unique_tx_id, array $arr): array
+	private static function identity_values(string $tx_id, array $arr): array
 	{
 		if (
 			array_key_exists('email', $arr)
@@ -263,7 +263,7 @@ class dy_transactions
 			$dy_id = $arr['dy_id'] ?? 0;
 
 			return [
-				'unique_tx_id' => $unique_tx_id,
+				'tx_id' => $tx_id,
 				'email'       => is_scalar($email) ? sanitize_email((string) $email) : '',
 				'dy_request'  => is_scalar($dy_request) ? sanitize_key((string) $dy_request) : '',
 				'dy_id'       => is_scalar($dy_id) ? absint($dy_id) : 0,
@@ -271,14 +271,14 @@ class dy_transactions
 		}
 
 		$values = array_values($arr);
-		$starts_with_id = isset($values[0]) && (string) $values[0] === $unique_tx_id;
+		$starts_with_id = isset($values[0]) && (string) $values[0] === $tx_id;
 		$offset = $starts_with_id ? 1 : 0;
 		$email = $values[$offset] ?? '';
 		$dy_request = $values[$offset + 1] ?? '';
 		$dy_id = $values[$offset + 2] ?? 0;
 
 		return [
-			'unique_tx_id' => $unique_tx_id,
+			'tx_id' => $tx_id,
 			'email'       => is_scalar($email) ? sanitize_email((string) $email) : '',
 			'dy_request'  => is_scalar($dy_request) ? sanitize_key((string) $dy_request) : '',
 			'dy_id'       => is_scalar($dy_id) ? absint($dy_id) : 0,
@@ -293,13 +293,13 @@ class dy_transactions
 	private static function signing_values(array $arr): array
 	{
 		if (
-			array_key_exists('unique_tx_id', $arr)
+			array_key_exists('tx_id', $arr)
 			|| array_key_exists('email', $arr)
 			|| array_key_exists('dy_request', $arr)
 			|| array_key_exists('dy_id', $arr)
 		) {
 			$arr = [
-				$arr['unique_tx_id'] ?? '',
+				$arr['tx_id'] ?? '',
 				$arr['email'] ?? '',
 				$arr['dy_request'] ?? '',
 				$arr['dy_id'] ?? '',
