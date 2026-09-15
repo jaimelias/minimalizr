@@ -7,11 +7,13 @@ if ( ! defined( 'WPINC' ) ) {
 #[AllowDynamicProperties]
 class dy_tx
 {
+
+	static array $cache = [];
 	public static ?object $transaction_obj = null;
 
 	private const TRANSIENT_PREFIX = 'tx_id_';
 
-	private const PAYLOAD_FIELDS = [
+	private const PAYLOAD_CONTRACT = [
 		'booking_details' => [
 			'pax_regular',
 			'pax_discount',
@@ -34,8 +36,9 @@ class dy_tx
 			'email',
 			'repeat_email',
 			'inquiry',
-		],
+		]
 	];
+
 
 	/**
 	 * Create the initial transaction record.
@@ -59,7 +62,7 @@ class dy_tx
 			return false;
 		}
 
-		$transaction = (object) [
+		$tx = (object) [
 			'tx_id'    => $tx_id,
 			'secret_tx_id'    => self::sign_secret([
 				$tx_id,
@@ -75,11 +78,11 @@ class dy_tx
 			'contact_details' => (object) [],
 		];
 
-		self::$transaction_obj = $transaction;
+		self::$transaction_obj = $tx;
 
 		return (bool) set_transient(
 			self::transient_key($tx_id),
-			$transaction,
+			$tx,
 			HOUR_IN_SECONDS
 		);
 	}
@@ -104,9 +107,9 @@ class dy_tx
 	public static function validate(string $tx_id, array $expected_arr = []): bool
 	{
 		$tx_id = trim($tx_id);
-		$transaction = self::get($tx_id);
+		$tx = self::get_stored_tx($tx_id);
 
-		if ($transaction === null) {
+		if ($tx === null) {
 			return false;
 		}
 
@@ -133,10 +136,10 @@ class dy_tx
 
 		$expected = self::identity_values($tx_id, $expected_arr);
 		$stored = [
-			'tx_id' => (string) ($transaction->tx_id ?? ''),
-			'email'       => (string) ($transaction->email ?? ''),
-			'dy_request'  => (string) ($transaction->dy_request ?? ''),
-			'dy_id'       => (int) ($transaction->dy_id ?? 0),
+			'tx_id' => (string) ($tx->tx_id ?? ''),
+			'email'       => (string) ($tx->email ?? ''),
+			'dy_request'  => (string) ($tx->dy_request ?? ''),
+			'dy_id'       => (int) ($tx->dy_id ?? 0),
 		];
 		$expected_values = [
 			$expected['tx_id'],
@@ -150,7 +153,7 @@ class dy_tx
 			$stored['dy_request'],
 			$stored['dy_id'],
 		];
-		$stored_secret = (string) ($transaction->secret_tx_id ?? '');
+		$stored_secret = (string) ($tx->secret_tx_id ?? '');
 
 		if ($stored_secret === '' || $expected_values !== $stored_values) {
 			return false;
@@ -162,7 +165,7 @@ class dy_tx
 	/**
 	 * Retrieve a transaction record from its transient.
 	 */
-	public static function get(string $tx_id): ?object
+	public static function get_stored_tx(string $tx_id): ?object
 	{
 		$tx_id = trim($tx_id);
 
@@ -176,15 +179,15 @@ class dy_tx
 			return null;
 		}
 
-		$transaction = is_object($stored) ? $stored : (object) $stored;
+		$tx = is_object($stored) ? $stored : (object) $stored;
 
-		if ((string) ($transaction->tx_id ?? '') !== $tx_id) {
+		if ((string) ($tx->tx_id ?? '') !== $tx_id) {
 			return null;
 		}
 
-		self::$transaction_obj = $transaction;
+		self::$transaction_obj = $tx;
 
-		return $transaction;
+		return $tx;
 	}
 
 	/**
@@ -196,15 +199,15 @@ class dy_tx
 		array $payload = [],
 		int $expiration_in_seconds = 0
 	): bool {
-		$transaction = self::get($tx_id);
+		$tx = self::get_stored_tx($tx_id);
 
-		if ($transaction === null) {
+		if ($tx === null) {
 			return false;
 		}
 
-		$current_status = (string) ($transaction->status ?? '');
+		$current_status = (string) ($tx->status ?? '');
 		$new_status = $new_status !== '' ? sanitize_key($new_status) : $current_status;
-		$request_type = (string) ($transaction->dy_request ?? '');
+		$request_type = (string) ($tx->dy_request ?? '');
 		$allowed_statuses = $request_type === 'paguelo_facil_on'
 			? ['started', 'processing', 'success', 'declined', 'error']
 			: ['started', 'success'];
@@ -213,16 +216,16 @@ class dy_tx
 			return false;
 		}
 
-		$transaction->status = $new_status;
+		$tx->status = $new_status;
 
 		if ($new_status === 'success' && $payload !== []) {
 			$sanitized_payload = self::sanitize_payload($payload);
-			$transaction->booking_details = (object) array_merge(
-				self::object_to_array($transaction->booking_details ?? null),
+			$tx->booking_details = (object) array_merge(
+				self::object_to_array($tx->booking_details ?? null),
 				$sanitized_payload['booking_details']
 			);
-			$transaction->contact_details = (object) array_merge(
-				self::object_to_array($transaction->contact_details ?? null),
+			$tx->contact_details = (object) array_merge(
+				self::object_to_array($tx->contact_details ?? null),
 				$sanitized_payload['contact_details']
 			);
 		}
@@ -232,11 +235,11 @@ class dy_tx
 			: ($new_status === 'success' ? DAY_IN_SECONDS : HOUR_IN_SECONDS);
 
 		// Keep the in-memory record in sync before persisting it.
-		self::$transaction_obj = $transaction;
+		self::$transaction_obj = $tx;
 
 		return (bool) set_transient(
 			self::transient_key($tx_id),
-			$transaction,
+			$tx,
 			$expiration
 		);
 	}
@@ -324,7 +327,7 @@ class dy_tx
 			'contact_details' => [],
 		];
 
-		foreach (self::PAYLOAD_FIELDS as $section => $fields) {
+		foreach (self::PAYLOAD_CONTRACT as $section => $fields) {
 			$section_payload = $payload[$section] ?? [];
 			$section_payload = is_object($section_payload)
 				? get_object_vars($section_payload)
@@ -378,4 +381,155 @@ class dy_tx
 
 		return is_array($value) ? $value : [];
 	}
+
+	/**
+	 * Validates that the payload keys exactly match the contract.
+	 * Order doesn't matter; keys are compared via symmetric difference.
+	 */
+	private static function validate_payload_contract(array $payload, array $contract): void {
+		foreach ($contract as $section => $expected_keys) {
+			if (!array_key_exists($section, $payload)) {
+				$message = sprintf(
+					'dy_tx payload contract mismatch: required section "%s" is missing.',
+					$section
+				);
+				write_log($message, true, true, 'payload_contract_error');
+
+				wp_die(
+					'The booking request could not be processed because of a server configuration error.',
+					'Transaction Payload Configuration Error',
+					['response' => 500]
+				);
+			}
+
+			$actual_keys = array_keys($payload[$section]);
+			$missing     = array_diff($expected_keys, $actual_keys);
+			$extra       = array_diff($actual_keys, $expected_keys);
+
+			if ($missing !== [] || $extra !== []) {
+
+				$message = sprintf(
+					'dy_tx payload contract mismatch in "%s": missing keys [%s]; unexpected keys [%s].',
+					$section,
+					implode(', ', $missing),
+					implode(', ', $extra)
+				);
+
+				write_log($message, true, true, 'payload_contract_error');
+
+				wp_die(
+					'The booking request could not be processed because of a server configuration error.',
+					'Transaction Payload Configuration Error',
+					['response' => 500]
+				);
+			}
+		}
+	}
+
+	/**
+	 * Build the transaction payload from the current POST request
+	 * guards against the fields defined in PAYLOAD_CONTRACT.
+	 *
+	 * @return array{booking_details: array<string, mixed>, contact_details: array<string, mixed>}
+	 */
+
+
+	public static function get_sanitized_request_payload(): array
+	{
+		$cache_key = 'get_sanitized_request_payload';
+
+		if(array_key_exists($cache_key, self::$cache)) {
+			return self::$cache[$cache_key];
+		}
+
+
+		$fn = match (secure_server('REQUEST_METHOD')) {
+			'POST' => 'secure_post',
+			'GET'  => 'secure_get',
+			default => null,
+		};
+
+		if ($fn === null) {
+			return [];
+		}
+
+		$getter = static function (
+			string $key,
+			string|int|float|bool|null $default = '',
+			callable|string $sanitizer = 'sanitize_text_field'
+		) use ($fn): string|int|float|bool|null {
+			return $fn($key, $default, $sanitizer);
+		};
+
+
+		$post_payload =  [
+			'booking_details' => [
+				'pax_regular'       => $getter('pax_regular', 0, 'absint'),
+				'pax_discount'      => $getter('pax_discount', 0, 'absint'),
+				'pax_free'          => $getter('pax_free', 0, 'absint'),
+				'transport_type'    => $getter('transport_type'),
+				'route'             => $getter('route'),
+				'start_date'        => $getter('start_date'),
+				'start_hour'        => $getter('start_hour'),
+				'end_date'          => $getter('end_date'),
+				'end_hour'          => $getter('end_hour'),
+				'additional_time'   => $getter('additional_time', 0, 'absint'),
+				'coupon_code'       => $getter('coupon_code'),
+				'force_availability'=> (bool) filter_var(
+					$getter('force_availability', false),
+					FILTER_VALIDATE_BOOLEAN
+				),
+			],
+			'contact_details' => [
+				'first_name'          => $getter('first_name'),
+				'lastname'            => $getter('lastname'),
+				'phone'               => $getter('phone'),
+				'country_calling_code'=> $getter('country_calling_code'),
+				'email'               => $getter('email', '', 'sanitize_email'),
+				'repeat_email'        => $getter('repeat_email', '', 'sanitize_email'),
+				'inquiry'             => $getter('inquiry', '', 'sanitize_textarea_field'),
+			],
+		];
+
+		self::validate_payload_contract($post_payload, self::PAYLOAD_CONTRACT);
+
+		return self::$cache[$cache_key] = $post_payload;
+	}
+
+	public static function flat_sanitized_request_payload(): array
+	{
+		$cache_key = 'sanitized_post_payload_flat';
+
+		if (array_key_exists($cache_key, self::$cache)) {
+			return self::$cache[$cache_key];
+		}
+
+		return self::$cache[$cache_key] = array_merge(
+			...array_values(self::get_sanitized_request_payload())
+		);
+	}
+
+	/**
+	 * Return a sanitized POST|GET payload value by its field name.
+	 */
+	public static function request_value(string $key): string|int|bool|null
+	{
+
+		$flat_payload = self::flat_sanitized_request_payload();
+
+		if(!array_key_exists($key, $flat_payload)) {
+
+			$message = sprintf(
+				'dy_tx::request_value(): unknown sanitized payload key "%s".',
+				$key
+			);
+
+			write_log($message, true, true, 'payload_contract_error');
+
+			return null;
+		}
+
+		return $flat_payload[$key] ?? null;
+	}
+
 }

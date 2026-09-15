@@ -111,7 +111,7 @@ class Dy_Confirmation_Page
             return;
         }
 
-        $tx = dy_tx::get($tx_id);
+        $tx = dy_tx::get_stored_tx($tx_id);
 
         if ($tx === null) {
             dy_errors::add(
@@ -178,6 +178,7 @@ class Dy_Confirmation_Page
             esc_html(self::$status)
         );
     }
+
 
     /**
      * Sustituye el título del documento por el estado de la transacción.
