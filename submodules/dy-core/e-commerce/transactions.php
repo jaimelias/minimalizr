@@ -116,7 +116,7 @@ class dy_tx
 		if ($expected_arr === []) {
 			$expected_arr = [
 				$tx_id,
-				(string) secure_post('email', '', 'sanitize_email'),
+				(string) self::request_value('email'),
 				(string) secure_post('dy_request', '', 'sanitize_key'),
 				(int) secure_post('dy_id', 0, 'absint'),
 			];
@@ -191,18 +191,29 @@ class dy_tx
 	}
 
 	/**
-	 * Update a transaction status and, on success only, its whitelisted payload.
+	 * Update a transaction result object, or use the legacy status/payload arguments.
 	 */
 	public static function update(
-		string $tx_id = '',
+		string|object $tx_id = '',
 		string $new_status = '',
 		array $payload = [],
 		int $expiration_in_seconds = 0
 	): bool {
+		$submitted = is_object($tx_id) ? $tx_id : null;
+		$tx_id = $submitted !== null ? (string) ($submitted->tx_id ?? '') : $tx_id;
 		$tx = self::get_stored_tx($tx_id);
 
 		if ($tx === null) {
 			return false;
+		}
+
+		if ($submitted !== null) {
+			// The object API updates results, never the signed transaction identity.
+			if (!self::validate($tx_id, get_object_vars($submitted))) {
+				return false;
+			}
+			$new_status = (string) ($submitted->status ?? '');
+			$payload = get_object_vars($submitted);
 		}
 
 		$current_status = (string) ($tx->status ?? '');
@@ -210,7 +221,7 @@ class dy_tx
 		$request_type = (string) ($tx->dy_request ?? '');
 		$allowed_statuses = $request_type === 'paguelo_facil_on'
 			? ['started', 'processing', 'success', 'declined', 'error']
-			: ['started', 'success'];
+			: ['started', 'processing', 'success'];
 
 		if (! in_array($new_status, $allowed_statuses, true)) {
 			return false;
@@ -218,7 +229,7 @@ class dy_tx
 
 		$tx->status = $new_status;
 
-		if ($new_status === 'success' && $payload !== []) {
+		if (($new_status === 'success' || $submitted !== null) && $payload !== []) {
 			$sanitized_payload = self::sanitize_payload($payload);
 			$tx->booking_details = (object) array_merge(
 				self::object_to_array($tx->booking_details ?? null),
@@ -228,6 +239,16 @@ class dy_tx
 				self::object_to_array($tx->contact_details ?? null),
 				$sanitized_payload['contact_details']
 			);
+		}
+
+		if ($submitted !== null && isset($submitted->confirmation)) {
+			$result = self::object_to_array($submitted->confirmation);
+			$tx->confirmation = [
+				'title' => sanitize_text_field((string) ($result['title'] ?? '')),
+				'content' => wp_kses_post((string) ($result['content'] ?? '')),
+				'excerpt' => sanitize_text_field((string) ($result['excerpt'] ?? '')),
+				'events' => self::sanitize_conversion_events($result['events'] ?? [], $tx_id),
+			];
 		}
 
 		$expiration = $expiration_in_seconds > 0
@@ -242,6 +263,39 @@ class dy_tx
 			$tx,
 			$expiration
 		);
+	}
+
+	/** Keep only the conversion fields produced by dy_gtag_queue_server_event(). */
+	private static function sanitize_conversion_events(mixed $events, string $tx_id): array
+	{
+		$output = [];
+		foreach (is_array($events) ? $events : [] as $event) {
+			$name = $event['name'] ?? '';
+			$params = $event['params'] ?? [];
+			if (!in_array($name, ['purchase', 'generate_lead'], true)
+				|| !is_array($params) || ($params['transaction_id'] ?? '') !== $tx_id) {
+				continue;
+			}
+			$clean = [
+				'transaction_id' => $tx_id,
+				'value' => max(0, (float) ($params['value'] ?? 0)),
+				'currency' => sanitize_text_field((string) ($params['currency'] ?? '')),
+			];
+			if ($name === 'purchase') {
+				$clean['items'] = [];
+				foreach ((array) ($params['items'] ?? []) as $item) {
+					if (!is_array($item)) continue;
+					$clean['items'][] = [
+						'item_id' => sanitize_text_field((string) ($item['item_id'] ?? '')),
+						'item_name' => sanitize_text_field((string) ($item['item_name'] ?? '')),
+						'price' => max(0, (float) ($item['price'] ?? 0)),
+						'quantity' => max(1, (int) ($item['quantity'] ?? 1)),
+					];
+				}
+			}
+			$output[] = ['name' => $name, 'params' => $clean];
+		}
+		return $output;
 	}
 
 	private static function transient_key(string $tx_id): string
@@ -427,8 +481,8 @@ class dy_tx
 	}
 
 	/**
-	 * Build the transaction payload from the current POST request
-	 * guards against the fields defined in PAYLOAD_CONTRACT.
+	 * Build the transaction payload from the current GET or POST request
+	 * using the fields defined in PAYLOAD_CONTRACT.
 	 *
 	 * @return array{booking_details: array<string, mixed>, contact_details: array<string, mixed>}
 	 */
@@ -462,7 +516,7 @@ class dy_tx
 		};
 
 
-		$post_payload =  [
+		$request_payload = [
 			'booking_details' => [
 				'pax_regular'       => $getter('pax_regular', 0, 'absint'),
 				'pax_discount'      => $getter('pax_discount', 0, 'absint'),
@@ -491,14 +545,14 @@ class dy_tx
 			],
 		];
 
-		self::validate_payload_contract($post_payload, self::PAYLOAD_CONTRACT);
+		self::validate_payload_contract($request_payload, self::PAYLOAD_CONTRACT);
 
-		return self::$cache[$cache_key] = $post_payload;
+		return self::$cache[$cache_key] = $request_payload;
 	}
 
 	public static function flat_sanitized_request_payload(): array
 	{
-		$cache_key = 'sanitized_post_payload_flat';
+		$cache_key = 'sanitized_request_payload_flat';
 
 		if (array_key_exists($cache_key, self::$cache)) {
 			return self::$cache[$cache_key];
