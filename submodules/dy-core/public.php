@@ -135,13 +135,14 @@ class Dynamic_Core_Public {
 
         $site_time = get_site_time();
 
-        $args = array(
+        $args = [
             'homeUrl' => home_url(),
             'permalink' => get_the_permalink(),
             'wpJsonUrl' => rest_url('dy-core'),
+            'txSignSlug' => dy_tx::$tx_sign_slug,
             'lang' => current_language(),
             'whatsappNumber' => whatsapp_number()
-        );
+        ];
 
         foreach($site_time as $k => $v)
         {
@@ -198,7 +199,7 @@ class Dynamic_Core_Public {
         }
 
         $gtag_src = add_query_arg(
-            array('id' => $loader_id),
+            ['id' => $loader_id],
             'https://www.googletagmanager.com/gtag/js'
         );
 
@@ -265,14 +266,14 @@ class Dynamic_Core_Public {
             $google_ads_id = '';
         }
 
-        $ads_labels = array(
+        $ads_labels = [
             'purchase' => trim(
                 (string) get_option('dy_google_ads_purchase_label')
             ),
             'generate_lead' => trim(
                 (string) get_option('dy_google_ads_lead_label')
             )
-        );
+        ];
 
         $commands = [];
 
@@ -296,10 +297,10 @@ class Dynamic_Core_Public {
                 $ga4_params = $event['params'];
                 $ga4_params['send_to'] = $analytics;
 
-                $commands[] = array(
+                $commands[] = [
                     'event' => $event['name'],
                     'params' => $ga4_params
-                );
+                ];
             }
 
             /*
@@ -314,15 +315,15 @@ class Dynamic_Core_Public {
                 && 1 === preg_match('/^[A-Za-z0-9_-]+$/', $label)
             )
             {
-                $commands[] = array(
+                $commands[] = [
                     'event' => 'conversion',
-                    'params' => array(
+                    'params' => [
                         'send_to' => $google_ads_id . '/' . $label,
                         'value' => $event['params']['value'],
                         'currency' => $event['params']['currency'],
                         'transaction_id' => $event['params']['transaction_id']
-                    )
-                );
+                    ]
+                ];
             }
         }
 

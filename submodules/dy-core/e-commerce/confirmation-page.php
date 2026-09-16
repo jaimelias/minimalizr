@@ -14,7 +14,7 @@ class Dy_Confirmation_Page
 
     private string $version;
 
-    private ?object $tx = null;
+    private ?array $tx = null;
 
     private int $http_status = 400;
 
@@ -200,7 +200,7 @@ class Dy_Confirmation_Page
 
         $confirmation = $this->confirmation();
         $events = $confirmation['events'] ?? [];
-        $cookie = 'dy_tx_seen_' . $this->tx->tx_id;
+        $cookie = 'dy_tx_seen_' . $this->tx['tx_id'];
 
         if (cookie_has($cookie) || !is_array($events) || $events === []) {
             return;
@@ -215,7 +215,7 @@ class Dy_Confirmation_Page
 
             dy_gtag_queue_server_event(
                 (string) ($event['name'] ?? ''),
-                (string) $this->tx->tx_id,
+                (string) $this->tx['tx_id'],
                 (float) ($params['value'] ?? 0),
                 (string) ($params['currency'] ?? ''),
                 is_array($params['items'] ?? null) ? $params['items'] : []
@@ -265,7 +265,7 @@ class Dy_Confirmation_Page
 
         return sprintf(
             '<p class="minimal_alert strong">%s</p>',
-            esc_html((string) ($this->tx->status ?? 'error'))
+            esc_html((string) ($this->tx['status'] ?? 'error'))
         );
     }
 
@@ -281,7 +281,7 @@ class Dy_Confirmation_Page
 
         return array_key_exists('title', $confirmation)
             ? (string) $confirmation['title']
-            : (string) ($this->tx->status ?? $title);
+            : (string) ($this->tx['status'] ?? $title);
     }
 
     public function the_title(mixed $title): string
@@ -362,7 +362,7 @@ class Dy_Confirmation_Page
     private function resolve_transaction_post(): ?WP_Post
     {
         if ($this->tx !== null) {
-            $post = get_post((int) $this->tx->dy_id);
+            $post = get_post((int) $this->tx['dy_id']);
 
             return $post instanceof WP_Post ? $post : null;
         }
@@ -375,11 +375,11 @@ class Dy_Confirmation_Page
 
         $tx = dy_tx::get_stored_tx($tx_id);
 
-        if ($tx === null || !dy_tx::validate($tx_id, get_object_vars($tx))) {
+        if ($tx === null || !dy_tx::validate($tx_id, $tx)) {
             return null;
         }
 
-        $post = get_post((int) ($tx->dy_id ?? 0));
+        $post = get_post((int) ($tx['dy_id'] ?? 0));
 
         if (!$post instanceof WP_Post || $post->post_status !== 'publish') {
             return null;
@@ -387,7 +387,7 @@ class Dy_Confirmation_Page
 
         $request_types = dy_tx::all_dy_request_types();
 
-        if (!in_array((string) ($tx->dy_request ?? ''), $request_types, true)) {
+        if (!in_array((string) ($tx['dy_request'] ?? ''), $request_types, true)) {
             return null;
         }
 
@@ -424,10 +424,8 @@ class Dy_Confirmation_Page
             return [];
         }
 
-        $confirmation = $this->tx->confirmation ?? [];
+        $confirmation = $this->tx['confirmation'] ?? [];
 
-        return is_object($confirmation)
-            ? get_object_vars($confirmation)
-            : (is_array($confirmation) ? $confirmation : []);
+		return is_array($confirmation) ? $confirmation : [];
     }
 }

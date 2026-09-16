@@ -355,16 +355,14 @@ const createFormSubmit = async form => {
         if (hasTurnstileWidgets()) {
             try {
 
+                const {txSignSlug} = dyCoreArgs;
                 const {turnstileWidget1, turnstileWidget2} = window.dyTurnstileWidgets || {};
-
-                
-
                 const { wpJsonUrl, post_id } = dyCoreArgs;
-                const signUrl = new URL(`${wpJsonUrl}/tx/${post_id}`);
+                const signUrl = new URL(`${wpJsonUrl}/${txSignSlug}/${post_id}`);
                 const signRequest = {
                     dy_request: form.find('[name="dy_request"]').val() || '',
                     email: form.find('[name="email"]').val() || '',
-                    action: 'sign-transaction'
+                    action: 'tx-sign'
                 };
                 const tx_id = await signDyTransaction({
                     signUrl,
