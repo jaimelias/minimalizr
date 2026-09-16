@@ -2,48 +2,66 @@
 
 declare(strict_types=1);
 
+if (!defined('WPINC')) {
+    exit;
+}
+
 class Dy_Confirmation_Page
 {
+    private const REWRITE_VERSION = '2';
+
     private string $slug = 'dy-tx';
 
-    private static mixed $tx = null;
+    private string $version;
 
-    /** @var array<string, bool> */
-    private static array $cache = [];
+    private ?object $tx = null;
 
-    private static int $http_status = 400;
+    private int $http_status = 400;
 
-    private static string $status = 'error';
-
-    /**
-     * Registra los hooks necesarios para manejar el endpoint de transacciones.
-     */
-    public function __construct()
+    public function __construct(int|string $version = '')
     {
-        add_action('init', [$this, 'add_rewrite_rule']);
+        $this->version = (string) $version;
 
+        add_action('init', [$this, 'add_rewrite_rule']);
+        add_action('init', [$this, 'add_localized_rewrite_rules'], 20);
+        add_action('wp_loaded', [$this, 'refresh_rewrite_rules']);
         add_filter('query_vars', [$this, 'register_custom_query_var']);
 
 
-        //regenerate $post from $tx->dy_id
-        add_action('wp', [$this, 'set_post_on_checkout_page']);
-
-        /* BELLOW THIS LINE NO CALLBACK CAN BE TRIGGERED USING "INIT" OR "ANY HOOK BEFORE INIT" */
-
+        
         //converts the regenerated post into a page
         add_action('pre_get_posts', [$this, 'main_wp_query'], 100);
+        add_filter('posts_pre_query', [$this, 'transaction_post'], 10, 2);
+        add_action('wp', [$this, 'set_post_on_checkout_page']);
+        add_action('wp', [$this, 'prepare_confirmation'], 20);
 
-        //loads the page.php template
-        add_filter('template_include', [$this, 'locate_template'], 100 );
+        add_filter('template_include', [$this, 'locate_template'], 100);
+        add_filter('redirect_canonical', [$this, 'redirect_canonical']);
+        add_filter('the_content', [$this, 'the_content'], 101);
+        add_filter('pre_get_document_title', [$this, 'wp_title'], 101);
+        add_filter('the_title', [$this, 'the_title'], 101);
+        add_filter('get_the_excerpt', [$this, 'get_the_excerpt'], 101);
 
-
-        //template parts
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
         add_action('wp_head', [$this, 'meta_tags']);
-        add_filter('the_content', [$this, 'the_content']);
-        add_filter('pre_get_document_title', [$this, 'wp_title']);
-        add_filter('the_title', [$this, 'the_title']);
-        add_filter('get_the_excerpt', [$this, 'get_the_excerpt']);
         add_action('template_redirect', [$this, 'template_redirect']);
+    }
+
+    public static function is_confirmation(): bool
+    {
+        if (
+            secure_server('REQUEST_METHOD') !== 'GET'
+            || is_admin()
+            || wp_doing_ajax()
+            || wp_doing_cron()
+            || (defined('REST_REQUEST') && REST_REQUEST)
+        ) {
+            return false;
+        }
+
+        $tx_id = get_query_var('dy-tx');
+
+        return is_string($tx_id) && $tx_id !== '';
     }
 
 	public function main_wp_query($query)
@@ -55,91 +73,12 @@ class Dy_Confirmation_Page
 		}
 	}
 
-	public function locate_template($template)
-	{
-		if(get_query_var($this->slug))
-		{
-			$new_template = locate_template( [ 'page.php' ] );
-			return $new_template;			
-		}
-		return $template;
-	}
-
-    /**
-     * Determina si la request actual corresponde al endpoint /dy-tx/{tx_id}.
-     */
+    /** Backward-compatible instance predicate. */
     public function is_request_accepted(): bool
     {
-        $cache_key = 'is_request_accepted';
-
-        if (array_key_exists($cache_key, self::$cache)) {
-            return self::$cache[$cache_key];
-        }
-
-        if (
-            secure_server('REQUEST_METHOD') !== 'GET'
-            || is_admin()
-            || wp_doing_ajax()
-            || wp_doing_cron()
-            || (defined('REST_REQUEST') && REST_REQUEST)
-        ) {
-            return self::$cache[$cache_key] = false;
-        }
-
-        $tx_id = get_query_var($this->slug);
-
-        return self::$cache[$cache_key] = is_string($tx_id) && $tx_id !== '';
+        return self::is_confirmation();
     }
 
-    /**
-     * Resuelve la transacción indicada en la URL y establece el post asociado
-     * como contenido principal de la request.
-     */
-    public function set_post_on_checkout_page(): void
-    {
-        if (!$this->is_request_accepted()) {
-            return;
-        }
-
-        $tx_id = (string) get_query_var($this->slug);
-
-        if (!wp_is_uuid($tx_id, 4)) {
-            dy_errors::add(
-                __('Invalid or missing transaction ID.', 'dycore')
-            );
-
-            return;
-        }
-
-        $tx = dy_tx::get_stored_tx($tx_id);
-
-        if ($tx === null) {
-            dy_errors::add(
-                __('Invalid or expired transaction ID.', 'dycore')
-            );
-
-            return;
-        }
-
-        $post = get_post((int) $tx->dy_id);
-
-        if (!$post instanceof WP_Post) {
-            dy_errors::add(
-                __('Invalid transaction destination.', 'dycore')
-            );
-
-            return;
-        }
-
-        self::$http_status = 200;
-        self::$tx = $tx;
-        self::$status = (string) $tx->status;
-        $GLOBALS['post'] = $post;
-    }
-
-    /**
-     * Registra el endpoint /dy-tx/{tx_id}.
-     */
     public function add_rewrite_rule(): void
     {
         add_rewrite_rule(
@@ -149,11 +88,45 @@ class Dy_Confirmation_Page
         );
     }
 
+    public function add_localized_rewrite_rules(): void
+    {
+        if (!function_exists('pll_languages_list')) {
+            return;
+        }
+
+        $languages = array_map(
+            static fn(string $language): string => preg_quote($language, '#'),
+            get_languages()
+        );
+
+        if ($languages === []) {
+            return;
+        }
+
+        add_rewrite_rule(
+            '^(' . implode('|', $languages) . ')/dy-tx/([^/]+)/?$',
+            'index.php?lang=$matches[1]&dy-tx=$matches[2]',
+            'top'
+        );
+    }
+
+    public function refresh_rewrite_rules(): void
+    {
+        if (dy_get_option('dy_checkout_rewrite_version') === self::REWRITE_VERSION) {
+            return;
+        }
+
+        flush_rewrite_rules(false);
+        update_option(
+            'dy_checkout_rewrite_version',
+            self::REWRITE_VERSION,
+            false
+        );
+    }
+
     /**
-     * Registra dy-tx como query variable pública de WordPress.
-     *
-     * @param string[] $query_vars Query variables registradas.
-     * @return string[] Query variables actualizadas.
+     * @param string[] $query_vars Registered public query variables.
+     * @return string[]
      */
     public function register_custom_query_var(array $query_vars): array
     {
@@ -162,82 +135,299 @@ class Dy_Confirmation_Page
         return array_values(array_unique($query_vars));
     }
 
+
     /**
-     * Sustituye el contenido del post por el estado de la transacción.
+     * Supply the transaction destination to the main loop before WordPress
+     * attempts to query a synthetic page from the endpoint query variable.
+     *
+     * @param WP_Post[]|null $posts Short-circuited posts, when already set.
+     * @return WP_Post[]|null
      */
+    public function transaction_post(?array $posts, WP_Query $query): ?array
+    {
+        if (!$query->is_main_query() || !self::is_confirmation()) {
+            return $posts;
+        }
+
+        $post = $this->resolve_transaction_post();
+
+        if (!$post instanceof WP_Post) {
+            // Keep a loop available so dy_errors can render an invalid or
+            // expired transaction through the normal page template.
+            $post = new WP_Post((object) [
+                'ID' => 0,
+                'post_author' => 0,
+                'post_content' => '',
+                'post_excerpt' => '',
+                'post_name' => '',
+                'post_parent' => 0,
+                'post_status' => 'publish',
+                'post_title' => '',
+                'post_type' => 'page',
+            ]);
+        }
+
+        $query->found_posts = 1;
+        $query->max_num_pages = 1;
+        $query->queried_object = $post;
+        $query->queried_object_id = $post->ID;
+
+        return [$post];
+    }
+
+    public function set_post_on_checkout_page(): void
+    {
+        if (!self::is_confirmation()) {
+            return;
+        }
+
+        $post = $this->resolve_transaction_post();
+
+        if (!$post instanceof WP_Post) {
+            $this->add_transaction_error();
+            return;
+        }
+
+        $this->http_status = 200;
+        $GLOBALS['post'] = $post;
+    }
+
+    public function prepare_confirmation(): void
+    {
+        if (!self::is_confirmation() || $this->tx === null) {
+            return;
+        }
+
+        $confirmation = $this->confirmation();
+        $events = $confirmation['events'] ?? [];
+        $cookie = 'dy_tx_seen_' . $this->tx->tx_id;
+
+        if (cookie_has($cookie) || !is_array($events) || $events === []) {
+            return;
+        }
+
+        foreach ($events as $event) {
+            if (!is_array($event) || !is_array($event['params'] ?? null)) {
+                continue;
+            }
+
+            $params = $event['params'];
+
+            dy_gtag_queue_server_event(
+                (string) ($event['name'] ?? ''),
+                (string) $this->tx->tx_id,
+                (float) ($params['value'] ?? 0),
+                (string) ($params['currency'] ?? ''),
+                is_array($params['items'] ?? null) ? $params['items'] : []
+            );
+        }
+
+        setcookie(
+            $cookie,
+            '1',
+            [
+                'expires' => time() + DAY_IN_SECONDS,
+                'path' => (string) (wp_parse_url(home_lang(), PHP_URL_PATH) ?: '/'),
+                'secure' => is_ssl(),
+                'httponly' => true,
+                'samesite' => 'Lax',
+            ]
+        );
+    }
+
+    public function locate_template(string $template): string
+    {
+        if (!self::is_confirmation()) {
+            return $template;
+        }
+
+        return locate_template(['page.php']) ?: $template;
+    }
+
+    public function redirect_canonical(string|false $url): string|false
+    {
+        return self::is_confirmation() ? false : $url;
+    }
+
     public function the_content(mixed $content = ''): string
     {
         $content = is_string($content) ? $content : '';
 
-        if (!$this->is_request_accepted()) {
+        if (!self::is_confirmation() || !in_the_loop() || !is_main_query()) {
             return $content;
+        }
+
+        $confirmation = $this->confirmation();
+
+        if (array_key_exists('content', $confirmation)) {
+            return (string) $confirmation['content'];
         }
 
         return sprintf(
             '<p class="minimal_alert strong">%s</p>',
-            esc_html(self::$status)
+            esc_html((string) ($this->tx->status ?? 'error'))
         );
     }
 
-
-    /**
-     * Sustituye el título del documento por el estado de la transacción.
-     */
     public function wp_title(mixed $title): string
     {
         $title = is_string($title) ? $title : '';
 
-        return $this->is_request_accepted()
-            ? self::$status
-            : $title;
+        if (!self::is_confirmation()) {
+            return $title;
+        }
+
+        $confirmation = $this->confirmation();
+
+        return array_key_exists('title', $confirmation)
+            ? (string) $confirmation['title']
+            : (string) ($this->tx->status ?? $title);
     }
 
-    /**
-     * Sustituye el título del post dentro del loop.
-     */
     public function the_title(mixed $title): string
     {
         $title = is_string($title) ? $title : '';
 
-        return $this->is_request_accepted() && in_the_loop()
-            ? self::$status
+        return self::is_confirmation() && in_the_loop() && is_main_query()
+            ? $this->wp_title($title)
             : $title;
     }
 
-    /**
-     * Elimina el excerpt en el endpoint de transacciones.
-     */
     public function get_the_excerpt(mixed $excerpt): string
     {
         $excerpt = is_string($excerpt) ? $excerpt : '';
 
-        return $this->is_request_accepted()
-            ? ''
-            : $excerpt;
+        if (!self::is_confirmation()) {
+            return $excerpt;
+        }
+
+        return (string) ($this->confirmation()['excerpt'] ?? '');
     }
 
-    /**
-     * Establece el código HTTP correspondiente y desactiva el cache.
-     */
-    public function template_redirect(): void
+    public function enqueue_scripts(): void
     {
-        if (!$this->is_request_accepted()) {
+        if (!self::is_confirmation()) {
             return;
         }
 
-        status_header(self::$http_status);
+        $core_url = plugin_dir_url(dirname(__DIR__) . '/loader.php');
+
+        wp_enqueue_script(
+            'dy-core-confirmation',
+            $core_url . 'js/dy-core-confirmation-page.js',
+            ['jquery'],
+            $this->version !== '' ? $this->version : null,
+            true
+        );
+        wp_localize_script(
+            'dy-core-confirmation',
+            'dyConfirmationArgs',
+            [
+                'textCopiedToClipboard' => __('Copied to Clipboard!', 'dycore'),
+            ]
+        );
+
+        if (str_contains((string) ($this->confirmation()['content'] ?? ''), 'addeventatc')) {
+            wp_enqueue_script(
+                'dy_add_to_calendar',
+                'https://addevent.com/libs/atc/1.6.1/atc.min.js',
+                [],
+                null,
+                true
+            );
+            wp_add_inline_style(
+                'minimalLayout',
+                '.addeventatc{visibility:hidden}.addevent_container{height:42px}'
+            );
+        }
+    }
+
+    public function template_redirect(): void
+    {
+        if (!self::is_confirmation()) {
+            return;
+        }
+
+        status_header($this->http_status);
         nocache_headers();
     }
 
-    /**
-     * Evita la indexación del endpoint de transacciones.
-     */
     public function meta_tags(): void
     {
-        if (!$this->is_request_accepted()) {
+        if (self::is_confirmation()) {
+            echo '<meta name="robots" content="noindex, nofollow">' . "\n";
+        }
+    }
+
+    private function resolve_transaction_post(): ?WP_Post
+    {
+        if ($this->tx !== null) {
+            $post = get_post((int) $this->tx->dy_id);
+
+            return $post instanceof WP_Post ? $post : null;
+        }
+
+        $tx_id = (string) get_query_var($this->slug);
+
+        if (!wp_is_uuid($tx_id, 4)) {
+            return null;
+        }
+
+        $tx = dy_tx::get_stored_tx($tx_id);
+
+        if ($tx === null || !dy_tx::validate($tx_id, get_object_vars($tx))) {
+            return null;
+        }
+
+        $post = get_post((int) ($tx->dy_id ?? 0));
+
+        if (!$post instanceof WP_Post || $post->post_status !== 'publish') {
+            return null;
+        }
+
+        $request_types = dy_tx::all_dy_request_types();
+
+        if (!in_array((string) ($tx->dy_request ?? ''), $request_types, true)) {
+            return null;
+        }
+
+        $is_valid_destination = (bool) apply_filters(
+            'dy_confirmation_destination_is_valid',
+            true,
+            $post,
+            $tx
+        );
+
+        if (!$is_valid_destination) {
+            return null;
+        }
+
+        $this->tx = $tx;
+
+        return $post;
+    }
+
+    private function add_transaction_error(): void
+    {
+        if (!wp_is_uuid((string) get_query_var($this->slug), 4)) {
+            dy_errors::add(__('Invalid or missing transaction ID.', 'dycore'));
             return;
         }
 
-        echo '<meta name="robots" content="noindex, nofollow">' . "\n";
+        dy_errors::add(__('Invalid or expired transaction ID.', 'dycore'));
+    }
+
+    /** @return array<string, mixed> */
+    private function confirmation(): array
+    {
+        if ($this->tx === null) {
+            return [];
+        }
+
+        $confirmation = $this->tx->confirmation ?? [];
+
+        return is_object($confirmation)
+            ? get_object_vars($confirmation)
+            : (is_array($confirmation) ? $confirmation : []);
     }
 }

@@ -4,7 +4,7 @@ if ( !defined( 'WPINC' )) exit;
 
 if(!class_exists('Dy_Core_Init'))
 {
-    define('DY_CORE_VERSION', '1.1.38');
+    define('DY_CORE_VERSION', '1.1.39');
 
     if ( !defined( 'DY_CORE_TEXTDOMAIN' ) ) {
         define( 'DY_CORE_TEXTDOMAIN', 'dycore' );
@@ -32,7 +32,7 @@ if(!class_exists('Dy_Core_Init'))
             new Dynamic_Core_Public($version);  
             new Dynamic_Core_WP_JSON();
             new Dynamic_Core_Providers();
-            new Dy_Confirmation_Page();
+            new Dy_Confirmation_Page($version);
         }
 
         public function load_textdomain(): void
