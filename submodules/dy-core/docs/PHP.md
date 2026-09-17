@@ -5,7 +5,7 @@
 - For `$_POST` handling read `security/POST.md`,
 - For `$_REQUEST` handling read `security/REQUEST.md`
 - For `$_COOKIE` handling read `security/COOKIE.md`.
-- For `$_SERVER` handling read `security/_SERVER.md`.
+- For `$_SERVER` handling read `security/SERVER.md`.
 - For `get_option()` read `security/GET_OPTION.md`
 - Prefer bracket arrays `[]`.
 - Type new functions, methods and its parameters.

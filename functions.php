@@ -75,7 +75,7 @@ class Minimalizr {
 	public function load_dependencies()
 	{
 
-		if(!defined('DY_CORE_FUNCTIONS'))
+		if(!defined('DY_CORE_VERSION'))
 		{
 			require_once $this->theme_directory . '/submodules/dy-core/loader.php';
 		}

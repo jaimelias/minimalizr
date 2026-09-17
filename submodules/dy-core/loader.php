@@ -4,11 +4,7 @@ if ( !defined( 'WPINC' )) exit;
 
 if(!class_exists('Dy_Core_Init'))
 {
-    define('DY_CORE_VERSION', '1.1.51');
-
-    if ( !defined( 'DY_CORE_TEXTDOMAIN' ) ) {
-        define( 'DY_CORE_TEXTDOMAIN', 'dycore' );
-    }
+    define('DY_CORE_VERSION', '1.1.52');
 
     #[AllowDynamicProperties]
     class Dy_Core_Init {
@@ -38,7 +34,7 @@ if(!class_exists('Dy_Core_Init'))
         public function load_textdomain(): void
         {
             load_plugin_textdomain(
-                DY_CORE_TEXTDOMAIN,
+                'dycore',
                 false,
                 dirname( plugin_basename( __FILE__ ) ) . '/languages'
             );

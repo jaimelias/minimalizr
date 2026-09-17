@@ -2,9 +2,6 @@
 
 if ( !defined( 'WPINC' ) ) exit;
 
-define('DY_CORE_FUNCTIONS', true);
-
-
 if(!function_exists('get_dy_id'))
 {
 	function get_dy_id() : int|null{

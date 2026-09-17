@@ -1,3 +1,3 @@
 # SUPERGLOBAL $_SERVER
 
-Use `secure_server()` from `../../security/server.php` for server values.
+Use `secure_server()` from `../../helpers/server.php` for server values.
