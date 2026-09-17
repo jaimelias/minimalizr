@@ -59,7 +59,7 @@ final class Dy_Checkout_Form
 		$core_url = plugin_dir_url(dirname(__DIR__) . '/loader.php');
 		$version = defined('DY_CORE_VERSION') ? DY_CORE_VERSION : null;
 		wp_enqueue_script('dy-core-request-form-utilities', $core_url . 'js/request-form-utilities.js', ['jquery', 'landing-cookies', 'dy-core-utilities'], $version, true);
-		wp_enqueue_script('dy-core-checkout', plugin_dir_url(__FILE__) . 'checkout.js',
+		wp_enqueue_script('dy-core-checkout', plugin_dir_url(__FILE__) . 'checkout-form.js',
 			['jquery', 'dy-core-utilities', 'dy-core-request-form-utilities', 'cloudflare-turnstile', 'cloudflare-turnstile-widgets'],
 			$version, true);
 		wp_localize_script('dy-core-checkout', 'dyCheckoutArgs', [

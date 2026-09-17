@@ -4,7 +4,7 @@ if ( !defined( 'WPINC' )) exit;
 
 if(!class_exists('Dy_Core_Init'))
 {
-    define('DY_CORE_VERSION', '1.1.49');
+    define('DY_CORE_VERSION', '1.1.50');
 
     if ( !defined( 'DY_CORE_TEXTDOMAIN' ) ) {
         define( 'DY_CORE_TEXTDOMAIN', 'dycore' );
@@ -15,7 +15,6 @@ if(!class_exists('Dy_Core_Init'))
 
         public function __construct()
         {
-
             add_action('wp_loaded', 'dy_core_maybe_flush_rewrite_rules', PHP_INT_MAX);
 
             $this->load_dependencies();
@@ -50,14 +49,14 @@ if(!class_exists('Dy_Core_Init'))
             $plugin_dir_path = plugin_dir_path( __FILE__ );
 
             //core helpers
-            require_once $plugin_dir_path . 'security/functions.php';
+            require_once $plugin_dir_path . 'helpers/functions.php';
             require_once $plugin_dir_path . 'admin/taxonomies.php';
-            require_once $plugin_dir_path . 'security/queries.php';
-            require_once $plugin_dir_path . 'security/write_log.php';
-            require_once $plugin_dir_path . 'security/get-option.php';
-            require_once $plugin_dir_path . 'security/ip-utilities.php';
-            require_once $plugin_dir_path . 'security/server.php';
-            require_once $plugin_dir_path . 'security/waf.php';
+            require_once $plugin_dir_path . 'helpers/queries.php';
+            require_once $plugin_dir_path . 'helpers/write_log.php';
+            require_once $plugin_dir_path . 'helpers/get-option.php';
+            require_once $plugin_dir_path . 'helpers/ip-utilities.php';
+            require_once $plugin_dir_path . 'helpers/server.php';
+            require_once $plugin_dir_path . 'helpers/waf.php';
             require_once $plugin_dir_path . 'controllers/abstracts/input_abstract.php';
             require_once $plugin_dir_path . 'controllers/abstracts/select_abstract.php';
             require_once $plugin_dir_path . 'controllers/abstracts/textarea_abstract.php';
@@ -75,16 +74,14 @@ if(!class_exists('Dy_Core_Init'))
             require_once $plugin_dir_path . 'integrations/handsontable.php';
             require_once $plugin_dir_path . 'integrations/parsedown.php';
 
-            //ai training data
+            //ml utilities
             require_once $plugin_dir_path . 'training-data/concatenate_object_to_text.php';
             require_once $plugin_dir_path . 'training-data/concatenate_object_to_html.php';
             
             //core endpoints
-            require_once $plugin_dir_path . 'public.php';
-            require_once $plugin_dir_path . 'wp-json.php';
-            require_once $plugin_dir_path . 'admin/admin.php';
-
-            //e-commerce
+            require_once $plugin_dir_path . 'public/base-template.php';
+            require_once $plugin_dir_path . 'public/wp-json.php';
+            require_once $plugin_dir_path . 'admin/settings.php';
             require_once $plugin_dir_path . 'e-commerce/transactions.php';
             require_once $plugin_dir_path . 'gateways/loader.php';
             require_once $plugin_dir_path . 'e-commerce/providers.php';
