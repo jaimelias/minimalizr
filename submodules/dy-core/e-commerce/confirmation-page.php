@@ -16,6 +16,8 @@ class Dy_Confirmation_Page
 
     private ?array $tx = null;
 
+    private ?array $confirmation_result = null;
+
     private int $http_status = 400;
 
     public function __construct(int|string $version = '')
@@ -40,7 +42,7 @@ class Dy_Confirmation_Page
         add_filter('the_content', [$this, 'the_content'], 101);
         add_filter('pre_get_document_title', [$this, 'wp_title'], 101);
         add_filter('the_title', [$this, 'the_title'], 101);
-        add_filter('get_the_excerpt', [$this, 'get_the_excerpt'], 101);
+        add_filter('get_the_excerpt', [$this, 'get_the_excerpt'], 101, 2);
 
         add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
         add_action('wp_head', [$this, 'meta_tags']);
@@ -198,8 +200,7 @@ class Dy_Confirmation_Page
             return;
         }
 
-        $confirmation = $this->confirmation();
-        $events = $confirmation['events'] ?? [];
+        $events = dy_tx::events($this->tx);
         $cookie = 'dy_tx_seen_' . $this->tx['tx_id'];
 
         if (cookie_has($cookie) || !is_array($events) || $events === []) {
@@ -293,13 +294,18 @@ class Dy_Confirmation_Page
             : $title;
     }
 
-    public function get_the_excerpt(mixed $excerpt): string
+    public function get_the_excerpt(mixed $excerpt, mixed $post = null): string
     {
         $excerpt = is_string($excerpt) ? $excerpt : '';
 
-        if (!self::is_confirmation()) {
+        if (!self::is_confirmation() || !$post instanceof WP_Post || $this->tx === null) {
             return $excerpt;
         }
+
+		$transaction_post_id = (int) dy_tx::service_value('dy_id', 0, $this->tx);
+		if ((int) $post->ID !== $transaction_post_id) {
+			return $excerpt;
+		}
 
         return (string) ($this->confirmation()['excerpt'] ?? '');
     }
@@ -349,6 +355,7 @@ class Dy_Confirmation_Page
         }
 
         status_header($this->http_status);
+		header('Referrer-Policy: no-referrer');
         nocache_headers();
     }
 
@@ -356,16 +363,20 @@ class Dy_Confirmation_Page
     {
         if (self::is_confirmation()) {
             echo '<meta name="robots" content="noindex, nofollow">' . "\n";
+			echo '<meta name="referrer" content="no-referrer">' . "\n";
         }
     }
 
     private function resolve_transaction_post(): ?WP_Post
     {
         if ($this->tx !== null) {
-            $post = get_post((int) $this->tx['dy_id']);
+            dy_tx::set_current_transaction($this->tx);
+            $post = get_post((int) dy_tx::service_value('dy_id', 0, $this->tx));
 
             return $post instanceof WP_Post ? $post : null;
         }
+
+        dy_tx::set_current_transaction(null);
 
         $tx_id = (string) get_query_var($this->slug);
 
@@ -379,7 +390,11 @@ class Dy_Confirmation_Page
             return null;
         }
 
-        $post = get_post((int) ($tx['dy_id'] ?? 0));
+		if (!in_array((string) ($tx['status'] ?? ''), ['success', 'declined', 'error'], true)) {
+			return null;
+		}
+
+        $post = get_post((int) dy_tx::service_value('dy_id', 0, $tx));
 
         if (!$post instanceof WP_Post || $post->post_status !== 'publish') {
             return null;
@@ -387,9 +402,13 @@ class Dy_Confirmation_Page
 
         $request_types = dy_tx::all_dy_request_types();
 
-        if (!in_array((string) ($tx['dy_request'] ?? ''), $request_types, true)) {
+        $request_type = (string) dy_tx::service_value('dy_request', '', $tx);
+
+        if (!in_array($request_type, $request_types, true)) {
             return null;
         }
+
+        dy_tx::set_current_transaction($tx);
 
         $is_valid_destination = (bool) apply_filters(
             'dy_confirmation_destination_is_valid',
@@ -399,6 +418,7 @@ class Dy_Confirmation_Page
         );
 
         if (!$is_valid_destination) {
+            dy_tx::set_current_transaction(null);
             return null;
         }
 
@@ -424,8 +444,43 @@ class Dy_Confirmation_Page
             return [];
         }
 
-        $confirmation = $this->tx['confirmation'] ?? [];
+        if ($this->confirmation_result !== null) {
+            return $this->confirmation_result;
+        }
 
-		return is_array($confirmation) ? $confirmation : [];
+        $confirmation = [];
+        $legacy = $this->tx['_legacy_confirmation'] ?? null;
+
+        if (is_array($legacy)) {
+            foreach (['title', 'content', 'excerpt'] as $key) {
+                if (array_key_exists($key, $legacy)) {
+                    $confirmation[$key] = (string) $legacy[$key];
+                }
+            }
+        }
+
+        $filtered = apply_filters('dy_confirmation_result', $confirmation, $this->tx);
+
+        if (is_array($filtered)) {
+            $confirmation = $filtered;
+        }
+
+        $request_type = sanitize_key(
+            (string) dy_tx::service_value('dy_request', '', $this->tx)
+        );
+
+        if ($request_type !== '') {
+            $filtered = apply_filters(
+                'dy_confirmation_result_' . $request_type,
+                $confirmation,
+                $this->tx
+            );
+
+            if (is_array($filtered)) {
+                $confirmation = $filtered;
+            }
+        }
+
+        return $this->confirmation_result = $confirmation;
     }
 }

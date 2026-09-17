@@ -993,6 +993,26 @@ if(!function_exists('dy_core_maybe_flush_rewrite_rules'))  {
 
 }
 
+if(!function_exists('dy_sanitize_email'))  {
+	function dy_sanitize_email(string $email): string
+	{
+		static $cache = [];
+
+		if ($email !== '' && isset($cache[$email])) {
+			return $cache[$email];
+		}
+
+		$sanitized = sanitize_email(strtolower(trim($email)));
+
+		if ($email !== '') {
+			$cache[$email] = $sanitized;
+		}
+
+		return $sanitized;
+	}
+}
+
+
 
 
 ?>

@@ -8,7 +8,7 @@ class Dynamic_Core_WP_JSON
 {
     public function __construct()
     {
-        add_action('rest_api_init', array($this, 'core_args'));
+        add_action('rest_api_init', [$this, 'core_args']);
         add_action('rest_api_init', [$this, 'register_rest_routes_transactions']);
     }
 
@@ -17,9 +17,11 @@ class Dynamic_Core_WP_JSON
 			'required'          => true,
 			'sanitize_callback' => 'absint',
 			'validate_callback' => static function($value) {
-				return dy_validators::validate_the_id($value);
-			},
-		];
+					return is_numeric($value)
+						&& (int) $value > 0
+						&& (int) $value == $value;
+				},
+			];
 
 		$dy_request_param = [
 			'required'          => true,
