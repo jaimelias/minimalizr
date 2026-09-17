@@ -304,19 +304,6 @@ if(!function_exists('whatsapp_button'))
 	}
 }
 
-
-
-if(!function_exists('get_inline_file'))
-{
-	function get_inline_file($dir) : string {
-		ob_start();
-		require_once($dir);
-		$output = ob_get_contents();
-		ob_end_clean();
-		return (string) $output;	
-	}
-}
-
 if(!function_exists('load_picker_scripts'))
 {
     function load_picker_scripts($plugin_dir_url, $dirname_file) : void {
@@ -1007,6 +994,24 @@ if(!function_exists('dy_sanitize_email'))  {
 
 		return $sanitized;
 	}
+}
+
+if(!function_exists('dy_get_template_part'))  {
+
+	function dy_get_template_part(string $dir, array $template_params = []) : string {
+
+		if (!is_file($dir)) {
+			write_log(`Template part "$dir" not found.`, true);
+			return '';
+		}
+
+		extract($template_params, EXTR_SKIP);
+
+		ob_start();
+		require $dir;
+		return (string) ob_get_clean();
+	}
+
 }
 
 
