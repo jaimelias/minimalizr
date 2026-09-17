@@ -4,7 +4,7 @@ if ( !defined( 'WPINC' )) exit;
 
 if(!class_exists('Dy_Core_Init'))
 {
-    define('DY_CORE_VERSION', '1.1.46');
+    define('DY_CORE_VERSION', '1.1.47');
 
     if ( !defined( 'DY_CORE_TEXTDOMAIN' ) ) {
         define( 'DY_CORE_TEXTDOMAIN', 'dycore' );
@@ -50,9 +50,7 @@ if(!class_exists('Dy_Core_Init'))
             $plugin_dir_path = plugin_dir_path( __FILE__ );
 
             //core helpers
-            require_once $plugin_dir_path . 'functions.php';
-            
-            require_once $plugin_dir_path . 'errors-page.php';
+            require_once $plugin_dir_path . 'security/functions.php';
             require_once $plugin_dir_path . 'taxonomies.php';
             require_once $plugin_dir_path . 'security/queries.php';
             require_once $plugin_dir_path . 'security/write_log.php';
@@ -90,7 +88,10 @@ if(!class_exists('Dy_Core_Init'))
             require_once $plugin_dir_path . 'e-commerce/transactions.php';
             require_once $plugin_dir_path . 'gateways/loader.php';
             require_once $plugin_dir_path . 'e-commerce/providers.php';
-            require_once $plugin_dir_path . 'e-commerce/confirmation-page.php';
+
+            //public-pages
+            require_once $plugin_dir_path . 'public-pages/errors-page.php';
+            require_once $plugin_dir_path . 'public-pages/confirmation-page.php';
         }
     }
 
