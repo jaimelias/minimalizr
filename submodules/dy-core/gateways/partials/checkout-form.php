@@ -130,8 +130,9 @@ $site_key = get_turnstile_site_key();
 		
 		<?php if($has_gateway) : ?>
 			<?php Dy_Checkout_Form::card(); ?>
-			<?php echo $view['terms']; ?>
 		<?php endif; ?>
+
+		<?php echo $view['terms']; ?>
 		
 		<?php echo $view['inquiry']; ?>
 		
