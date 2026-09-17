@@ -12,21 +12,6 @@ class dy_tx
 	private const SCHEMA_VERSION = 2;
 	private const TRANSIENT_PREFIX = 'tx_id_';
 
-	private const BOOKING_CONTRACT = [
-		'pax_regular',
-		'pax_discount',
-		'pax_free',
-		'transport_type',
-		'route',
-		'start_date',
-		'start_hour',
-		'end_date',
-		'end_hour',
-		'additional_time',
-		'coupon_code',
-		'force_availability',
-	];
-
 	private const CONTACT_CONTRACT = [
 		'first_name',
 		'lastname',
@@ -38,7 +23,6 @@ class dy_tx
 	];
 
 	private const PAYLOAD_CONTRACT = [
-		...self::BOOKING_CONTRACT,
 		...self::CONTACT_CONTRACT,
 	];
 
@@ -52,6 +36,13 @@ class dy_tx
 		'confirmation_message',
 		'timezone',
 		'calendar_start',
+		'source',
+		'intent',
+		'gateway_id',
+		'context_id',
+		'amount_minor',
+		'currency_exponent',
+		'formatted_charge_amount',
 		'total',
 		'payment_amount',
 		'formatted_payment_amount',
@@ -60,6 +51,7 @@ class dy_tx
 	];
 
 	private const GATEWAY_METADATA_CONTRACT = [
+		'order_id',
 		'payment_url',
 		'payment_amount',
 		'formatted_payment_amount',
@@ -103,22 +95,22 @@ class dy_tx
 			return false;
 		}
 
+		$source = sanitize_key((string) ($arr['source'] ?? ''));
+		$adapter = Dy_Checkout::source($source);
+		if ($adapter === null) return false;
+		$service = [
+			'dy_id' => $identity['dy_id'], 'dy_request' => $identity['dy_request'],
+			'source' => $source, 'context_id' => $identity['dy_id'],
+			...$adapter->selection($identity['dy_request']),
+		];
 		$now = gmdate('c');
 		$tx = [
 			'schema_version' => self::SCHEMA_VERSION,
 			'status' => 'started',
 			'tx_id' => $tx_id,
-			'secret_tx_id' => self::sign_secret([
-				$tx_id,
-				$identity['email'],
-				$identity['dy_request'],
-				$identity['dy_id'],
-			]),
-			'payload_contract' => self::sanitize_payload($arr),
-			'service_contract' => [
-				'dy_id' => $identity['dy_id'],
-				'dy_request' => $identity['dy_request'],
-			],
+			'secret_tx_id' => '',
+			'payload_contract' => self::sanitize_payload($arr, $source),
+			'service_contract' => $service,
 			'gateway' => [],
 			'events' => [],
 			'timestamps' => [
@@ -127,6 +119,7 @@ class dy_tx
 			],
 		];
 		$tx['payload_contract']['email'] = $identity['email'];
+		$tx['secret_tx_id'] = self::signature($tx);
 
 		return (bool) set_transient(
 			self::transient_key($tx_id),
@@ -135,14 +128,14 @@ class dy_tx
 		);
 	}
 
-	/** Sign the canonical transaction identity. */
-	public static function sign_secret(array $arr = []): string
+	private static function signature(array $tx): string
 	{
-		return hash_hmac(
-			'sha256',
-			implode('', self::signing_values($arr)),
-			wp_salt('auth')
-		);
+		$service = self::service($tx);
+		$identity = self::identity_values((string) $tx['tx_id'], $tx);
+		return hash_hmac('sha256', (string) wp_json_encode([
+			...array_values($identity), $service['source'], $service['context_id'] ?? 0,
+			$service['intent'] ?? '', $service['gateway_id'] ?? '',
+		]), wp_salt('auth'));
 	}
 
 	/** Validate the signature and immutable identity fields. */
@@ -154,26 +147,18 @@ class dy_tx
 			return false;
 		}
 
-		if ($expected_arr === []) {
+		$from_request = $expected_arr === [];
+		if ($from_request) {
 			$expected_arr = [
-				$tx_id,
-				(string) self::request_value('email'),
-				(string) secure_post('dy_request', '', 'sanitize_key'),
-				(int) secure_post('dy_id', 0, 'absint'),
+				'tx_id' => $tx_id,
+				'email' => (string) self::request_value('email'),
+				'dy_request' => (string) secure_post('dy_request', '', 'sanitize_key'),
+				'dy_id' => (int) secure_post('dy_id', 0, 'absint'),
 			];
 		}
 
-		if (array_key_exists('tx_id', $expected_arr)) {
-			$expected_id = $expected_arr['tx_id'];
-			if (!is_scalar($expected_id) || (string) $expected_id !== $tx_id) {
-				return false;
-			}
-		} elseif (count($expected_arr) >= 4) {
-			$values = array_values($expected_arr);
-			if (!is_scalar($values[0]) || (string) $values[0] !== $tx_id) {
-				return false;
-			}
-		}
+		$expected_id = $expected_arr['tx_id'] ?? null;
+		if (!is_scalar($expected_id) || (string) $expected_id !== $tx_id) return false;
 
 		$expected = self::identity_values($tx_id, $expected_arr);
 		$stored = self::identity_values($tx_id, $tx);
@@ -191,9 +176,17 @@ class dy_tx
 		];
 		$stored_secret = (string) ($tx['secret_tx_id'] ?? '');
 
-		return $stored_secret !== ''
+		$stored_service = self::service($tx);
+		$expected_source = $from_request ? Dy_Checkout::source_id() : Dy_Checkout::source_id($expected_arr);
+		if ($expected_source !== $stored_service['source']) return false;
+		if (!$from_request) {
+			foreach (['source', 'context_id', 'intent', 'gateway_id'] as $key) {
+				if (($expected_arr['service_contract'][$key] ?? null) !== ($stored_service[$key] ?? null)) return false;
+			}
+		}
+		return $stored_secret !== '' 
 			&& $expected_values === $stored_values
-			&& hash_equals($stored_secret, self::sign_secret($stored_values));
+			&& hash_equals($stored_secret, self::signature($tx));
 	}
 
 	/** Retrieve and normalize a transaction transient. */
@@ -204,8 +197,8 @@ class dy_tx
 			return null;
 		}
 
-		$stored = get_transient(self::transient_key($tx_id));
-		if (!is_array($stored) && !is_object($stored)) {
+		$stored = apply_filters('dy_tx_read_transaction', get_transient(self::transient_key($tx_id)), $tx_id);
+		if (!is_array($stored)) {
 			return null;
 		}
 
@@ -213,36 +206,20 @@ class dy_tx
 		return (string) ($tx['tx_id'] ?? '') === $tx_id ? $tx : null;
 	}
 
-	/**
-	 * Persist a transaction array, or support the legacy update(id, status, payload) call.
-	 * Only explicit contract fields reach the transient.
-	 */
-	public static function update(
-		string|array $tx_id = '',
-		string $new_status = '',
-		array $payload = [],
-		int $expiration_in_seconds = 0
-	): bool {
-		$submitted = is_array($tx_id) ? self::normalize_input_array($tx_id) : null;
-		$tx_id = $submitted !== null ? (string) ($submitted['tx_id'] ?? '') : trim($tx_id);
+	/** Persist a structured transaction; only explicit contract fields reach the transient. */
+	public static function update(array $submitted, int $expiration_in_seconds = 0): bool
+	{
+		if (($submitted['schema_version'] ?? null) !== self::SCHEMA_VERSION) return false;
+		$tx_id = (string) ($submitted['tx_id'] ?? '');
 		$stored = self::get_stored_tx($tx_id);
-		if ($stored === null) {
+		if ($stored === null || !self::validate($tx_id, $submitted)) {
 			return false;
 		}
 
-		if ($submitted !== null) {
-			if (!self::validate($tx_id, $submitted)) {
-				return false;
-			}
-			$new_status = (string) ($submitted['status'] ?? '');
-		}
-
+		$new_status = (string) ($submitted['status'] ?? '');
 		$current_status = sanitize_key((string) ($stored['status'] ?? 'started'));
 		$new_status = $new_status !== '' ? sanitize_key($new_status) : $current_status;
-		$request_type = (string) self::service_value('dy_request', '', $stored);
-		$allowed_statuses = $request_type === 'paguelo_facil_on'
-			? ['started', 'processing', 'success', 'declined', 'error']
-			: ['started', 'processing', 'success', 'error'];
+		$allowed_statuses = ['started', 'processing', 'success', 'declined', 'error'];
 
 		if (!in_array($new_status, $allowed_statuses, true)) {
 			return false;
@@ -263,12 +240,8 @@ class dy_tx
 
 		$stored_payload = self::payload($stored);
 		$stored_service = self::service($stored);
-		$incoming_payload = $submitted !== null
-			? self::sanitize_payload($submitted['payload_contract'] ?? $submitted)
-			: self::sanitize_payload($payload);
-		$incoming_service = $submitted !== null
-			? self::sanitize_service((array) ($submitted['service_contract'] ?? []))
-			: [];
+		$incoming_payload = self::sanitize_payload((array) ($submitted['payload_contract'] ?? []), Dy_Checkout::source_id($stored));
+		$incoming_service = self::sanitize_service((array) ($submitted['service_contract'] ?? []));
 
 		$payload_contract = [...$stored_payload, ...$incoming_payload];
 		$service_contract = [...$stored_service, ...$incoming_service];
@@ -276,11 +249,14 @@ class dy_tx
 		$payload_contract['email'] = $stored_identity['email'];
 		$service_contract['dy_id'] = $stored_identity['dy_id'];
 		$service_contract['dy_request'] = $stored_identity['dy_request'];
+		foreach (['source', 'context_id', 'intent', 'gateway_id'] as $key) {
+			if (array_key_exists($key, $stored_service)) $service_contract[$key] = $stored_service[$key];
+		}
 
-		$gateway = $submitted !== null && array_key_exists('gateway', $submitted)
+		$gateway = array_key_exists('gateway', $submitted)
 			? self::sanitize_gateway($submitted['gateway'])
 			: self::gateway($stored);
-		$events = $submitted !== null && array_key_exists('events', $submitted)
+		$events = array_key_exists('events', $submitted)
 			? self::sanitize_conversion_events($submitted['events'], $tx_id)
 			: self::events($stored);
 		$created_at = (string) (($stored['timestamps']['created_at'] ?? '') ?: gmdate('c'));
@@ -304,6 +280,8 @@ class dy_tx
 			? $expiration_in_seconds
 			: ($new_status === 'success' ? DAY_IN_SECONDS : HOUR_IN_SECONDS);
 
+		// Asynchronous gateways can keep an authoritative, durable copy before caching it.
+		if (!apply_filters('dy_tx_persist_transaction', true, $tx)) return false;
 		return (bool) set_transient(self::transient_key($tx_id), $tx, $expiration);
 	}
 
@@ -311,7 +289,9 @@ class dy_tx
 	public static function set_current_transaction(?array $tx): void
 	{
 		self::$current_transaction = $tx === null ? null : self::normalize_transaction($tx);
-		unset(self::$cache['get_sanitized_request_payload']);
+		foreach (array_keys(self::$cache) as $key) {
+			if (str_starts_with($key, 'get_sanitized_request_payload')) unset(self::$cache[$key]);
+		}
 	}
 
 	public static function current_transaction(): ?array
@@ -370,29 +350,9 @@ class dy_tx
 	{
 		$payload = is_array($arr['payload_contract'] ?? null) ? $arr['payload_contract'] : [];
 		$service = is_array($arr['service_contract'] ?? null) ? $arr['service_contract'] : [];
-		if (
-			$payload !== []
-			|| $service !== []
-			|| array_key_exists('email', $arr)
-			|| array_key_exists('dy_request', $arr)
-			|| array_key_exists('dy_id', $arr)
-		) {
-			$email = $payload['email'] ?? $arr['email'] ?? '';
-			$dy_request = $service['dy_request'] ?? $arr['dy_request'] ?? '';
-			$dy_id = $service['dy_id'] ?? $arr['dy_id'] ?? 0;
-			return [
-				'tx_id' => $tx_id,
-				'email' => is_scalar($email) ? dy_sanitize_email((string) $email) : '',
-				'dy_request' => is_scalar($dy_request) ? sanitize_key((string) $dy_request) : '',
-				'dy_id' => is_scalar($dy_id) ? absint($dy_id) : 0,
-			];
-		}
-
-		$values = array_values($arr);
-		$offset = isset($values[0]) && (string) $values[0] === $tx_id ? 1 : 0;
-		$email = $values[$offset] ?? '';
-		$dy_request = $values[$offset + 1] ?? '';
-		$dy_id = $values[$offset + 2] ?? 0;
+		$email = $payload['email'] ?? $arr['email'] ?? '';
+		$dy_request = $service['dy_request'] ?? $arr['dy_request'] ?? '';
+		$dy_id = $service['dy_id'] ?? $arr['dy_id'] ?? 0;
 		return [
 			'tx_id' => $tx_id,
 			'email' => is_scalar($email) ? dy_sanitize_email((string) $email) : '',
@@ -401,60 +361,31 @@ class dy_tx
 		];
 	}
 
-	/** @return array<int,string> */
-	private static function signing_values(array $arr): array
-	{
-		if (
-			array_key_exists('tx_id', $arr)
-			|| array_key_exists('payload_contract', $arr)
-			|| array_key_exists('service_contract', $arr)
-			|| array_key_exists('email', $arr)
-			|| array_key_exists('dy_request', $arr)
-			|| array_key_exists('dy_id', $arr)
-		) {
-			$tx_id = is_scalar($arr['tx_id'] ?? '') ? (string) ($arr['tx_id'] ?? '') : '';
-			$identity = self::identity_values($tx_id, $arr);
-			$arr = [$tx_id, $identity['email'], $identity['dy_request'], $identity['dy_id']];
-		}
-
-		return array_map(
-			static fn(mixed $value): string => is_scalar($value) ? (string) $value : '',
-			array_values($arr)
-		);
-	}
-
 	/** Keep only customer-controlled booking and contact fields. */
-	private static function sanitize_payload(array $payload): array
+	private static function sanitize_payload(array $payload, string $source = ''): array
 	{
-		if (is_array($payload['payload_contract'] ?? null)) {
-			$payload = $payload['payload_contract'];
-		}
-
 		$output = [];
-		foreach (self::PAYLOAD_CONTRACT as $field) {
+		foreach (self::payload_fields($source) as $field) {
 			$value = $payload[$field] ?? null;
 			if ($value !== null && is_scalar($value)) {
-				$output[$field] = self::sanitize_payload_value($field, $value);
+				$output[$field] = self::sanitize_payload_value($field, $value, $source);
 			}
 		}
 		return $output;
 	}
 
-	private static function sanitize_payload_value(string $field, mixed $value): string|int|bool
+	private static function payload_fields(string $source = ''): array
 	{
-		if ($field === 'force_availability') {
-			return (bool) filter_var($value, FILTER_VALIDATE_BOOLEAN);
-		}
-		if (in_array($field, ['pax_regular', 'pax_discount', 'pax_free', 'additional_time'], true)) {
-			return absint($value);
-		}
-		if (in_array($field, ['email', 'repeat_email'], true)) {
-			return dy_sanitize_email((string) $value);
-		}
-		if ($field === 'inquiry') {
-			return sanitize_textarea_field((string) $value);
-		}
-		return sanitize_text_field((string) $value);
+		$adapter = Dy_Checkout::source($source ?: Dy_Checkout::source_id());
+		return array_unique([...self::CONTACT_CONTRACT, ...($adapter?->payload_fields() ?? [])]);
+	}
+
+	private static function sanitize_payload_value(string $field, mixed $value, string $source = ''): string|int|bool
+	{
+		if (in_array($field, ['email', 'repeat_email'], true)) return dy_sanitize_email((string) $value);
+		if ($field === 'inquiry') return sanitize_textarea_field((string) $value);
+		$adapter = Dy_Checkout::source($source ?: Dy_Checkout::source_id());
+		return $adapter !== null ? $adapter->sanitize_payload_value($field, $value) : sanitize_text_field((string) $value);
 	}
 
 	private static function sanitize_service(array $service): array
@@ -466,7 +397,7 @@ class dy_tx
 				continue;
 			}
 			$output[$field] = match ($field) {
-				'dy_id' => absint($value),
+				'dy_id', 'context_id', 'amount_minor', 'currency_exponent' => absint($value),
 				'dy_request' => sanitize_key((string) $value),
 				'url' => esc_url_raw((string) $value),
 				'total', 'payment_amount' => max(0, (float) $value),
@@ -475,59 +406,12 @@ class dy_tx
 			};
 		}
 
-		$discount = is_array($service['discount'] ?? null) ? $service['discount'] : [];
-		$output['discount'] = [
-			'code' => sanitize_text_field((string) ($discount['code'] ?? '')),
-			'percentage' => max(0, (float) ($discount['percentage'] ?? 0)),
-			'amount' => max(0, (float) ($discount['amount'] ?? 0)),
-		];
-		$output['providers'] = self::sanitize_service_rows(
-			$service['providers'] ?? [],
-			['id', 'name', 'outstanding_balance', 'language', 'emails', 'whatsapp']
-		);
-		$output['add_ons'] = self::sanitize_service_rows(
-			$service['add_ons'] ?? [],
-			['id', 'price', 'name', 'description']
-		);
-		$output['itinerary'] = self::sanitize_service_rows(
-			$service['itinerary'] ?? [],
-			['icon', 'text']
-		);
-		return $output;
-	}
-
-	private static function sanitize_service_rows(mixed $rows, array $allowed): array
-	{
-		$output = [];
-		foreach (is_array($rows) ? $rows : [] as $row) {
-			$row = is_object($row) ? get_object_vars($row) : $row;
-			if (!is_array($row)) {
-				continue;
-			}
-			$clean = [];
-			foreach ($allowed as $key) {
-				$value = $row[$key] ?? null;
-				if (is_array($value) && $key === 'emails') {
-					$clean[$key] = array_values(array_filter(array_map(
-						static fn(mixed $email): string => is_scalar($email) ? dy_sanitize_email((string) $email) : '',
-						$value
-					)));
-				} elseif (is_scalar($value)) {
-					$clean[$key] = in_array($key, ['price', 'outstanding_balance'], true)
-						? (float) $value
-						: sanitize_text_field((string) $value);
-				}
-			}
-			if ($clean !== []) {
-				$output[] = $clean;
-			}
-		}
-		return $output;
+		$adapter = Dy_Checkout::source((string) ($output['source'] ?? Dy_Checkout::source_id()));
+		return $adapter !== null ? [...$adapter->sanitize_service($service), ...$output] : $output;
 	}
 
 	private static function sanitize_gateway(mixed $gateway): array
 	{
-		$gateway = is_object($gateway) ? get_object_vars($gateway) : $gateway;
 		if (!is_array($gateway) || $gateway === []) {
 			return [];
 		}
@@ -601,111 +485,38 @@ class dy_tx
 		return $output;
 	}
 
-	/** Normalize unexpired v1 transactions for validation and runtime rendering. */
-	private static function normalize_transaction(mixed $value): array
+	/** Sanitize the current transaction schema for validation and runtime rendering. */
+	private static function normalize_transaction(array $transaction): array
 	{
-		$transaction = self::normalize_input_array($value);
-		if ($transaction === []) {
+		if (($transaction['schema_version'] ?? null) !== self::SCHEMA_VERSION
+			|| !is_array($transaction['payload_contract'] ?? null)
+			|| !is_array($transaction['service_contract'] ?? null)
+			|| Dy_Checkout::source_id($transaction) === '') {
 			return [];
 		}
 
-		foreach (['booking_details', 'contact_details'] as $section) {
-			$details = self::normalize_input_array($transaction[$section] ?? []);
-			if ($details !== []) {
-				$transaction = [...$transaction, ...$details];
-			}
-			unset($transaction[$section]);
-		}
-
-		if ((int) ($transaction['schema_version'] ?? 0) >= self::SCHEMA_VERSION) {
-			$tx_id = is_scalar($transaction['tx_id'] ?? null)
-				? (string) $transaction['tx_id']
-				: '';
-			$normalized = [
-				'schema_version' => self::SCHEMA_VERSION,
-				'status' => sanitize_key((string) ($transaction['status'] ?? 'started')),
-				'tx_id' => $tx_id,
-				'secret_tx_id' => is_scalar($transaction['secret_tx_id'] ?? null)
-					? sanitize_text_field((string) $transaction['secret_tx_id'])
-					: '',
-				'payload_contract' => self::sanitize_payload(
-					self::normalize_input_array($transaction['payload_contract'] ?? [])
-				),
-				'service_contract' => self::sanitize_service(
-					self::normalize_input_array($transaction['service_contract'] ?? [])
-				),
-				'gateway' => self::sanitize_gateway($transaction['gateway'] ?? []),
-				'events' => self::sanitize_conversion_events($transaction['events'] ?? [], $tx_id),
-				'timestamps' => [
-					'created_at' => sanitize_text_field((string) ($transaction['timestamps']['created_at'] ?? '')),
-					'updated_at' => sanitize_text_field((string) ($transaction['timestamps']['updated_at'] ?? '')),
-				],
-			];
-			$legacy = self::normalize_input_array($transaction['_legacy_confirmation'] ?? []);
-			if ($legacy !== []) {
-				$normalized['_legacy_confirmation'] = [
-					'title' => sanitize_text_field((string) ($legacy['title'] ?? '')),
-					'content' => wp_kses_post((string) ($legacy['content'] ?? '')),
-					'excerpt' => sanitize_text_field((string) ($legacy['excerpt'] ?? '')),
-				];
-			}
-			return $normalized;
-		}
-
-		$confirmation = self::normalize_input_array($transaction['confirmation'] ?? []);
-		$service = self::sanitize_service([
-			'dy_id' => $transaction['dy_id'] ?? 0,
-			'dy_request' => $transaction['dy_request'] ?? '',
-			'title' => $transaction['title'] ?? '',
-			'url' => $transaction['url'] ?? '',
-			'description' => $transaction['description'] ?? '',
-			'location' => $transaction['location'] ?? '',
-			'confirmation_message' => $transaction['confirmation_message'] ?? '',
-			'timezone' => $transaction['timezone'] ?? '',
-			'total' => $transaction['total'] ?? 0,
-			'payment_amount' => $transaction['payment_amount'] ?? ($transaction['amount'] ?? 0),
-			'currency' => $transaction['currency'] ?? ($transaction['currency_name'] ?? ''),
-			'payment_type' => $transaction['payment_type'] ?? '',
-			'discount' => $transaction['discount'] ?? [],
-			'providers' => $transaction['providers'] ?? [],
-			'add_ons' => $transaction['add_ons'] ?? [],
-			'itinerary' => $transaction['itinerary'] ?? [],
-		]);
-		$legacy = [
+		$tx_id = is_scalar($transaction['tx_id'] ?? null) ? (string) $transaction['tx_id'] : '';
+		return [
 			'schema_version' => self::SCHEMA_VERSION,
 			'status' => sanitize_key((string) ($transaction['status'] ?? 'started')),
-			'tx_id' => (string) ($transaction['tx_id'] ?? ''),
-			'secret_tx_id' => (string) ($transaction['secret_tx_id'] ?? ''),
-			'payload_contract' => self::sanitize_payload($transaction),
-			'service_contract' => $service,
+			'tx_id' => $tx_id,
+			'secret_tx_id' => is_scalar($transaction['secret_tx_id'] ?? null)
+				? sanitize_text_field((string) $transaction['secret_tx_id']) : '',
+			'payload_contract' => self::sanitize_payload($transaction['payload_contract'], Dy_Checkout::source_id($transaction)),
+			'service_contract' => self::sanitize_service($transaction['service_contract']),
 			'gateway' => self::sanitize_gateway($transaction['gateway'] ?? []),
-			'events' => self::sanitize_conversion_events(
-				$transaction['events'] ?? ($confirmation['events'] ?? []),
-				(string) ($transaction['tx_id'] ?? '')
-			),
-			'timestamps' => self::normalize_input_array($transaction['timestamps'] ?? []),
+			'events' => self::sanitize_conversion_events($transaction['events'] ?? [], $tx_id),
+			'timestamps' => [
+				'created_at' => sanitize_text_field((string) ($transaction['timestamps']['created_at'] ?? '')),
+				'updated_at' => sanitize_text_field((string) ($transaction['timestamps']['updated_at'] ?? '')),
+			],
 		];
-		if ($confirmation !== []) {
-			$legacy['_legacy_confirmation'] = [
-				'title' => sanitize_text_field((string) ($confirmation['title'] ?? '')),
-				'content' => wp_kses_post((string) ($confirmation['content'] ?? '')),
-				'excerpt' => sanitize_text_field((string) ($confirmation['excerpt'] ?? '')),
-			];
-		}
-		return $legacy;
-	}
-
-	private static function normalize_input_array(mixed $value): array
-	{
-		return is_object($value)
-			? get_object_vars($value)
-			: (is_array($value) ? $value : []);
 	}
 
 	/** Build the customer payload from the active POST or GET request. */
 	public static function get_sanitized_request_payload(): array
 	{
-		$cache_key = 'get_sanitized_request_payload';
+		$cache_key = 'get_sanitized_request_payload_' . Dy_Checkout::source_id();
 		if (array_key_exists($cache_key, self::$cache)) {
 			return self::$cache[$cache_key];
 		}
@@ -728,21 +539,10 @@ class dy_tx
 		};
 
 		$request_payload = [];
-		foreach (self::PAYLOAD_CONTRACT as $field) {
-			$default = in_array($field, ['pax_regular', 'pax_discount', 'pax_free', 'additional_time'], true)
-				? 0
-				: ($field === 'force_availability' ? false : '');
-			$sanitizer = match (true) {
-				in_array($field, ['pax_regular', 'pax_discount', 'pax_free', 'additional_time'], true) => 'absint',
-				in_array($field, ['email', 'repeat_email'], true) => 'dy_sanitize_email',
-				$field === 'inquiry' => 'sanitize_textarea_field',
-				default => 'sanitize_text_field',
-			};
-			$request_payload[$field] = self::sanitize_payload_value(
-				$field,
-				$getter($field, $default, $sanitizer)
-			);
+		foreach (self::payload_fields() as $field) {
+			$request_payload[$field] = self::sanitize_payload_value($field, $getter($field, ''));
 		}
+
 		return self::$cache[$cache_key] = $request_payload;
 	}
 

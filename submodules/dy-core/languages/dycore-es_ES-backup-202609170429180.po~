@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Dy-Core\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-13 19:46+0000\n"
-"PO-Revision-Date: 2026-09-17 04:29+0000\n"
+"PO-Revision-Date: 2026-09-17 04:28+0000\n"
 "Last-Translator: \n"
 "Language-Team: Español\n"
 "Language: es_ES\n"
@@ -447,11 +447,11 @@ msgstr "Nuestra dirección de pago es la siguiente:"
 
 #: dy-core/gateways/matrix/paguelo_facil/paguelo_facil_on.php:20
 msgid "Paguelo Facil"
-msgstr "Páguelo Fácil"
+msgstr "Paguelo Fácil"
 
 #: dy-core/gateways/matrix/paguelo_facil/paguelo_facil_on.php:21
 msgid "Paguelo Facil On-site"
-msgstr "Instalación Páguelo Fácil en el sitio"
+msgstr "Instalación Paguero en el sitio"
 
 #: dy-core/e-commerce/providers.php:70 dy-core/e-commerce/providers.php:71
 #, php-format
@@ -748,7 +748,7 @@ msgid ""
 "number will retreive Paguelo Facil original response."
 msgstr ""
 "Utilice la tarjeta %s junto con el correo electrónico %s para probar el "
-"entorno de desarrollo de Páguelo Fácil. Use el código CVV 222 para generar "
+"entorno de desarrollo de Paguelo Facil. Use el código CVV 222 para generar "
 "transacciones aprobadas, 111 para generar transacciones rechazadas y 000 "
 "para generar errores; cualquier otro número recuperará la respuesta original "
 "de Paguelo Facil."
@@ -825,7 +825,7 @@ msgstr "Yappy requiere un número de teléfono panameño de ocho dígitos."
 #: dy-core/gateways/matrix/yappy/yappy_v2.php:75
 msgid ""
 "Yappy requires a payment amount of at least 0.01 with two decimal places."
-msgstr "Yappy requiere un importe de pago de al menos 0.01 con dos decimales."
+msgstr "Yappy requiere un importe de pago de al menos 0,01 con dos decimales."
 
 #: dy-core/e-commerce/providers.php:136
 #: dy-core/gateways/matrix/yappy/yappy_v2.php:348

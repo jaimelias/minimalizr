@@ -10,7 +10,22 @@ class Dynamic_Core_WP_JSON
     {
         add_action('rest_api_init', [$this, 'core_args']);
         add_action('rest_api_init', [$this, 'register_rest_routes_transactions']);
+        add_action('rest_api_init', [$this, 'register_yappy_v2_routes']);
     }
+
+	public function register_yappy_v2_routes(): void
+	{
+		$gateway = Dy_Checkout::gateway('yappy_v2');
+		if (!$gateway instanceof yappy_v2) return;
+		register_rest_route('dy-core', '/gateways/yappy-v2', [
+			'methods' => WP_REST_Server::READABLE, 'callback' => [$gateway, 'ipn'], 'permission_callback' => '__return_true',
+		]);
+		foreach (['start' => WP_REST_Server::CREATABLE, 'status' => WP_REST_Server::READABLE] as $action => $method) {
+			register_rest_route('dy-core', '/gateways/yappy-v2/' . $action, [
+				'methods' => $method, 'callback' => [$gateway, $action], 'permission_callback' => [$gateway, 'client_permission'],
+			]);
+		}
+	}
 
 	public function register_rest_routes_transactions() {
 		$dy_id_param = [
@@ -71,6 +86,9 @@ class Dynamic_Core_WP_JSON
 					'dy_id' => $dy_id_param,
 					'email' => $email_param,
 					'dy_request' => $dy_request_param,
+					'checkout_source' => ['sanitize_callback' => 'sanitize_key', 'default' => ''],
+					'intent' => ['sanitize_callback' => 'sanitize_key', 'default' => ''],
+					'gateway_id' => ['sanitize_callback' => 'sanitize_key', 'default' => ''],
 					'cf-turnstile-response' => $turnstile,
 					'action' => $action,
 				],
@@ -83,7 +101,7 @@ class Dynamic_Core_WP_JSON
 	{
 
 		$turnstile = $request['cf-turnstile-response'];
-		$action = $request['action'];
+		$action = 'tx-sign';
 
 		if(!validate_turnstile($turnstile, $action)) {
 			return $this->rest_response(
@@ -100,37 +118,27 @@ class Dynamic_Core_WP_JSON
 		$email = dy_sanitize_email((string) $request['email']);
 		$dy_request = sanitize_key($request['dy_request']);
 		
-		$post = get_post($dy_id);
-
-		$is_readable = $post instanceof WP_Post
-			&& ('packages' === $post->post_type || $dy_request === 'contact')
-			&& (
-				is_post_publicly_viewable($post)
-				|| current_user_can('read_post', $dy_id)
-			);
+		$source_id = sanitize_key((string) ($request['checkout_source'] ?? '')) ?: Dy_Checkout::source_id();
+		$source = Dy_Checkout::source($source_id);
+		$is_readable = $source !== null && $source->validate_context($dy_id, $dy_request);
 
 		if (!$is_readable) {
 			return $this->rest_response(
 				[
 					'code'    => 'invalid_post_id',
-					'message' => 'Package not found.',
+					'message' => 'Checkout context not found.',
 					'data'    => ['status' => 404],
 				],
 				404
 			);
 		}
 
-		$all_dy_request_types = dy_tx::all_dy_request_types();
-
-		if(!in_array($dy_request, $all_dy_request_types, true)) {
-			return $this->rest_response(
-				[
-					'code'    => 'invalid_dy_request',
-					'message' => 'Invalid Request.',
-					'data'    => ['status' => 400],
-				],
-				404
-			);
+		$selection = $source->selection($dy_request);
+		if (!in_array($selection['intent'] ?? '', ['contact', 'estimate', 'payment'], true)
+			|| (($selection['intent'] ?? '') === 'payment' && Dy_Checkout::gateway((string) ($selection['gateway_id'] ?? '')) === null)
+			|| (!empty($request['intent']) && $request['intent'] !== $selection['intent'])
+			|| (!empty($request['gateway_id']) && $request['gateway_id'] !== $selection['gateway_id'])) {
+			return $this->rest_response(['code' => 'invalid_selection', 'message' => 'Invalid Request.'], 400);
 		}
 
 
@@ -138,6 +146,7 @@ class Dynamic_Core_WP_JSON
 		$transaction_created = dy_tx::create(
 			$tx_id,
 			[
+				'source' => $source_id,
 				'dy_request' => $dy_request,
 				'email'      => $email,
 				'dy_id'      => $dy_id,

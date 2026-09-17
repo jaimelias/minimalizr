@@ -62,29 +62,9 @@ class Dynamic_Core_Public {
         }
 
         if (isset($dy_load_turnstile_scripts)) {
-            wp_enqueue_script(
-                'cloudflare-turnstile',
-                'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',
-                [],
-                null,
-                true
-            );
-
-            wp_add_inline_script(
-                'cloudflare-turnstile',
-                $this->turnstileArgs(),
-                'before'
-            );
-
-            wp_enqueue_script(
-                'cloudflare-turnstile-widgets',
-                $this->plugin_dir_url_file . 'js/turnstile-widgets.js',
-                ['cloudflare-turnstile'],
-                $this->version,
-                true
-            );
+            Dy_Checkout_Form::enqueue_security();
         }
-        
+
         wp_enqueue_script('landing-cookies', $this->plugin_dir_url_file . 'js/cookies.js', ['jquery'], $this->version, true);
 
         wp_enqueue_script('dy-qrcode', $this->plugin_dir_url_file . 'js/qrcode.min.js', ['jquery'], 'async_defer', true);

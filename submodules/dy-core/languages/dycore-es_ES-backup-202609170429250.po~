@@ -447,11 +447,11 @@ msgstr "Nuestra dirección de pago es la siguiente:"
 
 #: dy-core/gateways/matrix/paguelo_facil/paguelo_facil_on.php:20
 msgid "Paguelo Facil"
-msgstr "Páguelo Fácil"
+msgstr "Paguelo Fácil"
 
 #: dy-core/gateways/matrix/paguelo_facil/paguelo_facil_on.php:21
 msgid "Paguelo Facil On-site"
-msgstr "Instalación Páguelo Fácil en el sitio"
+msgstr "Instalación Paguelo Fácil en el sitio"
 
 #: dy-core/e-commerce/providers.php:70 dy-core/e-commerce/providers.php:71
 #, php-format
@@ -748,7 +748,7 @@ msgid ""
 "number will retreive Paguelo Facil original response."
 msgstr ""
 "Utilice la tarjeta %s junto con el correo electrónico %s para probar el "
-"entorno de desarrollo de Páguelo Fácil. Use el código CVV 222 para generar "
+"entorno de desarrollo de Paguelo Facil. Use el código CVV 222 para generar "
 "transacciones aprobadas, 111 para generar transacciones rechazadas y 000 "
 "para generar errores; cualquier otro número recuperará la respuesta original "
 "de Paguelo Facil."

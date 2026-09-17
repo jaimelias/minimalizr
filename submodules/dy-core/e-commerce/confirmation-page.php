@@ -371,7 +371,7 @@ class Dy_Confirmation_Page
     {
         if ($this->tx !== null) {
             dy_tx::set_current_transaction($this->tx);
-            $post = get_post((int) dy_tx::service_value('dy_id', 0, $this->tx));
+            $post = Dy_Checkout::source(Dy_Checkout::source_id($this->tx))?->confirmation_post($this->tx);
 
             return $post instanceof WP_Post ? $post : null;
         }
@@ -394,19 +394,9 @@ class Dy_Confirmation_Page
 			return null;
 		}
 
-        $post = get_post((int) dy_tx::service_value('dy_id', 0, $tx));
-
-        if (!$post instanceof WP_Post || $post->post_status !== 'publish') {
-            return null;
-        }
-
-        $request_types = dy_tx::all_dy_request_types();
-
-        $request_type = (string) dy_tx::service_value('dy_request', '', $tx);
-
-        if (!in_array($request_type, $request_types, true)) {
-            return null;
-        }
+        $source = Dy_Checkout::source(Dy_Checkout::source_id($tx));
+        $post = $source?->confirmation_post($tx);
+        if (!$post instanceof WP_Post) return null;
 
         dy_tx::set_current_transaction($tx);
 
@@ -449,16 +439,6 @@ class Dy_Confirmation_Page
         }
 
         $confirmation = [];
-        $legacy = $this->tx['_legacy_confirmation'] ?? null;
-
-        if (is_array($legacy)) {
-            foreach (['title', 'content', 'excerpt'] as $key) {
-                if (array_key_exists($key, $legacy)) {
-                    $confirmation[$key] = (string) $legacy[$key];
-                }
-            }
-        }
-
         $filtered = apply_filters('dy_confirmation_result', $confirmation, $this->tx);
 
         if (is_array($filtered)) {

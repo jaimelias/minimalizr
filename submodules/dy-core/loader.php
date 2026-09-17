@@ -4,7 +4,7 @@ if ( !defined( 'WPINC' )) exit;
 
 if(!class_exists('Dy_Core_Init'))
 {
-    define('DY_CORE_VERSION', '1.1.42');
+    define('DY_CORE_VERSION', '1.1.43');
 
     if ( !defined( 'DY_CORE_TEXTDOMAIN' ) ) {
         define( 'DY_CORE_TEXTDOMAIN', 'dycore' );
@@ -86,6 +86,7 @@ if(!class_exists('Dy_Core_Init'))
 
             //e-commerce
             require_once $plugin_dir_path . 'e-commerce/transactions.php';
+            require_once $plugin_dir_path . 'gateways/loader.php';
             require_once $plugin_dir_path . 'e-commerce/providers.php';
             require_once $plugin_dir_path . 'e-commerce/confirmation-page.php';
         }

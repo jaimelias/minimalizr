@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Dy-Core\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-13 19:46+0000\n"
-"PO-Revision-Date: 2026-09-13 19:46+0000\n"
+"PO-Revision-Date: 2026-09-13 19:48+0000\n"
 "Last-Translator: \n"
 "Language-Team: Spanish (Spain)\n"
 "Language: es_ES\n"
@@ -17,20 +17,20 @@ msgstr ""
 
 #: dy-core/public.php:537
 msgid "Contact Support"
-msgstr ""
+msgstr "Contactar con el soporte técnico"
 
 #: dy-core/admin.php:332
 msgid "Google Ads Conversion ID (AW-...)"
-msgstr ""
+msgstr "ID de conversión de Google Ads (AW-...)"
 
 #: dy-core/admin.php:343
 msgid "Google Ads Purchase Label"
-msgstr ""
+msgstr "Etiqueta de compra de Google Ads"
 
 #: dy-core/admin.php:354
 msgid "Google Ads Lead Label"
-msgstr ""
+msgstr "Etiqueta de cliente potencial de Google Ads"
 
 #: dy-core/integrations/cloudflare-turnstile.php:44
 msgid "The Turnstile response is missing."
-msgstr ""
+msgstr "Falta la respuesta de Turnstile."

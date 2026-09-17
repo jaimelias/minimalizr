@@ -358,9 +358,13 @@ const createFormSubmit = async form => {
                 const {txSignSlug} = dyCoreArgs;
                 const {turnstileWidget1, turnstileWidget2} = window.dyTurnstileWidgets || {};
                 const { wpJsonUrl, post_id } = dyCoreArgs;
-                const signUrl = new URL(`${wpJsonUrl}/${txSignSlug}/${post_id}`);
+                const contextId = form.find('[name="dy_id"]').val() || post_id;
+                const signUrl = new URL(`${wpJsonUrl}/${txSignSlug}/${contextId}`);
                 const signRequest = {
                     dy_request: form.find('[name="dy_request"]').val() || '',
+                    checkout_source: form.find('[name="checkout_source"]').val() || '',
+                    intent: form.find('[name="intent"]').val() || '',
+                    gateway_id: form.find('[name="gateway_id"]').val() || '',
                     email: form.find('[name="email"]').val() || '',
                     action: 'tx-sign'
                 };
@@ -377,7 +381,7 @@ const createFormSubmit = async form => {
 
                 const submitTransactionToken = await executeTurnstileWithRetry(turnstileWidget2);
 
-                console.log({submitTransactionToken})
+
 
                 formFields.push({
                     name: 'cf-turnstile-response',
