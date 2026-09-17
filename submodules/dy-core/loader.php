@@ -4,7 +4,7 @@ if ( !defined( 'WPINC' )) exit;
 
 if(!class_exists('Dy_Core_Init'))
 {
-    define('DY_CORE_VERSION', '1.1.52');
+    define('DY_CORE_VERSION', '1.1.53');
 
     #[AllowDynamicProperties]
     class Dy_Core_Init {
@@ -46,7 +46,8 @@ if(!class_exists('Dy_Core_Init'))
 
             //core helpers
             require_once $plugin_dir_path . 'helpers/functions.php';
-            require_once $plugin_dir_path . 'admin/taxonomies.php';
+            require_once $plugin_dir_path . 'helpers/fields.php';
+            
             require_once $plugin_dir_path . 'helpers/queries.php';
             require_once $plugin_dir_path . 'helpers/write_log.php';
             require_once $plugin_dir_path . 'helpers/get-option.php';
@@ -81,6 +82,7 @@ if(!class_exists('Dy_Core_Init'))
             require_once $plugin_dir_path . 'e-commerce/transactions.php';
             require_once $plugin_dir_path . 'gateways/loader.php';
             require_once $plugin_dir_path . 'e-commerce/providers.php';
+            require_once $plugin_dir_path . 'admin/taxonomies.php';
 
             //public-pages
             require_once $plugin_dir_path . 'public-pages/errors-page.php';
