@@ -4,7 +4,7 @@ if ( !defined( 'WPINC' )) exit;
 
 if(!class_exists('Dy_Core_Init'))
 {
-    define('DY_CORE_VERSION', '1.1.47');
+    define('DY_CORE_VERSION', '1.1.48');
 
     if ( !defined( 'DY_CORE_TEXTDOMAIN' ) ) {
         define( 'DY_CORE_TEXTDOMAIN', 'dycore' );
@@ -51,7 +51,7 @@ if(!class_exists('Dy_Core_Init'))
 
             //core helpers
             require_once $plugin_dir_path . 'security/functions.php';
-            require_once $plugin_dir_path . 'taxonomies.php';
+            require_once $plugin_dir_path . 'admin/taxonomies.php';
             require_once $plugin_dir_path . 'security/queries.php';
             require_once $plugin_dir_path . 'security/write_log.php';
             require_once $plugin_dir_path . 'security/get-option.php';
