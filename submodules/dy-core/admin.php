@@ -81,7 +81,7 @@ class Dynamic_Core_Admin {
 	
 
         //settings - company
-		register_setting($this->setting_id, 'dy_email', 'sanitize_email');
+		register_setting($this->setting_id, 'dy_email', 'dy_sanitize_email');
 		register_setting($this->setting_id, 'dy_phone', 'esc_html');
 		register_setting($this->setting_id, 'dy_address', 'esc_html');
 		register_setting($this->setting_id, 'dy_tax_id', 'esc_html');

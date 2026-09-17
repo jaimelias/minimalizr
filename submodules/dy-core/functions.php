@@ -909,7 +909,7 @@ if (!function_exists('email_str_row_to_array')) {
 		return str_row_to_array(
 			$str,
 			$recipients_limit,
-			'sanitize_email'
+			'dy_sanitize_email'
 		);
 	}
 }

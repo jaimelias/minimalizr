@@ -382,7 +382,7 @@ class dy_tx
 			$dy_id = $service['dy_id'] ?? $arr['dy_id'] ?? 0;
 			return [
 				'tx_id' => $tx_id,
-				'email' => is_scalar($email) ? sanitize_email((string) $email) : '',
+				'email' => is_scalar($email) ? dy_sanitize_email((string) $email) : '',
 				'dy_request' => is_scalar($dy_request) ? sanitize_key((string) $dy_request) : '',
 				'dy_id' => is_scalar($dy_id) ? absint($dy_id) : 0,
 			];
@@ -395,7 +395,7 @@ class dy_tx
 		$dy_id = $values[$offset + 2] ?? 0;
 		return [
 			'tx_id' => $tx_id,
-			'email' => is_scalar($email) ? sanitize_email((string) $email) : '',
+			'email' => is_scalar($email) ? dy_sanitize_email((string) $email) : '',
 			'dy_request' => is_scalar($dy_request) ? sanitize_key((string) $dy_request) : '',
 			'dy_id' => is_scalar($dy_id) ? absint($dy_id) : 0,
 		];
@@ -449,7 +449,7 @@ class dy_tx
 			return absint($value);
 		}
 		if (in_array($field, ['email', 'repeat_email'], true)) {
-			return sanitize_email((string) $value);
+			return dy_sanitize_email((string) $value);
 		}
 		if ($field === 'inquiry') {
 			return sanitize_textarea_field((string) $value);
@@ -509,7 +509,7 @@ class dy_tx
 				$value = $row[$key] ?? null;
 				if (is_array($value) && $key === 'emails') {
 					$clean[$key] = array_values(array_filter(array_map(
-						static fn(mixed $email): string => is_scalar($email) ? sanitize_email((string) $email) : '',
+						static fn(mixed $email): string => is_scalar($email) ? dy_sanitize_email((string) $email) : '',
 						$value
 					)));
 				} elseif (is_scalar($value)) {
@@ -734,7 +734,7 @@ class dy_tx
 				: ($field === 'force_availability' ? false : '');
 			$sanitizer = match (true) {
 				in_array($field, ['pax_regular', 'pax_discount', 'pax_free', 'additional_time'], true) => 'absint',
-				in_array($field, ['email', 'repeat_email'], true) => 'sanitize_email',
+				in_array($field, ['email', 'repeat_email'], true) => 'dy_sanitize_email',
 				$field === 'inquiry' => 'sanitize_textarea_field',
 				default => 'sanitize_text_field',
 			};
