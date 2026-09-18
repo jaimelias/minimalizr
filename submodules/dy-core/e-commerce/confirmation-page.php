@@ -222,7 +222,7 @@ class Dy_Confirmation_Page
 
         $excerpt = is_string($excerpt) ? $excerpt : '';
 
-        return $tx !== null
+        return self::$tx !== null
             ? (string) (self::$tx->confirmation['excerpt'] ?? '')
             : (is_string($excerpt) ? $excerpt : '');
     }
