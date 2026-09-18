@@ -65,7 +65,7 @@ class Dynamic_Core_WP_JSON
     public function country_codes_cb($request)
     {
         $country_code = (string) $request['country_code'];
-        $file_path = plugin_dir_path(__FILE__)
+        $file_path = dirname(__DIR__)
             . 'json/countries/'
             . $country_code
             . '.json';

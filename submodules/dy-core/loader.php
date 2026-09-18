@@ -4,7 +4,7 @@ if ( !defined( 'WPINC' )) exit;
 
 if(!class_exists('Dy_Core_Init'))
 {
-    define('DY_CORE_VERSION', '1.1.43');
+    define('DY_CORE_VERSION', '1.1.44');
 
     if ( !defined( 'DY_CORE_TEXTDOMAIN' ) ) {
         define( 'DY_CORE_TEXTDOMAIN', 'dycore' );
@@ -49,16 +49,17 @@ if(!class_exists('Dy_Core_Init'))
             $plugin_dir_path = plugin_dir_path( __FILE__ );
 
             //core helpers
-            require_once $plugin_dir_path . 'functions.php';
+            require_once $plugin_dir_path . 'helpers/functions.php';
             
-            require_once $plugin_dir_path . 'errors-page.php';
-            require_once $plugin_dir_path . 'security/queries.php';
-            require_once $plugin_dir_path . 'security/fields.php';
-            require_once $plugin_dir_path . 'security/write_log.php';
-            require_once $plugin_dir_path . 'security/get-option.php';
-            require_once $plugin_dir_path . 'security/ip-utilities.php';
-            require_once $plugin_dir_path . 'security/server.php';
-            require_once $plugin_dir_path . 'security/waf.php';
+            require_once $plugin_dir_path . 'public/errors-page.php';
+            require_once $plugin_dir_path . 'helpers/queries.php';
+            require_once $plugin_dir_path . 'helpers/fields.php';
+            require_once $plugin_dir_path . 'helpers/write_log.php';
+            require_once $plugin_dir_path . 'helpers/get-option.php';
+            require_once $plugin_dir_path . 'helpers/ip-utilities.php';
+            require_once $plugin_dir_path . 'helpers/server.php';
+            require_once $plugin_dir_path . 'helpers/waf.php';
+            require_once $plugin_dir_path . 'helpers/getters.php';
             require_once $plugin_dir_path . 'controllers/abstracts/input_abstract.php';
             require_once $plugin_dir_path . 'controllers/abstracts/select_abstract.php';
             require_once $plugin_dir_path . 'controllers/abstracts/textarea_abstract.php';
@@ -81,9 +82,9 @@ if(!class_exists('Dy_Core_Init'))
             require_once $plugin_dir_path . 'training-data/concatenate_object_to_html.php';
             
             //core endpoints
-            require_once $plugin_dir_path . 'public.php';
-            require_once $plugin_dir_path . 'wp-json.php';
-            require_once $plugin_dir_path . 'admin.php';
+            require_once $plugin_dir_path . 'public/template-parts.php';
+            require_once $plugin_dir_path . 'public/wp-json.php';
+            require_once $plugin_dir_path . 'admin/settings.php';
 
             //e-commerce
             require_once $plugin_dir_path . 'e-commerce/transactions.php';

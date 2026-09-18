@@ -8,8 +8,8 @@ class Dynamic_Core_Public {
     public function __construct(int|string $version)
     {
         $this->version = $version;
-        $this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
-        $this->dirname_file = dirname( __FILE__ );
+        $this->plugin_dir_url_file = plugin_dir_url( dirname( __DIR__ ) . '/loader.php' );
+        $this->dirname_file = dirname( __DIR__ );
 
 		if(is_in_theme())
 		{
