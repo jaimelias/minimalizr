@@ -4,13 +4,18 @@ if ( !defined( 'WPINC' )) exit;
 
 if(!class_exists('Dy_Core_Init'))
 {
-    define('DY_CORE_VERSION', '1.1.61');
+    define('DY_CORE_VERSION', '1.1.42');
+
+    if ( !defined( 'DY_CORE_TEXTDOMAIN' ) ) {
+        define( 'DY_CORE_TEXTDOMAIN', 'dycore' );
+    }
 
     #[AllowDynamicProperties]
     class Dy_Core_Init {
 
         public function __construct()
         {
+
             add_action('wp_loaded', 'dy_core_maybe_flush_rewrite_rules', PHP_INT_MAX);
 
             $this->load_dependencies();
@@ -27,15 +32,13 @@ if(!class_exists('Dy_Core_Init'))
             new Dynamic_Core_Public($version);  
             new Dynamic_Core_WP_JSON();
             new Dynamic_Core_Providers();
-            new Dy_Confirmation_Page($version);
-            new Dy_Booking_Page($version);
-            new Dynamic_Core_Taxonomies();
+            new Dy_Confirmation_Page();
         }
 
         public function load_textdomain(): void
         {
             load_plugin_textdomain(
-                'dycore',
+                DY_CORE_TEXTDOMAIN,
                 false,
                 dirname( plugin_basename( __FILE__ ) ) . '/languages'
             );
@@ -46,16 +49,16 @@ if(!class_exists('Dy_Core_Init'))
             $plugin_dir_path = plugin_dir_path( __FILE__ );
 
             //core helpers
-            require_once $plugin_dir_path . 'helpers/functions.php';
-            require_once $plugin_dir_path . 'helpers/fields.php';
+            require_once $plugin_dir_path . 'functions.php';
             
-            require_once $plugin_dir_path . 'helpers/queries.php';
-            require_once $plugin_dir_path . 'helpers/write_log.php';
-            require_once $plugin_dir_path . 'helpers/get-option.php';
-            require_once $plugin_dir_path . 'helpers/ip-utilities.php';
-            require_once $plugin_dir_path . 'helpers/server.php';
-            require_once $plugin_dir_path . 'helpers/waf.php';
-            require_once $plugin_dir_path . 'helpers/getters.php';
+            require_once $plugin_dir_path . 'errors-page.php';
+            require_once $plugin_dir_path . 'security/queries.php';
+            require_once $plugin_dir_path . 'security/fields.php';
+            require_once $plugin_dir_path . 'security/write_log.php';
+            require_once $plugin_dir_path . 'security/get-option.php';
+            require_once $plugin_dir_path . 'security/ip-utilities.php';
+            require_once $plugin_dir_path . 'security/server.php';
+            require_once $plugin_dir_path . 'security/waf.php';
             require_once $plugin_dir_path . 'controllers/abstracts/input_abstract.php';
             require_once $plugin_dir_path . 'controllers/abstracts/select_abstract.php';
             require_once $plugin_dir_path . 'controllers/abstracts/textarea_abstract.php';
@@ -73,23 +76,19 @@ if(!class_exists('Dy_Core_Init'))
             require_once $plugin_dir_path . 'integrations/handsontable.php';
             require_once $plugin_dir_path . 'integrations/parsedown.php';
 
-            //ml utilities
+            //ai training data
             require_once $plugin_dir_path . 'training-data/concatenate_object_to_text.php';
             require_once $plugin_dir_path . 'training-data/concatenate_object_to_html.php';
             
             //core endpoints
-            require_once $plugin_dir_path . 'public/base-template.php';
-            require_once $plugin_dir_path . 'public/wp-json.php';
-            require_once $plugin_dir_path . 'admin/settings.php';
-            require_once $plugin_dir_path . 'e-commerce/transactions.php';
-            require_once $plugin_dir_path . 'gateways/loader.php';
-            require_once $plugin_dir_path . 'e-commerce/providers.php';
-            require_once $plugin_dir_path . 'admin/taxonomies.php';
+            require_once $plugin_dir_path . 'public.php';
+            require_once $plugin_dir_path . 'wp-json.php';
+            require_once $plugin_dir_path . 'admin.php';
 
-            //public-pages
-            require_once $plugin_dir_path . 'public-pages/errors-page.php';
-            require_once $plugin_dir_path . 'public-pages/booking-page.php';
-            require_once $plugin_dir_path . 'public-pages/confirmation-page.php';
+            //e-commerce
+            require_once $plugin_dir_path . 'e-commerce/transactions.php';
+            require_once $plugin_dir_path . 'e-commerce/providers.php';
+            require_once $plugin_dir_path . 'e-commerce/confirmation-page.php';
         }
     }
 

@@ -51,13 +51,13 @@ const createTurnstileWidget = ({
 createTurnstileWidget({
 	id: 'turnstileWidget1', 
 	container: '#turnstile-container-1', 
-	action: 'tx-sign',
+	action: 'sign-transaction',
 	appearance: 'execute'
 });
 
 createTurnstileWidget({
 	id: 'turnstileWidget2', 
 	container: '#turnstile-container-2', 
-	action: 'tx-submit',
+	action: 'submit-transaction',
 	appearance: 'interaction-only'
 });

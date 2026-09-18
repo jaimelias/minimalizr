@@ -33,7 +33,7 @@ if(!function_exists('dy_sanitize_email_per_line')) {
 
     function dy_sanitize_email_per_line(string $str) : string	{
 		$max_items = 10;
-		return dy_sanitize_per_line('dy_sanitize_email', $str, $max_items);
+        return dy_sanitize_per_line('sanitize_email', $str, $max_items);
 	}
 }
 

@@ -2,6 +2,9 @@
 
 if ( !defined( 'WPINC' ) ) exit;
 
+define('DY_CORE_FUNCTIONS', true);
+
+
 if(!function_exists('get_dy_id'))
 {
 	function get_dy_id() : int|null{
@@ -301,6 +304,19 @@ if(!function_exists('whatsapp_button'))
 		}
 
 		return $output;
+	}
+}
+
+
+
+if(!function_exists('get_inline_file'))
+{
+	function get_inline_file($dir) : string {
+		ob_start();
+		require_once($dir);
+		$output = ob_get_contents();
+		ob_end_clean();
+		return (string) $output;	
 	}
 }
 
@@ -893,7 +909,7 @@ if (!function_exists('email_str_row_to_array')) {
 		return str_row_to_array(
 			$str,
 			$recipients_limit,
-			'dy_sanitize_email'
+			'sanitize_email'
 		);
 	}
 }
@@ -977,6 +993,8 @@ if(!function_exists('dy_core_maybe_flush_rewrite_rules'))  {
 
 }
 
+
+
 if(!function_exists('dy_sanitize_email'))  {
 	function dy_sanitize_email(string $email): string
 	{
@@ -1013,7 +1031,6 @@ if(!function_exists('dy_get_template_part'))  {
 	}
 
 }
-
 
 
 

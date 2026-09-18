@@ -383,7 +383,7 @@ class Dy_WAF {
 
             // Registration (if enabled publicly)
             'user_login' => ['max_length' => 60,    'sanitizer' => 'sanitize_text_field'],
-            'user_email' => ['max_length' => 254,   'sanitizer' => 'dy_sanitize_email'],
+            'user_email' => ['max_length' => 254,   'sanitizer' => 'sanitize_email'],
             'user_pass' => ['max_length' => 128,   'sanitizer' => 'sanitize_text_field'],
             'user_pass2' => ['max_length' => 128,   'sanitizer' => 'sanitize_text_field'],
 
@@ -396,7 +396,7 @@ class Dy_WAF {
             // Commenting (wp-comments-post.php)
             'comment' => ['max_length' => 10000, 'sanitizer' => 'sanitize_textarea_field'],
             'author' => ['max_length' => 60,    'sanitizer' => 'sanitize_text_field'],
-            'email' => ['max_length' => 254,   'sanitizer' => 'dy_sanitize_email'],
+            'email' => ['max_length' => 254,   'sanitizer' => 'sanitize_email'],
             'url' => ['max_length' => 2048,  'sanitizer' => 'esc_url_raw'],
             'comment_post_ID' => ['max_length' => 11,    'sanitizer' => 'sanitize_text_field'],
             'comment_parent' => ['max_length' => 11,    'sanitizer' => 'sanitize_text_field'],
@@ -418,12 +418,12 @@ class Dy_WAF {
 
             // Commenter convenience cookies (public commenting)
             'comment_author' => ['max_length' => 60,    'sanitizer' => 'sanitize_text_field'],
-            'comment_author_email' => ['max_length' => 254,   'sanitizer' => 'dy_sanitize_email'],
+            'comment_author_email' => ['max_length' => 254,   'sanitizer' => 'sanitize_email'],
             'comment_author_url' => ['max_length' => 2048,  'sanitizer' => 'esc_url_raw'],
 
             // Hashed variants (prefix matches)
             'comment_author_' => ['max_length' => 60,    'sanitizer' => 'sanitize_text_field', 'prefix' => true],
-            'comment_author_email_' => ['max_length' => 254,   'sanitizer' => 'dy_sanitize_email',       'prefix' => true],
+            'comment_author_email_' => ['max_length' => 254,   'sanitizer' => 'sanitize_email',       'prefix' => true],
             'comment_author_url_' => ['max_length' => 2048,  'sanitizer' => 'esc_url_raw',          'prefix' => true],
 
             // User preferences (prefix; user id appended)

@@ -25,8 +25,8 @@ class Dynamic_Core_Admin {
         $this->page_facebook = $this->slug . '-facebook';
         $this->page_cloudflare = $this->slug . '-cloudflare';
 
-		$this->plugin_dir_url_file = plugin_dir_url(dirname(__DIR__) . '/loader.php');
-		$this->plugin_dir = dirname(__DIR__);
+		$this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
+		$this->plugin_dir = plugin_dir_url( __DIR__ );
 
 		if(is_in_theme())
 		{
@@ -81,7 +81,7 @@ class Dynamic_Core_Admin {
 	
 
         //settings - company
-		register_setting($this->setting_id, 'dy_email', 'dy_sanitize_email');
+		register_setting($this->setting_id, 'dy_email', 'sanitize_email');
 		register_setting($this->setting_id, 'dy_phone', 'esc_html');
 		register_setting($this->setting_id, 'dy_address', 'esc_html');
 		register_setting($this->setting_id, 'dy_tax_id', 'esc_html');

@@ -8,8 +8,8 @@ class Dynamic_Core_Public {
     public function __construct(int|string $version)
     {
         $this->version = $version;
-        $this->plugin_dir_url_file = plugin_dir_url(dirname(__DIR__) . '/loader.php');
-        $this->dirname_file = dirname(__DIR__);
+        $this->plugin_dir_url_file = plugin_dir_url( __FILE__ );
+        $this->dirname_file = dirname( __FILE__ );
 
 		if(is_in_theme())
 		{
@@ -62,9 +62,29 @@ class Dynamic_Core_Public {
         }
 
         if (isset($dy_load_turnstile_scripts)) {
-            Dy_Checkout_Form::enqueue_security();
-        }
+            wp_enqueue_script(
+                'cloudflare-turnstile',
+                'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',
+                [],
+                null,
+                true
+            );
 
+            wp_add_inline_script(
+                'cloudflare-turnstile',
+                $this->turnstileArgs(),
+                'before'
+            );
+
+            wp_enqueue_script(
+                'cloudflare-turnstile-widgets',
+                $this->plugin_dir_url_file . 'js/turnstile-widgets.js',
+                ['cloudflare-turnstile'],
+                $this->version,
+                true
+            );
+        }
+        
         wp_enqueue_script('landing-cookies', $this->plugin_dir_url_file . 'js/cookies.js', ['jquery'], $this->version, true);
 
         wp_enqueue_script('dy-qrcode', $this->plugin_dir_url_file . 'js/qrcode.min.js', ['jquery'], 'async_defer', true);
@@ -115,14 +135,13 @@ class Dynamic_Core_Public {
 
         $site_time = get_site_time();
 
-        $args = [
+        $args = array(
             'homeUrl' => home_url(),
             'permalink' => get_the_permalink(),
             'wpJsonUrl' => rest_url('dy-core'),
-            'txSignSlug' => dy_tx::$tx_sign_slug,
             'lang' => current_language(),
             'whatsappNumber' => whatsapp_number()
-        ];
+        );
 
         foreach($site_time as $k => $v)
         {
@@ -179,7 +198,7 @@ class Dynamic_Core_Public {
         }
 
         $gtag_src = add_query_arg(
-            ['id' => $loader_id],
+            array('id' => $loader_id),
             'https://www.googletagmanager.com/gtag/js'
         );
 
@@ -246,14 +265,14 @@ class Dynamic_Core_Public {
             $google_ads_id = '';
         }
 
-        $ads_labels = [
+        $ads_labels = array(
             'purchase' => trim(
                 (string) get_option('dy_google_ads_purchase_label')
             ),
             'generate_lead' => trim(
                 (string) get_option('dy_google_ads_lead_label')
             )
-        ];
+        );
 
         $commands = [];
 
@@ -277,10 +296,10 @@ class Dynamic_Core_Public {
                 $ga4_params = $event['params'];
                 $ga4_params['send_to'] = $analytics;
 
-                $commands[] = [
+                $commands[] = array(
                     'event' => $event['name'],
                     'params' => $ga4_params
-                ];
+                );
             }
 
             /*
@@ -295,15 +314,15 @@ class Dynamic_Core_Public {
                 && 1 === preg_match('/^[A-Za-z0-9_-]+$/', $label)
             )
             {
-                $commands[] = [
+                $commands[] = array(
                     'event' => 'conversion',
-                    'params' => [
+                    'params' => array(
                         'send_to' => $google_ads_id . '/' . $label,
                         'value' => $event['params']['value'],
                         'currency' => $event['params']['currency'],
                         'transaction_id' => $event['params']['transaction_id']
-                    ]
-                ];
+                    )
+                );
             }
         }
 
