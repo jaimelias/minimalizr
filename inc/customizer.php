@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'WPINC' ) ) exit;
 
 class MyTheme_Customize {
 

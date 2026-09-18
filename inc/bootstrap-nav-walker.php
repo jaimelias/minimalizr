@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'WPINC' ) ) exit;
 
 /**
  * Class Name: wp_bootstrap_navwalker

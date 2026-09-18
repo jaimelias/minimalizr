@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'WPINC' ) ) exit;
 /**
  * The sidebar containing the main widget area.
  *
@@ -31,4 +32,3 @@ $gridQuotient = 0;
 </div><!-- #secondary -->
 
 <?php endif; ?>
-

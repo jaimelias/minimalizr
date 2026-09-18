@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'WPINC' ) ) exit;
 /**
  * The template for displaying all single posts.
  *

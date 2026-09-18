@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'WPINC' ) ) exit;
 /**
  * The template used for displaying page content in page.php
  *

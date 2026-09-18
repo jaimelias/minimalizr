@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'WPINC' ) ) exit;
 /**
  * The template part for displaying a message that posts cannot be found.
  *

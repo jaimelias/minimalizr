@@ -1,3 +1,4 @@
+<?php if ( ! defined( 'WPINC' ) ) exit; ?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>

@@ -20,7 +20,7 @@ class Dy_Booking_Page {
 			return;
 		}
 		
-		$output = '<h3>'.esc_html(__('Terms & Conditions', 'dynamicpackages')).'</h3><p>';
+		$items = '';
 		
 		for($x = 0; $x < count($terms_conditions); $x++ )
 		{
@@ -35,7 +35,7 @@ class Dy_Booking_Page {
 			$name = $term->name;
 
 			
-			$output .= sprintf(
+			$items .= sprintf(
 				'<label for="terms_conditions_%1$s" class="checkmark-container"><input type="checkbox" name="terms_conditions_%1$s" id="terms_conditions_%1$s" class="required" /><span class="checkmark"></span> <a href="%2$s" target="_blank">%3$s</a></label>',
 				esc_attr( $id ),
 				esc_url( $url ),
@@ -44,7 +44,11 @@ class Dy_Booking_Page {
 
 		}
 
-		$output .= '</p><hr/>';
+		$output = sprintf(
+			'<h3>%s</h3><p>%s</p>',
+			esc_html(__('Terms & Conditions', 'dynamicpackages')),
+			$items
+		);
 
 		echo $output;
 		

@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'WPINC' ) ) exit;
 
 #[AllowDynamicProperties]
 class Minimal_Classes
