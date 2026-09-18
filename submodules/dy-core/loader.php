@@ -4,9 +4,10 @@ if ( !defined( 'WPINC' )) exit;
 
 if(defined('DY_CORE_VERSION')) exit;
 
-define('DY_CORE_VERSION', '1.1.46');
+define('DY_CORE_VERSION', '1.1.47');
 define('DY_CORE_TEXTDOMAIN', 'dycore');
 define('DY_CORE_TX_SIGN_SLUG', 'tx-sign');
+define('DY_CORE_CONFIRMATION_PAGE_SLUG', 'dy-tx');
 
 #[AllowDynamicProperties]
 class Dy_Core_Init {
@@ -30,7 +31,7 @@ class Dy_Core_Init {
         new Dynamic_Core_Public($version);  
         new Dynamic_Core_WP_JSON();
         new Dynamic_Core_Providers();
-        new Dy_Confirmation_Page();
+        new Dy_Confirmation_Page($version);
     }
 
     public function load_textdomain(): void
