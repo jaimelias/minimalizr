@@ -1032,6 +1032,4 @@ if(!function_exists('dy_get_template_part'))  {
 
 }
 
-
-
 ?>

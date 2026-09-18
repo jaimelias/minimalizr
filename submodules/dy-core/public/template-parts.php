@@ -139,6 +139,7 @@ class Dynamic_Core_Public {
             'homeUrl' => home_url(),
             'permalink' => get_the_permalink(),
             'wpJsonUrl' => rest_url('dy-core'),
+            'txSignSlug' => DY_CORE_TX_SIGN_SLUG,
             'lang' => current_language(),
             'whatsappNumber' => whatsapp_number()
         );

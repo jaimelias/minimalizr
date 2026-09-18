@@ -116,7 +116,7 @@ class dy_tx
 		if ($expected_arr === []) {
 			$expected_arr = [
 				$tx_id,
-				(string) self::request_value('email'),
+				(string) secure_post('email', '', 'dy_sanitize_email'),
 				(string) secure_post('dy_request', '', 'sanitize_key'),
 				(int) secure_post('dy_id', 0, 'absint'),
 			];

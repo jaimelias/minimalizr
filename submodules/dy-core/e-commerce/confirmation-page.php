@@ -26,7 +26,7 @@ class Dy_Confirmation_Page
 
 
         //regenerate $post from $tx->dy_id
-        add_action('wp', [$this, 'set_post_on_checkout_page']);
+        add_action('wp', [$this, 'regenerate_post_object']);
 
         /* BELLOW THIS LINE NO CALLBACK CAN BE TRIGGERED USING "INIT" OR "ANY HOOK BEFORE INIT" */
 
@@ -95,7 +95,7 @@ class Dy_Confirmation_Page
      * Resuelve la transacción indicada en la URL y establece el post asociado
      * como contenido principal de la request.
      */
-    public function set_post_on_checkout_page(): void
+    public function regenerate_post_object(): void
     {
         if (!$this->is_request_accepted()) {
             return;
