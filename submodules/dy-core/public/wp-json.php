@@ -225,7 +225,7 @@ class Dynamic_Core_WP_JSON
     public function country_codes_cb($request)
     {
         $country_code = (string) $request['country_code'];
-        $file_path = plugin_dir_path(__FILE__)
+        $file_path = plugin_dir_path(__DIR__)
             . 'json/countries/'
             . $country_code
             . '.json';
@@ -234,7 +234,7 @@ class Dynamic_Core_WP_JSON
             return new WP_Error(
                 'dy_core_countries_not_found',
                 'Country data was not found.',
-                array('status' => 404)
+                ['status' => 404]
             );
         }
 
