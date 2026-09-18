@@ -4,7 +4,7 @@ if ( !defined( 'WPINC' )) exit;
 
 if(!class_exists('Dy_Core_Init'))
 {
-    define('DY_CORE_VERSION', '1.1.44');
+    define('DY_CORE_VERSION', '1.1.45');
 
     if ( !defined( 'DY_CORE_TEXTDOMAIN' ) ) {
         define( 'DY_CORE_TEXTDOMAIN', 'dycore' );
@@ -76,10 +76,6 @@ if(!class_exists('Dy_Core_Init'))
             require_once $plugin_dir_path . 'integrations/sitemap.php';
             require_once $plugin_dir_path . 'integrations/handsontable.php';
             require_once $plugin_dir_path . 'integrations/parsedown.php';
-
-            //ai training data
-            require_once $plugin_dir_path . 'training-data/concatenate_object_to_text.php';
-            require_once $plugin_dir_path . 'training-data/concatenate_object_to_html.php';
             
             //core endpoints
             require_once $plugin_dir_path . 'public/template-parts.php';
