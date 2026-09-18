@@ -1,6 +1,5 @@
 # PHP
 
-- Read the project's `composer.json` for tools and configuration.
 - For `$_GET` handling read `security/GET.md`
 - For `$_POST` handling read `security/POST.md`,
 - For `$_REQUEST` handling read `security/REQUEST.md`
