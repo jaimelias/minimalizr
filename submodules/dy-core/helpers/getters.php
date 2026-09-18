@@ -1,6 +1,6 @@
 <?php
 
-if(function_exists('dy_get_taxonomies')) {
+if(!function_exists('dy_get_taxonomies')) {
 
 	function dy_get_taxonomies($term_name) : array {
         static $cache = [];
@@ -76,3 +76,55 @@ if(!function_exists('dy_get_taxo_names')) {
 		return $cache[$cache_key] = $output;
 	}
 }
+
+if(!function_exists('dy_implode_taxo_names')) {
+	function dy_implode_taxo_names($tax, $last_separator = ',', $item_separator = '')
+	{
+		$output = '';
+		$items_arr = dy_get_taxo_names($tax, get_dy_id());
+
+		if(is_array($items_arr) && count($items_arr) > 0)
+		{
+			$output = implode_last($items_arr, $last_separator, $item_separator);
+		}
+
+		return $output;
+	}
+}
+
+
+
+if (!function_exists('dy_get_week_days_abbr')) {
+	function dy_get_week_days_abbr(): array {
+		return ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+	}
+}
+
+if (!function_exists('dy_get_week_day_names_long')) {
+	function dy_get_week_day_names_long(): array {
+		return [
+			__('Monday', 'dynamicpackages'),
+			__('Tuesday', 'dynamicpackages'),
+			__('Wednesday', 'dynamicpackages'),
+			__('Thursday', 'dynamicpackages'),
+			__('Friday', 'dynamicpackages'),
+			__('Saturday', 'dynamicpackages'),
+			__('Sunday', 'dynamicpackages'),
+		];
+	}
+}
+
+if (!function_exists('dy_get_week_day_names_short')) {
+	function dy_get_week_day_names_short(): array {
+		return [
+			__('Mon', 'dynamicpackages'),
+			__('Tue', 'dynamicpackages'),
+			__('Wed', 'dynamicpackages'),
+			__('Thu', 'dynamicpackages'),
+			__('Fri', 'dynamicpackages'),
+			__('Sat', 'dynamicpackages'),
+			__('Sun', 'dynamicpackages'),
+		];
+	}
+}
+	
