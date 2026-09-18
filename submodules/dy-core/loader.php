@@ -4,7 +4,7 @@ if ( !defined( 'WPINC' )) exit;
 
 if(!class_exists('Dy_Core_Init'))
 {
-    define('DY_CORE_VERSION', '1.1.56');
+    define('DY_CORE_VERSION', '1.1.57');
 
     #[AllowDynamicProperties]
     class Dy_Core_Init {
@@ -54,6 +54,7 @@ if(!class_exists('Dy_Core_Init'))
             require_once $plugin_dir_path . 'helpers/ip-utilities.php';
             require_once $plugin_dir_path . 'helpers/server.php';
             require_once $plugin_dir_path . 'helpers/waf.php';
+            require_once $plugin_dir_path . 'helpers/getters.php';
             require_once $plugin_dir_path . 'controllers/abstracts/input_abstract.php';
             require_once $plugin_dir_path . 'controllers/abstracts/select_abstract.php';
             require_once $plugin_dir_path . 'controllers/abstracts/textarea_abstract.php';
