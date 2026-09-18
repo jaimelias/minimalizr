@@ -10,7 +10,7 @@ final class Dy_Checkout_Form
 	{
 		self::enqueue();
 		$view += ['id' => 'dy_checkout_form', 'has_gateway' => false, 'title' => __('Contact Us', 'dycore'),
-			'submit_label' => __('Submit', 'dycore'), 'fields' => [], 'card_notice' => '', 'terms' => '', 'inquiry' => ''];
+			'submit_label' => __('Submit', 'dycore'), 'fields' => [], 'card_notice' => '', 'inquiry' => ''];
 		ob_start();
 		require __DIR__ . '/partials/checkout-form.php';
 		return (string) ob_get_clean();

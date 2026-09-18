@@ -132,7 +132,7 @@ $site_key = get_turnstile_site_key();
 			<?php Dy_Checkout_Form::card(); ?>
 		<?php endif; ?>
 
-		<?php echo $view['terms']; ?>
+		<?php do_action('dy_terms_conditions'); ?>
 		
 		<?php echo $view['inquiry']; ?>
 		

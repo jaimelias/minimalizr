@@ -4,7 +4,7 @@ if ( !defined( 'WPINC' )) exit;
 
 if(!class_exists('Dy_Core_Init'))
 {
-    define('DY_CORE_VERSION', '1.1.58');
+    define('DY_CORE_VERSION', '1.1.59');
 
     #[AllowDynamicProperties]
     class Dy_Core_Init {
@@ -28,6 +28,7 @@ if(!class_exists('Dy_Core_Init'))
             new Dynamic_Core_WP_JSON();
             new Dynamic_Core_Providers();
             new Dy_Confirmation_Page($version);
+            new Dy_Booking_Page($version);
             new Dynamic_Core_Taxonomies();
         }
 
@@ -87,6 +88,7 @@ if(!class_exists('Dy_Core_Init'))
 
             //public-pages
             require_once $plugin_dir_path . 'public-pages/errors-page.php';
+            require_once $plugin_dir_path . 'public-pages/booking-page.php';
             require_once $plugin_dir_path . 'public-pages/confirmation-page.php';
         }
     }
