@@ -233,7 +233,7 @@ class Minimalizr {
 
 		if(array_key_exists('email', $arr))
 		{
-			$email = sanitize_email($arr['email']);
+			$email = dy_sanitize_email((string) $arr['email']);
 
 			if(is_email($email))
 			{

@@ -870,7 +870,7 @@ class DY_SendGrid
 					$email = trim($matches[2]);
 				}
 
-				$email = sanitize_email($email);
+				$email = dy_sanitize_email((string) $email);
 
 				if (!is_email($email)) {
 					continue;

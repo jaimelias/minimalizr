@@ -321,7 +321,7 @@ class dy_tx
 
 			return [
 				'tx_id' => $tx_id,
-				'email'       => is_scalar($email) ? sanitize_email((string) $email) : '',
+				'email'       => is_scalar($email) ? dy_sanitize_email((string) $email) : '',
 				'dy_request'  => is_scalar($dy_request) ? sanitize_key((string) $dy_request) : '',
 				'dy_id'       => is_scalar($dy_id) ? absint($dy_id) : 0,
 			];
@@ -336,7 +336,7 @@ class dy_tx
 
 		return [
 			'tx_id' => $tx_id,
-			'email'       => is_scalar($email) ? sanitize_email((string) $email) : '',
+			'email'       => is_scalar($email) ? dy_sanitize_email((string) $email) : '',
 			'dy_request'  => is_scalar($dy_request) ? sanitize_key((string) $dy_request) : '',
 			'dy_id'       => is_scalar($dy_id) ? absint($dy_id) : 0,
 		];
@@ -414,7 +414,7 @@ class dy_tx
 		}
 
 		if (in_array($field, ['email', 'repeat_email'], true)) {
-			return sanitize_email((string) $value);
+			return dy_sanitize_email((string) $value);
 		}
 
 		if ($field === 'inquiry') {
