@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Dy-Core\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-13 19:46+0000\n"
-"PO-Revision-Date: 2026-09-19 17:17+0000\n"
+"PO-Revision-Date: 2026-09-19 17:12+0000\n"
 "Last-Translator: \n"
 "Language-Team: Español\n"
 "Language: es_ES\n"
@@ -133,36 +133,36 @@ msgstr "Etiqueta de compra de Google Ads"
 
 #: dy-core/admin/settings.php:118
 msgid "Google Analytics"
-msgstr "Google Analytics"
+msgstr ""
 
 #: dy-core/integrations/cloudflare-turnstile.php:104
 msgid "Invalid json string in validate_turnstile."
-msgstr "Cadena JSON no válida en validate_turnstile."
+msgstr ""
 
 #: dy-core/e-commerce/confirmation-page.php:137
 msgid "Invalid or expired transaction ID."
-msgstr "ID de transacción no válido o caducado."
+msgstr ""
 
 #: dy-core/e-commerce/confirmation-page.php:127
 msgid "Invalid or missing transaction ID."
-msgstr "ID de transacción no válido o faltante."
+msgstr ""
 
 #: dy-core/e-commerce/confirmation-page.php:147
 msgid "Invalid transaction destination."
-msgstr "Destino de transacción no válido."
+msgstr ""
 
 #: dy-core/integrations/cloudflare-turnstile.php:52
 msgid "Invalid Turnstile response: token length > 2048."
-msgstr "Respuesta de Turnstile no válida: longitud del token > 2048."
+msgstr ""
 
 #: dy-core/e-commerce/providers.php:75
 #, php-format
 msgid "New %s Name"
-msgstr "Nuevo nombre %s"
+msgstr ""
 
 #: dy-core/e-commerce/providers.php:135
 msgid "No"
-msgstr "No"
+msgstr ""
 
 #: dy-core/e-commerce/providers.php:70 dy-core/e-commerce/providers.php:71
 #, php-format
@@ -171,36 +171,36 @@ msgstr ""
 
 #: dy-core/admin/settings.php:141
 msgid "Phone"
-msgstr "Phone"
+msgstr ""
 
 #: dy-core/e-commerce/providers.php:62
 msgid "Provider"
-msgstr "Provider"
+msgstr ""
 
 #: dy-core/e-commerce/providers.php:173
 msgid "Provider Emails"
-msgstr "Emails de proveedor"
+msgstr ""
 
 #: dy-core/e-commerce/providers.php:150
 msgid "Provider Language"
-msgstr "Idioma del proveedor"
+msgstr ""
 
 #: dy-core/e-commerce/providers.php:63
 msgid "Providers"
-msgstr "Proveedores"
+msgstr ""
 
 #: dy-core/e-commerce/providers.php:68
 #, php-format
 msgid "Search %s"
-msgstr "Buscar %s"
+msgstr ""
 
 #: dy-core/admin/settings.php:257
 msgid "Sentry API Key"
-msgstr "Clave de API Sentry"
+msgstr ""
 
 #: dy-core/admin/settings.php:188
 msgid "Tax Identification ID"
-msgstr "Número de identificación tributario"
+msgstr ""
 
 #: dy-core/integrations/cloudflare-turnstile.php:44
 msgid "The Turnstile response is missing."
@@ -208,30 +208,30 @@ msgstr "Falta la respuesta de Turnstile."
 
 #: dy-core/integrations/cloudflare-turnstile.php:64
 msgid "Turnstile is not configured."
-msgstr "Turnstile no está configurado."
+msgstr ""
 
 #: dy-core/integrations/cloudflare-turnstile.php:172
 msgid "Turnstile validation failed."
-msgstr "La validación Turnstile falló."
+msgstr ""
 
 #: dy-core/integrations/cloudflare-turnstile.php:94
 #: dy-core/integrations/cloudflare-turnstile.php:105
 msgid "Unable to validate Turnstile."
-msgstr "No es posible validar turnstile."
+msgstr ""
 
 #: dy-core/e-commerce/providers.php:73
 #, php-format
 msgid "Update %s"
-msgstr "Actualizar %s"
+msgstr ""
 
 #: dy-core/public/template-parts.php:406
 msgid "Web Whatsapp"
-msgstr "Whatsapp Web"
+msgstr ""
 
 #: dy-core/admin/settings.php:164 dy-core/e-commerce/providers.php:162
 msgid "Whatsapp"
-msgstr "Whatsapp"
+msgstr ""
 
 #: dy-core/e-commerce/providers.php:136
 msgid "Yes"
-msgstr "Sí"
+msgstr ""
