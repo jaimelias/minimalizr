@@ -4,7 +4,7 @@ if ( !defined( 'WPINC' )) exit;
 
 if(defined('DY_CORE_VERSION')) exit;
 
-define('DY_CORE_VERSION', '1.1.53');
+define('DY_CORE_VERSION', '1.1.54');
 define('DY_CORE_TEXTDOMAIN', 'dycore');
 define('DY_CORE_TX_SIGN_SLUG', 'tx-sign');
 define('DY_CORE_CONFIRMATION_PAGE_SLUG', 'dy-tx');
