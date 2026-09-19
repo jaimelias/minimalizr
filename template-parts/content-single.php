@@ -8,11 +8,11 @@ if ( ! defined( 'WPINC' ) ) exit;
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 
 	<?php
-	$is_full_width = minimalizr_get_meta( 'minimalizr_width' ) === 'full';
-	$excerpt       = get_the_excerpt();
+	$render_minimal_box = minimalizr_get_meta( 'minimalizr_box' ) === 'render';
+	$excerpt            = get_the_excerpt();
 	?>
 
-	<?php if ( ! $is_full_width ) : ?>
+	<?php if ( ! $render_minimal_box ) : ?>
 		<header class="entry-header">
 			<?php the_title( '<h1 class="entry-title semibold">', '</h1>' ); ?>
 			
@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) exit;
 		<?php echo apply_filters( 'the_content', get_the_content() ); ?>
 	</div><!-- .entry-content -->
 
-	<?php if ( ! $is_full_width ) : ?>
+	<?php if ( ! $render_minimal_box ) : ?>
 		<footer class="entry-footer">
 			<?php minimalizr_entry_footer(); ?>
 		</footer><!-- .entry-footer -->

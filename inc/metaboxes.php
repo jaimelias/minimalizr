@@ -13,9 +13,18 @@ function minimalizr_get_meta( $value ) {
 		$field = get_post_meta( $post->ID, $value, true );
 		if ( ! empty( $field ) ) {
 			return is_array( $field ) ? stripslashes_deep( $field ) : stripslashes( wp_kses_decode_entities( $field ) );
-		} else {
-			return false;
-		}		
+		}
+
+		if ( is_front_page() ) {
+			$fallbacks = [
+				'minimalizr_width' => 'full',
+				'minimalizr_box'   => 'render',
+			];
+
+			return $fallbacks[ $value ] ?? false;
+		}
+
+		return false;
 	}
 }
 
@@ -31,14 +40,26 @@ function minimalizr_add_meta_box() {
 }
 add_action( 'add_meta_boxes', 'minimalizr_add_meta_box' );
 
-function minimalizr_width_html( $post) {
+function minimalizr_width_html( $post ) {
+	$width = minimalizr_get_meta( 'minimalizr_width' );
+	$box   = minimalizr_get_meta( 'minimalizr_box' );
+
 	wp_nonce_field( '_minimalizr_nonce', 'minimalizr_nonce' ); ?>
 
 	<p>
-		<label for="minimalizr_width"><?php _e( 'Width', 'minimalizr' ); ?></label><br>
+		<label for="minimalizr_width"><?php esc_html_e( 'Width', 'minimalizr' ); ?></label><br>
 		<select name="minimalizr_width" id="minimalizr_width">
-			<option value="fixed" <?php echo (minimalizr_get_meta( 'minimalizr_width' ) === 'fixed' ) ? 'selected' : '' ?>><?php esc_html(_e("Fixed", "minimalizr")); ?></option>		
-			<option value="full" <?php echo (minimalizr_get_meta( 'minimalizr_width' ) === 'full' ) ? 'selected' : '' ?>><?php esc_html(_e("Full", "minimalizr")); ?></option>
+			<option value="fixed" <?php selected( $width, 'fixed' ); ?>><?php esc_html_e( 'Fixed', 'minimalizr' ); ?></option>
+			<option value="fluid" <?php selected( $width, 'fluid' ); ?>><?php esc_html_e( 'Fluid', 'minimalizr' ); ?></option>
+			<option value="full" <?php selected( $width, 'full' ); ?>><?php esc_html_e( 'Full', 'minimalizr' ); ?></option>
+		</select>
+	</p>
+
+	<p>
+		<label for="minimalizr_box"><?php esc_html_e( 'Minimal box', 'minimalizr' ); ?></label><br>
+		<select name="minimalizr_box" id="minimalizr_box">
+			<option value="skip" <?php selected( $box, 'skip' ); ?>><?php esc_html_e( 'Skip', 'minimalizr' ); ?></option>
+			<option value="render" <?php selected( $box, 'render' ); ?>><?php esc_html_e( 'Render', 'minimalizr' ); ?></option>
 		</select>
 	</p><?php
 }
@@ -54,19 +75,28 @@ function minimalizr_save( $post_id ): void {
 	if ( ! wp_verify_nonce( $nonce, '_minimalizr_nonce' ) || ! current_user_can( 'edit_post', $post_id ) ) {
 		return;
 	}
-	if ( ! isset( $_POST['minimalizr_width'] ) || ! is_string( $_POST['minimalizr_width'] ) ) {
-		return;
+	$fields = [
+		'minimalizr_width' => [ 'fixed', 'fluid', 'full' ],
+		'minimalizr_box'   => [ 'skip', 'render' ],
+	];
+
+	foreach ( $fields as $field => $allowed_values ) {
+		if ( ! isset( $_POST[ $field ] ) || ! is_string( $_POST[ $field ] ) ) {
+			continue;
+		}
+
+		$value = sanitize_key( wp_unslash( $_POST[ $field ] ) );
+
+		if ( in_array( $value, $allowed_values, true ) ) {
+			update_post_meta( $post_id, $field, $value );
+		}
 	}
-	$width = wp_unslash( $_POST['minimalizr_width'] );
-	if ( ! in_array( $width, [ 'fixed', 'full' ], true ) ) {
-		return;
-	}
-	update_post_meta( $post_id, 'minimalizr_width', $width );
 }
 add_action( 'save_post', 'minimalizr_save' );
 
 /*
 	Usage: minimalizr_get_meta( 'minimalizr_width' )
+	       minimalizr_get_meta( 'minimalizr_box' )
 */
 
 

@@ -27,10 +27,11 @@
 <?php 
 
 	$layout = minimalizr_get_meta( 'minimalizr_width' );
-	$is_full_width = $layout === 'full' && ( is_page() || is_single() );
+	$render_minimal_box = minimalizr_get_meta( 'minimalizr_box' ) === 'render' && ( is_page() || is_single() );
 
-	if ( $is_full_width ) {
+	if ( $render_minimal_box ) {
 		$heading_tag = is_front_page() ? 'h2' : 'h1';
+		
 		$title       = sprintf(
 			'<%1$s class="entry-title">%2$s</%1$s>',
 			$heading_tag,
@@ -44,25 +45,24 @@
 			if ( ! empty( $excerpt ) ) {
 				$description = sprintf(
 					'<p itemprop="description" class="large bottom-10">%s</p>',
-					wp_kses_post( $excerpt )
+					$excerpt
 				);
 			}
 		}
 
-		echo wp_kses_post( '<div class="minimal-box text-center"><div class="container">' . $title . $description . '</div></div>' );
+		echo sprintf( 
+			'<div class="minimal-box text-center"><div class="container">%s%s</div></div>',
+			$title,
+			$description
+		);
 	}
 
-	if ( $is_full_width )
-	{
-		$layoutwidth = 'layoutfull';
-		$max_width = '100%';
-	}
-	else
-	{
-		$layoutwidth = 'layoutfixed';
-		$max_width = '1000px';
-	}
+	$layoutwidth = match ( $layout ) {
+		'full'  => 'layoutfull',
+		'fluid' => 'layoutfixed container-fluid',
+		default => 'layoutfixed container',
+	};
 
 ?>
 
-<div id="content" class="site-content clearfix <?php echo esc_attr( $layoutwidth ); ?>" style="max-width: <?php echo esc_attr( $max_width ); ?>" >
+<div id="content" class="site-content clearfix <?php echo esc_attr( $layoutwidth ); ?>" >

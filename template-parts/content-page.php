@@ -6,10 +6,10 @@ if ( ! defined( 'WPINC' ) ) exit;
  * @package minimalizr
  */
 
-	$is_full_width = minimalizr_get_meta( 'minimalizr_width' ) === 'full';
-	$description   = '';
+	$render_minimal_box = minimalizr_get_meta( 'minimalizr_box' ) === 'render';
+	$description        = '';
 
-		if ( ! $is_full_width ) {
+		if ( ! $render_minimal_box ) {
 			$title = get_the_title();
 			$title = is_front_page() ? '<h2 class="entry-title">' . $title . '</h2>' : '<h1 class="entry-title">' . $title . '</h1>';
 
@@ -28,7 +28,7 @@ if ( ! defined( 'WPINC' ) ) exit;
 	
 	<?php
 
-		if ( ! $is_full_width )
+		if ( ! $render_minimal_box )
 		{
 			echo wp_kses_post( sprintf( '<header class="entry-header">%s%s</header>', $title, $description ) );
 		}
