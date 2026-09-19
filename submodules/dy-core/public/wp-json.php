@@ -106,6 +106,13 @@ class Dynamic_Core_WP_JSON
 				|| current_user_can('read_post', $dy_id)
 			);
 
+		write_log([
+			$post instanceof WP_Post,
+			in_array($post->post_type, ['packages', 'aircrafts'], true),
+			is_post_publicly_viewable($post),
+			current_user_can('read_post', $dy_id)
+		]);
+
 		if (!$is_readable) {
 			return $this->rest_response(
 				[
