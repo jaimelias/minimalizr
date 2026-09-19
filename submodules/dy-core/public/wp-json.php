@@ -100,7 +100,7 @@ class Dynamic_Core_WP_JSON
 		$post = get_post($dy_id);
 
 		$is_readable = $post instanceof WP_Post
-			&& (in_array($post->post_type, ['packages', 'aircrafts']) || $dy_request === 'contact')
+			&& (in_array($post->post_type, ['packages', 'aircrafts'], true) || $dy_request === 'contact')
 			&& (
 				is_post_publicly_viewable($post)
 				|| current_user_can('read_post', $dy_id)
