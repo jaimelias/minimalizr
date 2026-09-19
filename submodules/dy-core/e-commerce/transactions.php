@@ -219,7 +219,7 @@ class dy_tx
 		$current_status = (string) ($tx->status ?? '');
 		$new_status = $new_status !== '' ? sanitize_key($new_status) : $current_status;
 		$request_type = (string) ($tx->dy_request ?? '');
-		$allowed_statuses = $request_type === 'paguelo_facil_on'
+		$allowed_statuses = in_array($request_type, ['paguelo_facil_on', 'yappy_v2'], true)
 			? ['started', 'processing', 'success', 'declined', 'error']
 			: ['started', 'processing', 'success'];
 
