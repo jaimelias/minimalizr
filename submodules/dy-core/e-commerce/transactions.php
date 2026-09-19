@@ -123,8 +123,8 @@ class dy_tx
 		}
 
 		if (array_key_exists('tx_id', $expected_arr)) {
-			$expected_unique_tx_id = $expected_arr['tx_id'];
-			if (! is_scalar($expected_unique_tx_id) || (string) $expected_unique_tx_id !== $tx_id) {
+			$expected_tx_id = $expected_arr['tx_id'];
+			if (! is_scalar($expected_tx_id) || (string) $expected_tx_id !== $tx_id) {
 				return false;
 			}
 		} elseif (count($expected_arr) >= 4) {
