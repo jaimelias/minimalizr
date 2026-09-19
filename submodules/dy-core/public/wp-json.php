@@ -214,9 +214,10 @@ class Dynamic_Core_WP_JSON
     {
         $country_code = (string) $request['country_code'];
         $file_path = dirname(__DIR__)
-            . 'json/countries/'
+            . '/json/countries/'
             . $country_code
             . '.json';
+
 
         if (!is_readable($file_path)) {
             return new WP_Error(
