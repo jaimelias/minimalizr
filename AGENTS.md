@@ -20,3 +20,9 @@
 - Header Template: `header.php`
 - Footer Template: `footer.php`
 - Library of templates: `template-parts`
+
+## DEV Tools
+- Local site: `http://localhost:8888/wordpress`
+- Read the project's `composer.json` for tools and configuration.
+- Runtime: PHP 8.1 (Apache)
+- Diagnostics: `Query Monitor` is installed; use it when investigating runtime notices, queries, and asset dependencies.

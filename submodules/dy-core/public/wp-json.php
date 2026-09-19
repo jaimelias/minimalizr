@@ -18,7 +18,7 @@ class Dynamic_Core_WP_JSON
 			'required'          => true,
 			'sanitize_callback' => 'absint',
 			'validate_callback' => static function($value) {
-				return dy_validators::validate_the_id($value);
+				return is_numeric($value);
 			},
 		];
 
@@ -100,7 +100,7 @@ class Dynamic_Core_WP_JSON
 		$post = get_post($dy_id);
 
 		$is_readable = $post instanceof WP_Post
-			&& ('packages' === $post->post_type || $dy_request === 'contact')
+			&& (in_array($post->post_type, ['packages', 'aircrafts']) || $dy_request === 'contact')
 			&& (
 				is_post_publicly_viewable($post)
 				|| current_user_can('read_post', $dy_id)
