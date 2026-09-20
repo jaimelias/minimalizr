@@ -156,20 +156,38 @@ class Dy_Confirmation_Page
         $GLOBALS['post'] = $post;
     }
 
-    /**
+
+    /* 
      * Registra el endpoint /dy-tx/{tx_id}.
-     */
+     * El idioma predeterminado no utiliza prefijo, mientras que los demás
+     * idiomas utilizan su código de idioma como prefijo.  
+    */
     public function add_rewrite_rule(): void
     {
-        add_rewrite_rule(
-            '^dy-tx/([^/]+)/?$',
-            'index.php?dy-tx=$matches[1]',
-            'top'
-        );
+        $default_language = default_language();
+        $slug = DY_CORE_CONFIRMATION_PAGE_SLUG;
+
+        foreach (get_languages() as $language) {
+            $path = $language === $default_language
+                ? $slug
+                : sprintf('%s/%s', $language, $slug);
+
+            add_rewrite_rule(
+                sprintf(
+                    '^%s/([^/]+)/?$',
+                    preg_quote($path, '/')
+                ),
+                sprintf(
+                    'index.php?%s=$matches[1]',
+                    $slug
+                ),
+                'top'
+            );
+        }
     }
 
     /**
-     * Registra dy-tx como query variable pública de WordPress.
+     * Registra la página de confirmación como query variable pública de WordPress.
      *
      * @param string[] $query_vars Query variables registradas.
      * @return string[] Query variables actualizadas.
