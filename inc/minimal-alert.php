@@ -5,13 +5,14 @@ if ( !defined( 'WPINC' ) ) exit;
 #[AllowDynamicProperties]
 class Minimal_Alert
 {
+    /** Hooks the alert settings and display actions using an isolated option group. */
     public function __construct()
     {
         $this->destination = 'dy-core';
         $this->page_slug = $this->destination . '-alerts';
         $this->title = __('Alerts', 'dycore');
         $this->section_alerts = 'dy_core_section_alerts';
-        $this->setting_id = 'dy_core_settings';
+        $this->setting_id = 'dy_core_settings_alerts';
         add_action('minimal_site_alert', [$this, 'site_alert']);
         add_action('minimal_footer_alert', [$this, 'footer_alert']);
         add_action('admin_menu', [$this, 'admin_menu'], 1);
@@ -29,6 +30,7 @@ class Minimal_Alert
         );
     }
 
+    /** Registers translated alert fields exclusively with the Alerts form. */
     public function settings_init() : void
     {
         add_settings_section(
@@ -48,12 +50,12 @@ class Minimal_Alert
             register_setting(
                 $this->setting_id,
                 'dy_site_alert' . $lang_suffix,
-                'wp_kses_post'
+                static fn(?string $value): string => wp_kses_post($value ?? '')
             );
             register_setting(
                 $this->setting_id,
                 'dy_footer_alert' . $lang_suffix,
-                'wp_kses_post'
+                static fn(?string $value): string => wp_kses_post($value ?? '')
             );
 
             add_settings_field(

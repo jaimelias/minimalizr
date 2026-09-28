@@ -76,39 +76,40 @@ class Dynamic_Core_Admin {
         echo '<script>const dyCoreArgs = '.json_encode($args).';</script>';
     }	
 
-    public function settings_init()
+    /** Registers each option with the group owned by its settings form. */
+    public function settings_init(): void
     {
 	
 
         //settings - company
-		register_setting($this->setting_id, 'dy_email', 'sanitize_email');
-		register_setting($this->setting_id, 'dy_phone', 'esc_html');
-		register_setting($this->setting_id, 'dy_address', 'esc_html');
-		register_setting($this->setting_id, 'dy_tax_id', 'esc_html');
+		register_setting($this->setting_id . '_company', 'dy_email', 'dy_sanitize_email');
+		register_setting($this->setting_id . '_company', 'dy_phone', 'sanitize_text_field');
+		register_setting($this->setting_id . '_company', 'dy_address', 'sanitize_text_field');
+		register_setting($this->setting_id . '_company', 'dy_tax_id', 'sanitize_text_field');
 
 
 		//Cloudflare - Security
-		register_setting($this->setting_id, 'dy_cloudflare_account_id', 'esc_html');
-        register_setting($this->setting_id, 'dy_cloudflare_api_token', 'esc_html');
-        register_setting($this->setting_id, 'dy_cloudflare_pdf_api_token', 'esc_html');
+		register_setting($this->setting_id . '_cloudflare', 'dy_cloudflare_account_id', 'sanitize_text_field');
+        register_setting($this->setting_id . '_cloudflare', 'dy_cloudflare_api_token', 'sanitize_text_field');
+        register_setting($this->setting_id . '_cloudflare', 'dy_cloudflare_pdf_api_token', 'sanitize_text_field');
 
 		//Cloudflare - Turnstile
-		register_setting($this->setting_id, 'dy_cf_turnstile_site_key', 'esc_html');
-		register_setting($this->setting_id, 'dy_cf_turnstile_secret_key', 'esc_html');
+		register_setting($this->setting_id . '_cloudflare', 'dy_cf_turnstile_site_key', 'sanitize_text_field');
+		register_setting($this->setting_id . '_cloudflare', 'dy_cf_turnstile_secret_key', 'sanitize_text_field');
 
-        register_setting($this->setting_id, 'dy_sentry_api_key', 'sanitize_user');
+        register_setting($this->setting_id . '_dev', 'dy_sentry_api_key', 'sanitize_user');
 
 		//settings - analytics
-		register_setting($this->setting_id, 'dy_bidding_conversion_percentage', function($value) {
+		register_setting($this->setting_id . '_google', 'dy_bidding_conversion_percentage', function($value) {
 			$value = is_numeric($value) ? (float) $value : 15; //defaults to 15% if not numeric
 			return max(1, min(100, $value)); //sets min at 1% and max at 100%
 		});
 		
-		register_setting($this->setting_id, 'dy_gtag_tracking_id', 'sanitize_user');
-		register_setting($this->setting_id, 'dy_google_ads_id', 'sanitize_text_field');
-		register_setting($this->setting_id, 'dy_google_ads_purchase_label', 'sanitize_text_field');
-		register_setting($this->setting_id, 'dy_google_ads_lead_label', 'sanitize_text_field');
-		register_setting($this->setting_id, 'dy_facebook_pixel_id', 'sanitize_user');
+		register_setting($this->setting_id . '_google', 'dy_gtag_tracking_id', 'sanitize_user');
+		register_setting($this->setting_id . '_google', 'dy_google_ads_id', 'sanitize_text_field');
+		register_setting($this->setting_id . '_google', 'dy_google_ads_purchase_label', 'sanitize_text_field');
+		register_setting($this->setting_id . '_google', 'dy_google_ads_lead_label', 'sanitize_text_field');
+		register_setting($this->setting_id . '_facebook', 'dy_facebook_pixel_id', 'sanitize_user');
 
 	
 
@@ -157,7 +158,7 @@ class Dynamic_Core_Admin {
 			$lang_suffix = ($default_language === $lang) ? '' : '_'.$lang;
 
 			//whatsapp multy languages
-			register_setting($this->setting_id, 'dy_whatsapp'.$lang_suffix, 'intval');
+			register_setting($this->setting_id . '_company', 'dy_whatsapp'.$lang_suffix, 'intval');
 
 			add_settings_field( 
 				'dy_whatsapp'.$lang_suffix, 
@@ -367,14 +368,21 @@ class Dynamic_Core_Admin {
 		}
     }
 
-	public function settings_page(string $page)
+	/** Renders the settings form with the group owned by the selected page. */
+	public function settings_page(string $page): void
 	{ 
 		?><div class="wrap">
 		<form action="options.php" method="post">
 			
 			<h1><?php echo esc_html($this->plugin_name); ?></h1>	
 			<?php
-				settings_fields( $this->setting_id );
+				settings_fields( $this->setting_id . match ($page) {
+					$this->page_company => '_company',
+					$this->page_dev => '_dev',
+					$this->page_google => '_google',
+					$this->page_facebook => '_facebook',
+					$this->page_cloudflare => '_cloudflare',
+				} );
 				do_settings_sections( $page );
 				submit_button();
 			?>			

@@ -569,6 +569,10 @@ class dy_tx
 	public static function request_value(string $key): string|int|bool|null
 	{
 
+		if(!in_array(secure_server('REQUEST_METHOD'), ['POST', 'GET'])) {
+			return null;
+		}
+
 		$flat_payload = self::flat_sanitized_request_payload();
 
 		if(!array_key_exists($key, $flat_payload)) {
