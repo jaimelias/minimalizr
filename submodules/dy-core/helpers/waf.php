@@ -5,32 +5,30 @@ if ( !defined( 'WPINC' ) ) exit;
 #[AllowDynamicProperties]
 class Dy_WAF {
     protected $max_array_depth = 6;
+    protected $prefix = '[WAF - Bad Request]';
 
     public function __construct() {
         // Earliest hook after WordPress normalizes request slashes and creates $wp.
         add_action('setup_theme', [$this, 'validate_params'], PHP_INT_MIN);
     }
 
-    private function reject_param($message) {
+    private function reject_param(
+        string $message,
+        bool $ban_candidate = false
+    ): void {
+        $prefix = $this->prefix;
 
-        $prefix = '[WAF - Bad Request]';
-
-        write_log("$prefix = $message", false, true);
-
-
-		$request_path = wp_parse_url(
-			secure_server('REQUEST_URI'),
-			PHP_URL_PATH
-		);
-
-        //most of the common backdoors are infected root php files
-        $is_root_php = is_string($request_path) && preg_match('#^/[^/]+\.php$#i', $request_path);
-
-        if($is_root_php) {
+        if ($ban_candidate) {
             cloudflare_ban_ip_address("$prefix = $message");
+        } else {
+             write_log("$prefix = $message", false, true);
         }
 
-        wp_die(esc_html($message), $prefix, ['response' => 400]);
+        wp_die(
+            esc_html($message),
+            $prefix,
+            ['response' => 400]
+        );
     }
 
     private function format_param_name($name) {
@@ -60,7 +58,28 @@ class Dy_WAF {
                 $path,
                 $max_depth
             );
-            $this->reject_param($message);
+
+            $route = $_POST['rest_route']
+                ?? $_GET['rest_route']
+                ?? null;
+
+            $request_path = wp_parse_url(
+                (string) ($_SERVER['REQUEST_URI'] ?? ''),
+                PHP_URL_PATH
+            );
+
+            $is_batch = (
+                $route === '/batch/v1'
+                || $request_path === '/wp-json/batch/v1'
+            );
+
+            $ban_candidate = (
+                $param_key === 'post'
+                && $is_batch
+                && str_contains($path, '[roles]')
+            );
+
+            $this->reject_param($message, $ban_candidate);
         }
 
         foreach ($value as $key => $item) {
