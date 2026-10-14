@@ -275,7 +275,7 @@ class Dy_Confirmation_Page
     {
         if (self::$tx === null) return;
 
-        wp_enqueue_script('dynamicpackages-confirmation', plugin_dir_url(__FILE__) . 'js/dynamicpackages-confirmation-page.js', ['jquery'], $this->version, true);
+        wp_enqueue_script('dynamicpackages-confirmation', plugin_dir_url(__DIR__) . 'js/confirmation-page.js', ['jquery'], $this->version, true);
         wp_localize_script('dynamicpackages-confirmation', 'dyPackageConfirmationArgs', [
             'textCopiedToClipBoard' => __('Copied to Clipboard!', 'dynamicpackages'),
         ]);
