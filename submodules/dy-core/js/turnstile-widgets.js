@@ -5,24 +5,17 @@ window.dyTurnstileWidgets = window.dyTurnstileWidgets || {};
 const notifyTurnstile = (widgetId, type, value) => {
 	const waiter = window.dyTurnstileWaiters[widgetId];
 
-	if (!waiter) {
+	if (!waiter || typeof waiter[type] !== 'function') {
 		return;
 	}
 
-	delete window.dyTurnstileWaiters[widgetId];
-
-	if (type === 'resolve') {
-		waiter.resolve(value);
-	} else {
-		waiter.reject(value);
-	}
+	waiter[type](value);
 };
 
 const createTurnstileWidget = ({
 	container,
 	action,
-	id,
-	appearance
+	id
 }) => {
 
 	const {turnstileSiteKey} = turnstileArgs;
@@ -30,8 +23,22 @@ const createTurnstileWidget = ({
 	window.dyTurnstileWidgets[id] = turnstile.render(container, {
 		sitekey: turnstileSiteKey,
 		action,
-		appearance,
+		execution: 'execute',
+		appearance: 'interaction-only',
+		retry: 'never',
+		'refresh-expired': 'never',
+		'refresh-timeout': 'never',
 		callback: token => notifyTurnstile(window.dyTurnstileWidgets[id], 'resolve', token),
+		'before-interactive-callback': () =>
+			notifyTurnstile(window.dyTurnstileWidgets[id], 'pause'),
+		'after-interactive-callback': () =>
+			notifyTurnstile(window.dyTurnstileWidgets[id], 'resume'),
+		'timeout-callback': () =>
+			notifyTurnstile(
+				window.dyTurnstileWidgets[id],
+				'reject',
+				new Error(`Turnstile "${id}" challenge timed out.`)
+			),
 		'expired-callback': () =>
 			notifyTurnstile(
 				window.dyTurnstileWidgets[id],
@@ -51,13 +58,11 @@ const createTurnstileWidget = ({
 createTurnstileWidget({
 	id: 'turnstileWidget1', 
 	container: '#turnstile-container-1', 
-	action: 'sign-transaction',
-	appearance: 'execute'
+	action: 'sign-transaction'
 });
 
 createTurnstileWidget({
 	id: 'turnstileWidget2', 
 	container: '#turnstile-container-2', 
-	action: 'submit-transaction',
-	appearance: 'interaction-only'
+	action: 'submit-transaction'
 });

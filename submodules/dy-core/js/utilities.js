@@ -205,7 +205,7 @@ const executeTurnstileWithRetry = async (
     widgetId,
     {
         maxRetries = 5,
-        timeoutMs = 10000,
+        timeoutMs = 30000,
         retryDelayMs = 1000
     } = {}
 ) => {
@@ -226,19 +226,27 @@ const executeTurnstileWithRetry = async (
                     callback(value);
                 };
 
-                timeoutId = setTimeout(() => {
-                    finish(reject, new Error('Turnstile token request timed out.'));
-                }, timeoutMs);
+                const startTimeout = () => {
+                    if (settled) return;
+
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(() => {
+                        finish(reject, new Error('Turnstile token request timed out.'));
+                    }, timeoutMs);
+                };
 
                 window.dyTurnstileWaiters[widgetId] = {
                     resolve: token => token
                         ? finish(resolve, token)
                         : finish(reject, new Error('Turnstile returned an empty token.')),
-                    reject: error => finish(reject, error)
+                    reject: error => finish(reject, error),
+                    // Cloudflare's timeout callback owns the time spent solving a checkbox.
+                    pause: () => clearTimeout(timeoutId),
+                    resume: startTimeout
                 };
 
                 try {
-                    turnstile.reset(widgetId);
+                    startTimeout();
                     turnstile.execute(widgetId);
                 } catch (error) {
                     finish(reject, error);
@@ -248,6 +256,8 @@ const executeTurnstileWithRetry = async (
             return token;
         } catch (error) {
             lastError = error;
+            // Stop this attempt before retrying or returning control to the form.
+            turnstile.reset(widgetId);
 
             if (attempt === maxRetries) break;
 
@@ -268,13 +278,14 @@ const signDyTransaction = async ({signUrl, signRequest, widgetId, maxRetries = 2
     let lastSignError;
 
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
-        try {
-            if (attempt > 0) {
-                await sleep(10000);
-            }
+        if (attempt > 0) {
+            await sleep(10000);
+        }
 
-            // Turnstile tokens are single-use, so retries need fresh tokens.
-            const signTransactionToken = await executeTurnstileWithRetry(widgetId);
+        // Token failures have their own retry limit; only retry signing below.
+        const signTransactionToken = await executeTurnstileWithRetry(widgetId);
+
+        try {
             const signBody = new URLSearchParams({
                 ...signRequest,
                 'cf-turnstile-response': signTransactionToken
@@ -310,6 +321,9 @@ const signDyTransaction = async ({signUrl, signRequest, widgetId, maxRetries = 2
                 `Transaction signing attempt ${attempt + 1}/${maxRetries + 1} failed. Retrying in 10 seconds...`,
                 error
             );
+        } finally {
+            // This token may have been consumed. Leave signing idle before the next step.
+            turnstile.reset(widgetId);
         }
     }
 
@@ -323,8 +337,10 @@ const hasTurnstileWidgets = () => (
     && window.dyTurnstileWaiters
 );
 
-const createFormSubmit = async form => {
+let dyTransactionSubmitting = false;
 
+const createFormSubmit = async form => {
+    if (dyTransactionSubmitting) return false;
 
     //disable button to prevent double-click
     handleSubmitButton(form);
@@ -353,6 +369,8 @@ const createFormSubmit = async form => {
         });
 
         if (hasTurnstileWidgets()) {
+            dyTransactionSubmitting = true;
+
             try {
 
                 const {turnstileWidget1, turnstileWidget2} = window.dyTurnstileWidgets || {};
@@ -379,14 +397,13 @@ const createFormSubmit = async form => {
 
                 const submitTransactionToken = await executeTurnstileWithRetry(turnstileWidget2);
 
-                console.log({submitTransactionToken})
-
                 formFields.push({
                     name: 'cf-turnstile-response',
                     value: submitTransactionToken
                 });
 
             } catch (error) {
+                dyTransactionSubmitting = false;
                 console.error('Turnstile submission failed:', error);
                 form.find('button').prop('disabled', false);
                 alert(error.message || 'Unable to submit the form. Please try again.');
